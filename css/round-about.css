@@ -8,6 +8,25 @@ body {
   font-family: 'Inconsolata', monospace;
   padding-top: 54px;
 }
+.navbar {
+/*position: relative;*/
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-wrap: wrap;
+flex-wrap: wrap;
+-webkit-box-align: center;
+-ms-flex-align: center;
+align-items: center;
+-webkit-box-pack: justify;
+-ms-flex-pack: justify;
+justify-content: space-between;
+padding: .0005rem .1rem;
+}
+p {
+    font-size: 1.125em; /* 14px/16=0.875em */
+}
+
 
 @media (min-width: 992px) {
   body {
@@ -76,4 +95,15 @@ body {
   vertical-align: middle;
   text-align: center;
   background: #aec6cf
+}
+
+.fa-paper-plane   {
+  color: black;
+  align: center;
+}
+.fa-github{
+  color: black;
+}
+.fa-linkedin{
+  color: black;
 }
