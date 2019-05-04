@@ -24,6 +24,7 @@
   font-size: 1.33333333em;
   line-height: 0.75em;
   vertical-align: -15%;
+  color: black;
 }
 .fa-2x {
   font-size: 2em;
@@ -231,6 +232,7 @@
 }
 .fa-file-o:before {
   content: "\f016";
+  color: black;
 }
 .fa-clock-o:before {
   content: "\f017";
