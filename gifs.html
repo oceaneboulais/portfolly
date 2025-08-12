@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reef Fish Larvae — 3×2 GIF Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Reef fish larvae experiment — 6-tile GIF grid (3 columns × 2 rows). Click any tile to play once; it resets automatically." />
+
+  <style>
+    /* Minimal styles focused on a reliable 3×2 layout */
+    :root {
+      --gap: 16px;
+      --maxw: 1000px;
+      --radius: 10px;
+      --border: #cfd3d8;
+      --bg: #fff;
+      --text: #111;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+    }
+    header, main {
+      max-width: var(--maxw);
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p  { margin: 0 0 16px; }
+
+    /* Fixed 3 columns × 2 rows grid for exactly 6 tiles */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: var(--gap);
+    }
+
+    .tile {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #f6f7f8;
+      position: relative;
+    }
+    .tile img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 1/1;      /* square tiles; remove if you want natural aspect */
+      object-fit: cover;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .badge {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      padding: 4px 8px;
+      font-size: 12px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    /* Small screens: still force 3 columns to meet the 3×2 requirement.
+       If you prefer responsive columns, change to auto-fit/minmax and
+       remove the fixed 3-column rule. */
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Reef Fish Larvae — Experiment Results</h1>
+    <p>Click any tile to play the GIF; it resets to allow replay.</p>
+  </header>
+
+  <main>
+    <div class="grid" id="grid">
+      <!-- Replace src values with your real file paths.
+           For GitHub Pages, keep these paths relative to this HTML file. -->
+      <figure class="tile">
+        <img src="ae_gifs/yolksac_larvae.gif" alt="Larvae tile 1" data-gif="ae_gifs/gif1.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/yellowfin_surgeonfish.gif" alt="Larvae tile 2" data-gif="ae_gifs/gif2.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/July_2024_Control.gif" alt="Larvae tile 3" data-gif="ae_gifs/gif3.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/gobi_mouth_wrestle.gif" alt="Larvae tile 4" data-gif="ae_gifs/gif4.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/consp_sea_cucumber.gif" alt="Larvae tile 5" data-gif="ae_gifs/gif5.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/gif6.gif" alt="Larvae tile 6" data-gif="ae_gifs/gif6.gif" />
+        <figcaption class="badge">Play</figcaption>
+      </figure>
+    </div>
+  </main>
+
+  <script>
+    // Simple, robust click-to-replay: reassign src with a cache-busting param
+    // so the GIF restarts each time. No timers or thumbnail generation—zero failure points.
+    const tiles = document.querySelectorAll('.tile img');
+
+    tiles.forEach(img => {
+      const base = img.getAttribute('data-gif');
+
+      img.addEventListener('click', () => {
+        // Force replay by appending a timestamp query param.
+        const fresh = base.split('?')[0] + '?t=' + Date.now();
+        img.src = fresh;
+      });
+
+      // Optional: ensure initial load uses the base path (no stale query)
+      img.src = base;
+    });
+  </script>
+</body>
+</html>
