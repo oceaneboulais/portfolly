@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Frequency Doodle v2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Replace with your preferred serif if you have Carlson available -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #e0d3c3; --text: #2b2b2b; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+    }
+    main {
+      text-align: center;
+      width: min(92vw, 720px);
+    }
+    h1 {
+      font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif; /* swap to Carlson if you have it */
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+      letter-spacing: 0.2px;
+      margin: 0 0 20px;
+    }
+    .image-wrap {
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 16px;
+      padding: 10px;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .image-wrap:active { transform: scale(0.98); }
+    img {
+      display: block;
+      max-width: 520px;
+      width: min(80vw, 520px);
+      height: auto;
+      margin: 0 auto;
+      filter: drop-shadow(0 8px 22px rgba(0,0,0,0.18));
+    }
+    .hint {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+    /* Visually hide the native controls but keep an accessible fallback */
+    .controls {
+      margin-top: 18px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>click headphones to begin acoustic enrichment</h1>
+
+    <div class="image-wrap" id="playArea" aria-label="Click to play audio">
+      <img src="albalonephones.png" alt="Abalone shellphones" />
+    </div>
+
+    <div class="controls">
+      <audio id="player" preload="metadata">
+        <source src="frequency doodle v2.wav" type="audio/wav" />
+        Bummer dude, looks like this browser doesn't support HTML5 audio. 
+      </audio>
+      <p class="hint">If playback doesn’t start, use your browser’s audio controls or <a href="frequency doodle v2.wav" download>download the WAV</a>.</p>
+    </div>
+  </main>
+
+  <script>
+    const audio = document.getElementById('player');
+    const playArea = document.getElementById('playArea');
+
+    let started = false;
+
+    async function startPlayback() {
+      try {
+        if (!started) {
+          // On first interaction, ensure we’re ready and then play.
+          await audio.play();
+          started = true;
+        } else {
+          // Toggle play/pause on subsequent clicks.
+          if (audio.paused) await audio.play(); else audio.pause();
+        }
+      } catch (e) {
+        // If blocked, show native controls as a fallback.
+        audio.setAttribute('controls', 'controls');
+      }
+    }
+
+    playArea.addEventListener('click', startPlayback);
+    playArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') startPlayback();
+    });
+    playArea.setAttribute('tabindex', '0');
+    playArea.setAttribute('role', 'button');
+  </script>
+</body>
+</html>
