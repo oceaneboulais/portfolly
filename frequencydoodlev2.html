@@ -23,7 +23,7 @@
     h1 {
       font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif; /* swap to Carlson if you have it */
       font-weight: 300;
-      font-size: clamp(1 rem, 4.5vw, 2.6rem);
+      font-size: clamp(0.5 rem, 4.5vw, 2.6rem);
       letter-spacing: 0.2px;
       margin: 0 0 20px;
     }
@@ -60,13 +60,17 @@
   <main>
     <h1>press shellphones anywhere to begin frequency doodle v2</h1>
 
-    <div class="image-wrap" id="playArea" aria-label="Click to play audio">
-      <img src="albalonephones.png" alt="Abalone shellphones" />
+    <div class="image-wrap" id="playArea" aria-label="Click to tune in">
+      
+      <img src="sb_snap.gif" alt="Abalone shellphones" />
     </div>
 
     <div class="controls">
       <audio id="player" preload="metadata">
-        <source src="frequency doodle v2.wav" type="audio/wav" />
+        <source src="frequency_doodle_v3.WAV" type="audio/wav" />
+
+    
+      
         Bummer dude, looks like this browser doesn't support HTML5 audio. 
       </audio>
       <p class="hint">If playback doesn’t start, try using browser’s audio controls or <a href="frequency doodle v2.wav" download>download the WAV</a>.</p>
