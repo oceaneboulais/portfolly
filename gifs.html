@@ -47,12 +47,13 @@
       position: relative;
     }
     .tile img {
-      width: 180px;
-      height: 180px;
-      object-fit: cover;
+      width: 320px;
+      height: 300px;
+      object-fit: relative;
       cursor: pointer;
       display: block;
     }
+
     .badge {
       /* Optionally remove this for no overlay at all */
       position: absolute;
@@ -78,7 +79,7 @@
   <header>
     <h2>Supplemental Materials: Interactive Fish Larvae Observations</h2>
     <h3>In support of manuscript, "Autonomous visual monitoring of pantropical fish larvae recruitment using acoustic enrichment and mesoscale artificial reef structures" (Submitted August 2025)</h3>
-    <p>Click any tile to enlarge GIF</p>
+    <p>Each GIF covers x time period.</p>
   </header>
   <main>
     <div class="grid" id="grid">
@@ -91,29 +92,24 @@
       <div class="row-header">Treatment</div>
       <figure class="tile">
         <img src="ae_gifs/August_2023_Treatment.gif" alt="Larvae tile 1" data-gif="ae_gifs/August_2023_Treatment.gif" />
-        <figcaption class="badge">Play</figcaption>
+        <!-- <figcaption class="badge">Play</figcaption> -->
       </figure>
       <figure class="tile">
-        <img src="ae_gifs/yellowfin_surgeonfish.gif" alt="Larvae tile 2" data-gif="ae_gifs/yellowfin_surgeonfish.gif" />
-        <figcaption class="badge">Play</figcaption>
+        <img src="ae_gifs/June_2024_Larvae_Wide_Angle.gif" alt="Larvae tile 2" data-gif="ae_gifs/June_2024_Larvae_Wide_Angle.gif" />
       </figure>
       <figure class="tile">
-        <img src="ae_gifs/gif3.gif" alt="Larvae tile 3" data-gif="ae_gifs/gif3.gif" />
-        <figcaption class="badge">Play</figcaption>
+        <img src="ae_gifs/larvae_2.gif" alt="Larvae tile 3" data-gif="ae_gifs/larvae_2.gif" />
       </figure>
 
       <div class="row-header">Control</div>
       <figure class="tile">
         <img src="ae_gifs/gobi_mouth_wrestle.gif" alt="Larvae tile 4" data-gif="ae_gifs/gobi_mouth_wrestle.gif" />
-        <figcaption class="badge">Play</figcaption>
       </figure>
       <figure class="tile">
         <img src="ae_gifs/consp_sea_cucumber.gif" alt="Larvae tile 5" data-gif="ae_gifs/consp_sea_cucumber.gif" />
-        <figcaption class="badge">Play</figcaption>
       </figure>
       <figure class="tile">
-        <img src="ae_gifs/gif6.gif" alt="Larvae tile 6" data-gif="ae_gifs/gif6.gif" />
-        <figcaption class="badge">Play</figcaption>
+        <img src="ae_gifs/July_2024_Control.gif" alt="Larvae tile 6" data-gif="ae_gifs/July_2024_Control.gif" />
       </figure>
     </div>
   </main>
