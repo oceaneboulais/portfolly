@@ -2,31 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Frequency Doodle v2</title>
+  <title>Frequency Doodle v3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Replace with your preferred serif if you have Carlson available -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #e0d3c3; --text: #2b2b2b; }
+    :root { --text: #2b2b2b; }
     html, body { height: 100%; margin: 0; }
+
+    /* Background video setup */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    /* Dark semi-transparent overlay */
+    #bg-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3); /* 30% dark overlay = video looks 70% visible */
+      z-index: -1;
+    }
+
     body {
-      background: var(--bg);
       display: grid;
       place-items: center;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--text);
     }
+
     main {
       text-align: center;
       width: min(92vw, 720px);
+      z-index: 1;
+      position: relative;
     }
-    h1 {
-      font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif; /* swap to Carlson if you have it */
+
+    h3 {
+      font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif;
       font-weight: 300;
-      font-size: clamp(0.5 rem, 4.5vw, 2.6rem);
+      font-size: clamp(0.8rem, 4.5vw, 1.6rem);
       letter-spacing: 0.2px;
       margin: 0 0 20px;
     }
+
+       h2 {
+      font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif;
+      color: gainsboro;
+      font-weight: 300;
+      font-size: clamp(0.8rem, 4.5vw, 1.6rem);
+      letter-spacing: 0.2px;
+      margin: 0 0 20px;
+    }
+
     .image-wrap {
       display: inline-block;
       cursor: pointer;
@@ -37,6 +70,7 @@
       transition: transform 120ms ease, box-shadow 120ms ease;
     }
     .image-wrap:active { transform: scale(0.98); }
+
     img {
       display: block;
       max-width: 520px;
@@ -45,57 +79,90 @@
       margin: 0 auto;
       filter: drop-shadow(0 8px 22px rgba(0,0,0,0.18));
     }
+
     .hint {
       margin-top: 12px;
       font-size: 0.95rem;
       opacity: 0.8;
     }
-    /* Visually hide the native controls but keep an accessible fallback */
-    .controls {
-      margin-top: 18px;
+
+    /* Secret controls hidden by default */
+    #secret-controls {
+      display: none;
+      margin-top: 10px;
+    }
+    #secret-controls button, 
+    #secret-controls input {
+      margin: 5px;
+    }
+
+    /* Style shell to look clickable */
+    #shell-trigger {
+      cursor: pointer;
+      font-size: 1.2em;
+      margin-left: 8px;
+      transition: transform 0.2s;
+    }
+    #shell-trigger:hover {
+      transform: scale(1.2) rotate(10deg);
     }
   </style>
 </head>
 <body>
+  <!-- Background MOV -->
+  <video id="bg-video" autoplay loop playsinline>
+    <source src="pool.mov" type="video/quicktime">
+    <source src="yourBackground.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+
+  <!-- Dark overlay to reduce opacity to 70% -->
+  <div id="bg-overlay"></div>
+
   <main>
-    <h3>click anywhere on liquidSunshine to begin frequency doodle v3</h3>
+    <h2>
+      click shellphone to tune into frequency_doodle_v3
+      <span id="shell-trigger">🐚</span>
+    </h2>
 
     <div class="image-wrap" id="playArea" aria-label="Click to tune in">
-
       <img src="liquidSunshine.png" alt="Abalone shellphones" />
     </div>
 
     <div class="controls">
       <audio id="player" preload="metadata">
         <source src="freqdoodle_v3_trim.WAV" type="audio/wav" />
-  
-
-    
-      
         Bummer dude, looks like this browser doesn't support HTML5 audio. 
       </audio>
-      <p class="hint">If playback doesn’t start, try using browser’s audio controls or <a href="frequency doodle v2.wav" download>download the WAV</a>.</p>
+      <!-- <p class="hint">If playback doesn’t start, try using browser’s audio controls or <a href="frequency doodle v2.wav" download>download the WAV</a>.</p> -->
+    </div>
+
+    <!-- Secret audio controls -->
+    <div id="secret-controls">
+      <button id="playPauseBtn">▶️/⏸</button>
+      <label>Volume: <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="1"></label>
     </div>
   </main>
 
   <script>
     const audio = document.getElementById('player');
     const playArea = document.getElementById('playArea');
-
+    const shellTrigger = document.getElementById('shell-trigger');
+    const secretControls = document.getElementById('secret-controls');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    
     let started = false;
 
     async function startPlayback() {
       try {
         if (!started) {
-          // On first interaction, ensure we’re ready and then play.
           await audio.play();
           started = true;
         } else {
-          // Toggle play/pause on subsequent clicks.
           if (audio.paused) await audio.play(); else audio.pause();
         }
       } catch (e) {
-        // If blocked, show native controls as a fallback.
         audio.setAttribute('controls', 'controls');
       }
     }
@@ -106,6 +173,27 @@
     });
     playArea.setAttribute('tabindex', '0');
     playArea.setAttribute('role', 'button');
+
+    // Reveal secret controls on shell click
+    shellTrigger.addEventListener('click', () => {
+      secretControls.style.display = (secretControls.style.display === 'none' || secretControls.style.display === '') 
+        ? 'block' 
+        : 'none';
+    });
+
+    // Play/pause from secret controls
+    playPauseBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    // Volume control
+    volumeSlider.addEventListener('input', (e) => {
+      audio.volume = e.target.value;
+    });
   </script>
 </body>
 </html>
