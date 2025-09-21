@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>bienvenue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="icon" href="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/118/water-wave_1f30a.png">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #99cccc;
+      --text-on-media: #ffffff;
+      --overlay: rgba(0,0,0,0.28);
+      --overlay-hover: rgba(0,0,0,0.45);
+      --circle-size-desktop: 220px;
+      --circle-size-lg: 200px;
+      --circle-size-md: 180px;
+      --circle-size-sm: 160px;
+    }
+
+    body { font-family: 'Inconsolata', monospace; }
+    a:link { color: var(--accent); }
+    a:hover { color: grey; }
+
+    /* Four circle grid (unchanged) */
+    .circle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+      justify-items: center;
+      align-items: start;
+      margin-top: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 992px) {
+      .circle-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1200px) {
+      .circle-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .project-circle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--circle-size-desktop);
+      height: var(--circle-size-desktop);
+      border-radius: 50%;
+      background: url('img/larvae.gif') center center / cover no-repeat;
+      color: var(--text-on-media);
+      text-decoration: none;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      outline: none;
+    }
+    @media (max-width: 1200px) { .project-circle { width: var(--circle-size-lg); height: var(--circle-size-lg); } }
+    @media (max-width: 992px)  { .project-circle { width: var(--circle-size-md); height: var(--circle-size-md); } }
+    @media (max-width: 576px)  { .project-circle { width: var(--circle-size-sm); height: var(--circle-size-sm); } }
+
+    .project-circle:before { content:""; position:absolute; inset:0; background:var(--overlay); transition: background 180ms ease; }
+    .project-circle:hover, .project-circle:focus { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+    .project-circle:hover:before, .project-circle:focus:before { background: var(--overlay-hover); }
+
+    .project-circle .label, .project-circle .name {
+      position: relative; z-index: 1; padding: 0.25rem 0.5rem; border-radius: 0.35rem; letter-spacing: 0.02em;
+      text-align: center; line-height: 1.2; transition: opacity 180ms ease; user-select: none;
+    }
+    .project-circle .label { background: rgba(0,0,0,0.35); font-size: 1rem; opacity: 1; }
+    .project-circle .name  { position: absolute; inset: auto 0 auto 0; margin: 0 auto; width: fit-content;
+                              font-weight: 600; font-size: 1.05rem; opacity: 0; background: rgba(0,0,0,0.55); }
+    .project-circle:hover .label, .project-circle:focus .label { opacity: 0; }
+    .project-circle:hover .name,  .project-circle:focus .name  { opacity: 1; }
+
+    .circle-caption { text-align: center; margin-top: 0.5rem; color: #333; font-size: 0.95rem; }
+
+    /* Right intro panel */
+    .intro-panel {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 84px; /* accounts for fixed navbar height */
+    }
+    .intro-card {
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .intro-name { font-weight: 700; font-size: 1.25rem; margin-bottom: 0.15rem; }
+    .intro-title { color: #555; font-size: 0.98rem; margin-bottom: 0.75rem; }
+    .intro-avatar { width: 120px; height: 120px; object-fit: cover; cursor: pointer; }
+    @media (max-width: 991.98px) {
+      .intro-panel { position: static; top: 0; margin-top: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" style="border:none;">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a class="nav-link" href="water.html" aria-label="Water"><i class="fa fa-tint fa-lg" aria-hidden="true"></i></a></li>
+          <li class="nav-item"><a class="nav-link" href="mailto:oceane@ucsd.edu" aria-label="Email"><i class="fa fa-paper-plane fa-lg" aria-hidden="true"></i></a></li>
+          <li class="nav-item"><a class="nav-link" href="https://www.linkedin.com/in/oceaneboulais" aria-label="LinkedIn"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/oceaneboulais" aria-label="GitHub"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a></li>

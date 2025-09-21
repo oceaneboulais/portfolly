@@ -1,149 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style>
-    a:link {
-      color: #99cccc;
-    }
-  </style>
-  <link rel="icon" href="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/118/water-wave_1f30a.png">
-
   <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
   <title>bienvenue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #99cccc;
+      --text-on-media: #ffffff;
+      --overlay: rgba(0,0,0,0.28);
+      --overlay-hover: rgba(0,0,0,0.45);
+      --circle-size-desktop: 220px;
+      --circle-size-lg: 200px;
+      --circle-size-md: 180px;
+      --circle-size-sm: 160px;
+      --navbar-h: 64px;
+    }
 
-  <!-- Custom styles for this template -->
-  <link href="css/round-about.css" rel="stylesheet">
+    html, body {
+      margin: 0; padding: 0;
+      font-family: monospace;
+      background: #fff; color: #111;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: grey; }
+
+    /* Top bar */
+    .topbar {
+      position: fixed; inset: 0 0 auto 0;
+      height: var(--navbar-h);
+      background: #f8f9fa;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 12px; gap: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      z-index: 1000;
+    }
+    .topbar a.icon { color:#111; font-size:16px; padding:6px 8px; border-radius:6px; }
+    .topbar a.icon:hover { background: rgba(0,0,0,0.06); }
+
+    /* Layout */
+    .container { max-width: 1100px; margin: 0 auto; padding: calc(var(--navbar-h) + 16px) 16px 24px; }
+    .layout { display: flex; gap: 24px; align-items: flex-start; }
+    .main { flex: 1 1 60%; min-width: 0; }
+    .aside { flex: 0 0 340px; position: sticky; top: calc(var(--navbar-h) + 12px); }
+    @media (max-width: 980px) { .layout { flex-direction: column; } .aside { position: static; width: 100%; } }
+
+    .intro-card {
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .intro-header { display: flex; align-items:center; gap:12px; margin-bottom: 8px; }
+    .intro-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); }
+    .intro-name { font-weight: 700; font-size: 20px; margin-bottom: 2px; }
+    .intro-title { color:#555; font-size: 14px; }
+
+    .intro-toggle {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px 10px;
+      background: #f2f6f6;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .intro-toggle:hover { background: #e9f0f0; }
+    .intro-content {
+      margin-top: 10px;
+      font-size: 14px; line-height: 1.5;
+      display: none;
+    }
+    .intro-content.open { display: block; }
+
+    /* Project grid */
+    .circle-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px; }
+    @media (max-width: 640px) { .circle-grid { grid-template-columns: 1fr; } }
+
+    .project { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .project-circle {
+      position: relative; display: inline-block;
+      width: var(--circle-size-desktop); height: var(--circle-size-desktop);
+      border-radius: 50%;
+      background: url('img/larvae.gif') center / cover no-repeat;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      outline: none;
+    }
+    @media (max-width: 1200px) { .project-circle { width: var(--circle-size-lg); height: var(--circle-size-lg); } }
+    @media (max-width: 992px)  { .project-circle { width: var(--circle-size-md); height: var(--circle-size-md); } }
+    @media (max-width: 576px)  { .project-circle { width: var(--circle-size-sm); height: var(--circle-size-sm); } }
+
+    .project-circle::before { content:""; position:absolute; inset:0; background: var(--overlay); transition: background 180ms ease; }
+    .project-circle:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+    .project-circle:hover::before { background: var(--overlay-hover); }
+
+    /* Image slot above larvae.gif */
+    .circle-thumb {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.9; transition: opacity 180ms ease;
+    }
+
+    /* Hover labels */
+    .label, .name {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      z-index: 2; color: var(--text-on-media);
+      padding: 3px 8px; border-radius: 6px; font-size: 14px;
+      background: rgba(0,0,0,0.35); transition: opacity 180ms ease; white-space: nowrap; user-select: none;
+    }
+    .name { font-weight: 700; background: rgba(0,0,0,0.55); opacity: 0; }
+    .project-circle:hover .label { opacity: 0; }
+    .project-circle:hover .name  { opacity: 1; }
+
+    .caption { font-size: 14px; color:#333; text-align: center; }
+
+    /* Generic modal styling (reused for both intro and iframe) */
+    body.modal-open { overflow: hidden; position: fixed; width: 100%; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 2000;
+      padding: 16px;
+    }
+    .modal {
+      max-width: 920px; width: 100%;
+      background:#fff; border-radius:10px; padding:16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .modal-header {
+      display:flex; align-items:center; justify-content: space-between; margin-bottom:10px;
+    }
+    .close-btn { border:none; background:transparent; font-size:20px; cursor:pointer; }
+    .modal-body { display:flex; gap:16px; align-items:flex-start; }
+    .modal-avatar { width:150px; height:150px; object-fit:cover; border-radius:50%; }
+  </style>
 </head>
 
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#"></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active"></li>
-          <li class="nav-item">
-            <a class="nav-link" href="water.html"><i class="fa fa-tint fa-lg" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="mailto:oceane@ucsd.edu"><i class="fa fa-paper-plane fa-lg" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://www.linkedin.com/in/oceaneboulais"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/oceaneboulais"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="docs/CV_09152025.pdf"><i class="fa fa-file fa-lg" aria-hidden="true" style="color:black"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://www.instagram.com/byoceaneboulais/"><i class="fa fa-instagram fa-lg"
-                aria-hidden="true" style="color:black"></i></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- Top bar -->
+  <div class="topbar">
+    <a class="icon" href="mailto:oceane@ucsd.edu" title="Email">email</a>
+    <a class="icon" href="https://www.linkedin.com/in/oceaneboulais" title="LinkedIn" target="_blank" rel="noopener">linkedin</a>
+    <a class="icon" href="https://github.com/oceaneboulais" title="GitHub" target="_blank" rel="noopener">github</a>
+    <a class="icon" href="docs/CV_09152025.pdf" title="CV" target="_blank" rel="noopener">cv</a>
+    <a class="icon" href="https://www.instagram.com/byoceaneboulais/" title="Instagram" target="_blank" rel="noopener">instagram</a>
+  </div>
 
-  <!-- Page Content -->
   <div class="container">
-
-    <!-- Introduction Row -->
-    <div class="my-4 d-flex align-items-center">
-      <!-- Circular profile picture clickable to open modal -->
-      <img src="img/ghibli_profile_pic.png" alt="profile picture" class="rounded-circle mr-4"
-        style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;" data-toggle="modal"
-        data-target="#introModal">
-    </div>
-
-    <!-- Modal showing profile picture with intro text on right -->
-    <div class="modal fade" id="introModal" tabindex="-1" role="dialog" aria-labelledby="introModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content p-3">
-          <div class="modal-header border-0">
-            <h5 class="modal-title" id="introModalLabel">Introduction</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="outline:none;">
-              <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="layout">
+      <!-- Left: projects -->
+      <main class="main" aria-label="Featured projects">
+        <div class="circle-grid">
+          <!-- Project 1 -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="projects/sm_gifs.html" aria-label="Acoustic Enrichment">
+              <img class="circle-thumb" src="ae_gifs/yellowfin_surgeonfish.gif" alt="">
+              <span class="label">Ongoing Research</span>
+              <span class="name">Learn More</span>
+            </a>
+            <div class="caption">Acoustic Enrichment Recruits Fish/Coral Larvae</div>
           </div>
-          <div class="modal-body d-flex align-items-center">
-            <img src="img/ghibli_profile_pic.png" alt="profile picture" class="rounded-circle mr-4"
-              style="width: 150px; height: 150px; object-fit: cover;">
+          <!-- Project 2 -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="project_imgs/SEAMAPD21.pdf" aria-label="SEAMAPD21">
+              <img class="circle-thumb" src="project_imgs/trim_seamapd21_demo.mp4" alt="">
+              <span class="label">2021</span>
+              <span class="name">Gulf of Mexico Reef Fish</span></a>
+            <div class="caption">Seminal Dataset <a href="https://sites.google.com/view/fgvc8/papers?authuser=0s">Fine-Grained Visual Categorization Workshop Paper (CVPR21)</a> </div>
+          </div>
+          <!-- Project 3 -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="https://climate-viz.github.io/" aria-label="Reef RL">
+              <img class="circle-thumb" src="project_imgs/eie.png" alt="">
+              <span class="label">2020</span>
+              <span class="name">GANs for Climate Change</span>
+            </a>
+            <div class="caption">Earth Intelligence Engine</div>
+          </div>
+          <!-- Project 4 -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="https://www.collectivsea.org/polyppod" aria-label="SciArt Installation">
+              <img class="circle-thumb" src="project_imgs/albalonephones.png" alt="">
+              <span class="label">Polyp Pod</span>
+              <span class="name">Immersive Science</span>
+            </a>
+            <div class="caption">SciArt Installation Design</div>
+          </div>
+        </div>
+      </main>
 
-            <div style="max-width: 70%;">
-              <p>
-                Ahoy there :] I'm Oc (or Océane, pronounced O-cee-on)
-                As a Ph.D. student at the Scripps Institution of Oceanography at UCSD, I'm keen on coastal reef/kelp ecosystem restoration <a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i#" target="_blank"
-                  style="color:#99cccc;">(via acoustic enrichment)</a>, marine bioacoustics, self-supervised/reinforcement 
-                learning and novel methods we can generate to accelerate restoration at the intersection of these fields.
-                I love musing on ways deep learning can assist the analysis of underwater ambient noise and visual surveys. 
-              </p>
-              <p>
-                In a prior season, I was in the <a href="https://resenv.media.mit.edu/#" target="_blank"
-                  style="color:#99cccc;">Responsive Environments</a> group at the MIT Media Lab and before that, a Research Engineer
-                at NOAA's Southeast Fisheries Science Center using deep learning to understand the impact of commercial fisheries
-                on humans and the Gulf of Mexico ecosystem.
-              </p>
-              <p>
-                When not head-first in sea of code or spectrograms, I love to vocalize and play around on the ukelele or on a growing  number of percussive instruments. As a science communicator, I love to think about ways we can make science more accessible via unexpected
-                modalities, communally gathering and sharing our blue planet's stories, which led to the beginnings of a sciArt exhibit company that aims to <a href="collectivsea.org#" target="_blank"
-                  style="color:#99cccc;">augment the aquarium.</a> Please reach out if you want to chat about any of the above or just want to say hi!
-              </p>
+      <!-- Right: sticky intro summary + collapsible text -->
+      <aside class="aside" aria-label="Introduction">
+        <div class="intro-card">
+          <div class="intro-header">
+            <img src="img/ghibli_profile_pic.png" alt="profile picture" class="intro-avatar" id="openIntro">
+            <div>
+              <div class="intro-name">Océane Boulais</div>
+              <div class="intro-title">Ph.D. Student, Engineer, Maker · Scripps Institution of Oceanography</div>
             </div>
           </div>
+
+          <!-- Collapsible control -->
+          <button class="intro-toggle" id="toggleIntro" aria-expanded="false" aria-controls="introContent">
+            Learn More
+          </button>
+          <div class="intro-content" id="introContent">
+            <p>
+              As a Ph.D. student at the Scripps Institution of Oceanography at UCSD, I'm keen on coastal kelp and coral reef ecosystem restoration, marine bioacoustics, self-supervised/reinforcement learning and novel methods we can generate to accelerate restoration at the intersection of these fields.
+            </p>
+            <p>
+              <!-- In a prior season, I was in the Responsive Environments group at the MIT Media Lab and before that, a Research Engineer at NOAA's Southeast Fisheries Science Center using deep learning to understand the impact of commercial fisheries on humans and the Gulf of Mexico ecosystem. -->
+            </p>
+            <p>
+              If not head-first in sea of code, you'll find me improv jamming with friends on vocals, flute and/or a growing number of percussive modalaties. As a science communicator, I love to think about ways we can make science more accessible via unexpected modalities (especially musical ones), communally gathering and sharing our blue planet's stories.
+            </p>
+            <p> If something on this page resonated, I'd love to hear from you. Thanks for stopping by!
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Reusable modal for embedded project site -->
+  <div class="modal-backdrop" id="siteModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="siteModalTitle">
+      <div class="modal-header">
+        <h3 id="siteModalTitle" style="margin:0;">Project preview</h3>
+        <button class="close-btn" id="siteModalClose" aria-label="Close">×</button>
+      </div>
+      <div style="height: 70vh; width: 100%; position: relative; border-radius: 8px; overflow: hidden;">
+        <iframe id="siteModalFrame"
+                title="Embedded project"
+                src=""
+                loading="lazy"
+                style="border:0; position:absolute; inset:0; width:100%; height:100%; background:#fff;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimal modal for full intro (optional) -->
+  <div class="modal-backdrop" id="introModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <div class="modal-header">
+        <h3 id="introTitle" style="margin:0;">Introduction</h3>
+        <button class="close-btn" id="closeIntro" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <img src="img/ghibli_profile_pic.png" alt="profile picture" class="modal-avatar">
+        <div style="font-size:14px; line-height:1.5;">
+          <p>
+            Ahoy there :] I'm Oc (or Océane, pronounced O-cee-on) As a Ph.D. student at the Scripps Institution of Oceanography at UCSD, I'm keen on coastal reef/kelp ecosystem restoration (via acoustic enrichment), marine bioacoustics, self-supervised/reinforcement learning and novel methods we can generate to accelerate restoration at the intersection of these fields.
+          </p>
+          <p>
+            In a prior season, I was in the Responsive Environments group at the MIT Media Lab and before that, a Research Engineer at NOAA's Southeast Fisheries Science Center using deep learning to understand the impact of commercial fisheries on humans and the Gulf of Mexico ecosystem.
+          </p>
+          <p>
+            When not head-first in sea of code or spectrograms, I love to vocalize and play around on the ukelele or on a growing number of percussive instruments. As a science communicator, I love to think about ways we can make science more accessible via unexpected modalities, communally gathering and sharing our blue planet's stories.
+          </p>
         </div>
       </div>
     </div>
-
-    <!-- Rest of your content below as previously structured -->
-
-    <div class="row">
-      <div class="col-lg-12">
-        <nav class="menu">
-          <ul>
-            <a href="#top" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'"></a>
-            <a href="#projects" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#projects</a>
-            <a href="#hacks" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#hacks</a>
-            <a href="#research" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#research</a>
-            <a href="#community" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#community</a>
-            <a href="#graphicdesign" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#graphicdesign</a>
-            <a href="#art" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#art</a>
-            <a href="#photography" style="color: #99cccc;" onMouseOver="this.style.color='grey'"
-              onMouseOut="this.style.color='#99cccc'">#photography</a>
-          </ul>
-        </nav>
-      </div>
-    </div>
-
-    <!-- Your existing modals and project sections continue here as in your original code -->
-
   </div>
-  <!-- /.container -->
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Collapsible intro text
+    const toggleBtn = document.getElementById('toggleIntro');
+    const introContent = document.getElementById('introContent');
+    toggleBtn.addEventListener('click', () => {
+      const open = introContent.classList.toggle('open');
+      toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggleBtn.textContent = open ? 'Close' : 'Open';
+    });
 
+    // Intro modal open/close on avatar click
+    const openIntro = document.getElementById('openIntro');
+    const introModal = document.getElementById('introModal');
+    const closeIntro = document.getElementById('closeIntro');
+
+    openIntro.addEventListener('click', () => {
+      introModal.style.display = 'flex';
+      document.body.classList.add('modal-open');
+      closeIntro.focus();
+    });
+    closeIntro.addEventListener('click', () => {
+      introModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      openIntro.focus();
+    });
+    introModal.addEventListener('click', (e) => {
+      if (e.target === introModal) {
+        introModal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        openIntro.focus();
+      }
+    });
+
+    // Project iframe modal logic
+    const siteModal = document.getElementById('siteModal');
+    const siteFrame = document.getElementById('siteModalFrame');
+    const siteClose = document.getElementById('siteModalClose');
+    let lastTrigger = null;
+
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.project-circle');
+      if (!trigger) return;
+
+      const url = trigger.getAttribute('data-url');
+      if (!url) return;
+
+      e.preventDefault();
+      lastTrigger = trigger;
+
+      // Set iframe src (external sites may block framing)
+      siteFrame.src = url;
+
+      // Show modal and lock background scroll
+      siteModal.style.display = 'flex';
+      siteModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+
+      siteClose.focus();
+    });
+
+    function closeSiteModal() {
+      siteModal.style.display = 'none';
+      siteModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      // Clear iframe to stop activity
+      siteFrame.src = '';
+      if (lastTrigger) { lastTrigger.focus(); lastTrigger = null; }
+    }
+
+    siteModal.addEventListener('click', (e) => {
+      if (e.target === siteModal) closeSiteModal();
+    });
+    siteClose.addEventListener('click', closeSiteModal);
+    document.addEventListener('keydown', (e) => {
+      // Close either modal on Escape
+      if (e.key === 'Escape') {
+        if (siteModal.style.display === 'flex') closeSiteModal();
+        if (introModal.style.display === 'flex') {
+          introModal.style.display = 'none';
+          document.body.classList.remove('modal-open');
+          openIntro.focus();
+        }
+      }
+    });
+  </script>
 </body>
-
 </html>
