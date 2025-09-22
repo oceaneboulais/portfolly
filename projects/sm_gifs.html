@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reef Fish Larvae Observations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Reef fish larvae experiment — 6-tile GIF grid (3 columns × 2 rows). Click any tile to play once; it resets automatically." />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Segoe UI Emoji";
+      color: #111;
+      background: #fff;
+    }
+    header, main {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    h2 { margin-bottom: 0.35em; }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p  { margin: 0 0 16px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr 1fr;
+      grid-template-rows: 40px 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      justify-items: center;
+    }
+    .col-header {
+      font-weight: bold;
+      text-align: center;
+      background: transparent;
+    }
+    .row-header {
+      font-weight: bold;
+      text-align: right;
+      background: transparent;
+      width: 110px;
+      justify-self: end;
+      align-self: center;
+    }
+    .tile {
+      /* No border, no bg, just the GIF */
+      position: relative;
+    }
+    .tile img {
+      width: 320px;
+      height: 300px;
+      object-fit: relative;
+      cursor: pointer;
+      display: block;
+    }
+
+    .badge {
+      /* Optionally remove this for no overlay at all */
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      padding: 2px 8px;
+      font-size: 13px;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 80px 1fr 1fr 1fr;
+      }
+      .tile img { width: 95px; height: 95px; }
+      .row-header { width: 60px; font-size: 14px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Supplemental Materials: Interactive Fish Larvae Observations</h2>
+    <h3>In support of manuscript, "Autonomous visual monitoring of pantropical fish larvae recruitment using acoustic enrichment and mesoscale artificial reef structures"</h3>
+    <p>Each GIF covers the same time period around the new moon.</p>
+  </header>
+  <main>
+    <div class="grid" id="grid">
+      <!-- Top left corner empty -->
+      <div></div>
+      <div class="col-header">August 2023</div>
+      <div class="col-header">June 2024</div>
+      <div class="col-header">July 2024</div>
+      
+      <div class="row-header">Treatment</div>
+      <figure class="tile">
+        <img src="ae_gifs/August_2023_Treatment.gif" alt="August 2023 Treatment" data-gif="ae_gifs/August_2023_Treatment.gif" />
+        <!-- <figcaption class="badge">Play</figcaption> -->
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/T_KCW_202406.gif" alt="June 2024 Treatment" data-gif="ae_gifs/T_KCW_202406.gif" />
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/larvae_2.gif" alt="July 2024 Treatment" data-gif="ae_gifs/larvae_2.gif" />
+      </figure>
+
+      <div class="row-header">Control</div>
+      <figure class="tile">
+        <img src="ae_gifs/gobi_mouth_wrestle.gif" alt="August 2023 Control" data-gif="ae_gifs/gobi_mouth_wrestle.gif" />
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/C_KC2W_202406.gif" alt="June 2024 Control" data-gif="ae_gifs/C_KC2W_202406.gif" />
+      </figure>
+      <figure class="tile">
+        <img src="ae_gifs/July_2024_Control.gif" alt="July 2024 Control" data-gif="ae_gifs/July_2024_Control.gif" />
+      </figure>
+    </div>
+  </main>
+  <script>
+    // Click-to-replay, minimal
+    document.querySelectorAll('.tile img').forEach(img => {
+      const base = img.getAttribute('data-gif');
+      img.addEventListener('click', () => {
+        img.src = base.split('?')[0] + '?t=' + Date.now();
+      });
+      img.src = base;
+    });
+  </script>
+</body>
+</html>
