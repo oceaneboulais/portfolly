@@ -288,7 +288,7 @@
           </div>
           <!-- Project 3 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="docs/POMA_Manuscript.pdf" aria-label="Acoustic Enrichment">
+            <a class="project-circle" href="javascript:void(0)" data-url="docs/POMA_Manuscript.pdf" data-title="Download'A demonstration of acoustic enrichment in Hawai'i using autonomous cameras for reef fish larval detection'" data-download="true" aria-label="Acoustic Enrichment">
               <img class="circle-thumb" src="img/camera_build.gif" alt="">
               <span class="label">2024</span>
               <span class="name">Read more about how to use autonomous cameras for larval fish detection</span>
@@ -297,7 +297,7 @@
           </div>
           <!-- Project 4 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="docs/MAS_Manuscript_MediaLab_MIT.pdf" aria-label="Masters Thesis">
+            <a class="project-circle" href="javascript:void(0)" data-url="docs/MAS_Manuscript_MediaLab_MIT.pdf" data-title="Download MAS Masters Thesis" data-download="true" aria-label="Masters Thesis">
               <img class="circle-thumb" src="img/tuna.png" alt="" style="object-fit: cover; object-position: center;">
               <span class="label">2020</span>
               <span class="name">MIT MAS Masters Thesis</span>
@@ -306,7 +306,7 @@
           </div>
           <!-- Project 5 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="project_imgs/SEAMAPD21.pdf" aria-label="SEAMAPD21">
+            <a class="project-circle" href="javascript:void(0)" data-url="docs/SEAMAPD21.pdf" data-title="Download 'SEAMAPD21: a large-scale reef fish dataset for fine-grained categorization'" data-download="true" aria-label="SEAMAPD21">
               <img class="circle-thumb" src="project_imgs/trim_seamapd21_demo.mp4" alt="">
               <span class="label">2021</span>
               <span class="name">Gulf of Mexico Reef Fish Dataset</span></a>
@@ -314,7 +314,7 @@
           </div>
           <!-- Project 6 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="https://climate-viz.github.io/" aria-label="Reef RL">
+            <a class="project-circle" href="javascript:void(0)" data-url="https://climate-viz.github.io/" data-title="Earth Intelligence Engine Project Page" aria-label="Reef RL">
               <img class="circle-thumb" src="project_imgs/eie.png" alt="">
               <span class="label">2020</span>
               <span class="name">Interact with GANs output for physics based climate change induced flooding patterns</span>
@@ -323,16 +323,16 @@
           </div>
           <!-- Project 7 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="https://www.collectivsea.org/polyppod" aria-label="SciArt Installation">
+            <a class="project-circle" href="javascript:void(0)" data-url="https://www.collectivsea.org/polyppod" data-title="CollectivSea's PolypPod Project Page" aria-label="SciArt Installation">
               <img class="circle-thumb" src="project_imgs/albalonephones.png" alt="">
               <span class="label">Polyp Pod</span>
-              <span class="name">Immersive Science</span>
+              <span class="name">Immersive Ocean Science</span>
             </a>
-            <div class="caption">SciArt Installation Design</div>
+            <div class="caption">SciArt Installation Design Towards Reimagning the Aquarium</div>
           </div>
           <!-- Project 8 -->
           <div class="project">
-            <a class="project-circle" href="javascript:void(0)" data-url="https://www.media.mit.edu/projects/meet-the-ganimals/overview/" aria-label="GAnimals">
+            <a class="project-circle" href="javascript:void(0)" data-url="https://www.media.mit.edu/projects/meet-the-ganimals/overview/" data-title="MIT Media Lab GANimals Project Page" aria-label="GAnimals">
               <img class="circle-thumb" src="img/GoldenFoofa_Breed_np6hB8Z.gif.1400x1400.gif" alt="" style="object-position: top;">
               <span class="label">2020</span>
               <span class="name">Meet the GANimals</span>
@@ -462,9 +462,11 @@
 
       // Update modal title - use custom title if available, otherwise default
       const customTitle = trigger.getAttribute('data-title');
+      const isDownload = trigger.getAttribute('data-download') === 'true';
       const siteModalTitle = document.getElementById('siteModalTitle');
       if (customTitle) {
-        siteModalTitle.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">' + customTitle + '</a>';
+        const downloadAttr = isDownload ? ' download' : '';
+        siteModalTitle.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener"' + downloadAttr + ' style="color: inherit; text-decoration: underline;">' + customTitle + '</a>';
       } else {
         siteModalTitle.textContent = 'Project preview';
       }
