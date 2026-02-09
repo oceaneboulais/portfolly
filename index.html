@@ -268,6 +268,24 @@
       <!-- Left: projects -->
       <main class="main" aria-label="Featured projects">
         <div class="circle-grid">
+            <!-- Project: Detect All The Fish (2026) -->
+            <div class="project">
+              <a class="project-circle" href="javascript:void(0)" data-url="projects/detect-all-the-fish/index.html" data-title="Detect All The Fish Project" aria-label="Detect All The Fish">
+                <img class="circle-thumb" src="projects/detect-all-the-fish/imgs/cluster.jpg" alt="CFD detected fish clusters">
+                <span class="label">2026</span>
+                <span class="name">Detect All The Fish</span>
+              </a>
+              <div class="caption">Detect All The Fish</div>
+            </div>
+            <!-- Project: Organic Marine Biofouling Preventative (2026) -->
+            <div class="project">
+              <a class="project-circle" href="javascript:void(0)" data-url="projects/biofouling-preventative/index.html" data-title="Organic Marine Biofouling Preventative" aria-label="Biofouling Preventative">
+                <img class="circle-thumb" src="/Users/oceaneboulais/Github/portfolly/projects/biofouling-preventative/imgs/SLIP_module_cover_img.jpeg" alt="Biofouling on underwater camera">
+                <span class="label">2026</span>
+                <span class="name">No wiper? No problem. Plus, a deep dive into collaborative prototype design with the SIO Makerspace</span>
+              </a>
+              <div class="caption">Long-term autonomous underwater cameras use SLIPs to prevent biofouling.</div>
+            </div>
           <!-- Project 1 -->
           <div class="project">
             <a class="project-circle" href="javascript:void(0)" data-url="sm_gifs.html" data-title="Acoustic Enrichment for Accelerated Reef Restoration Project Page" aria-label="Acoustic Enrichment">
@@ -293,7 +311,7 @@
               <span class="label">2024</span>
               <span class="name">Read more about how to use autonomous cameras for larval fish detection</span>
             </a>
-            <div class="caption">Underwater Autonomous Non-Invasive Visual Monitoring Tools</div>
+            <div class="caption">Underwater Autonomous Long Term Visual Monitoring</div>
           </div>
           <!-- Project 4 -->
           <div class="project">
@@ -339,8 +357,43 @@
             </a>
             <div class="caption">Interpolating GANs to Scaffold Autotelic Creativity <a href="https://ceur-ws.org/Vol-2827/CAC-Paper_3.pdf">Joint Proceedings of the ICCC 2020 Workshops (ICCC-WS 2020)</a></div>
           </div>
+          <!-- Project 11: insitu zine -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="http://insituzine.org/" data-title="insitu zine" aria-label="insitu zine">
+              <img class="circle-thumb" src="projects/insituzine/imgs/old_sio_view.png" alt="" style="object-position: top;">
+              <span class="label">2026</span>
+              <span class="name">in situ is a student-led zine that captures the creative, critical, and curious spirit of the Scripps Institution of Oceanography (SIO) community.</span>
+            </a>
+            <div class="caption"><a href="http://insituzine.org/">Scripps Institution of Oceanography's grassroot art collective made zine</a></div>
+          </div>
+          <!--
+          Project 12: sirènité
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="#" data-title="sirènité" aria-label="sirènité" style="background:#bbb; display:flex; align-items:center; justify-content:center;">
+              <span class="label" style="background:transparent; font-size:2.5rem; color:#222; box-shadow:none;">🎵</span>
+            </a>
+            <div class="caption">sirènité</div>
+          </div>
+         Project 13: worn bio-objects
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)" data-url="#" data-title="worn bio-objects" aria-label="worn bio-objects">
+              <span class="label">worn bio-objects</span>
+            </a>
+            <div class="caption">worn bio-objects</div>
+          </div>
+          -->
         </div>
       </main>
+<script>
+// Force autoplay for the Detect All The Fish project video bubble
+document.addEventListener('DOMContentLoaded', function() {
+  var video = document.querySelector('.project-circle video.circle-thumb');
+  if (video) {
+    video.muted = true;
+    video.play().catch(function(){});
+  }
+});
+</script>
 
       
 
