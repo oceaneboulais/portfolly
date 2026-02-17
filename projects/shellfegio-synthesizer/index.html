@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Shellfegio Synthesizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --accent: #99cccc;
+      --text-color: #111;
+      --bg-color: #fff;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: monospace;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: grey; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .project-header {
+      margin-bottom: 32px;
+    }
+
+    .project-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    .project-year {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .project-description {
+      font-size: 18px;
+      margin-bottom: 24px;
+    }
+
+    .project-content {
+      margin-bottom: 32px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 16px;
+    }
+
+    .image-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .image-gallery img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-link">&larr; Back to Portfolio</a>
+
+    <header class="project-header">
+      <h1 class="project-title">Shellfegio Synthesizer</h1>
+      <div class="project-year">2026</div>
+    </header>
+
+    <div class="image-gallery">
+      <img src="imgs/angled_side_main_sunset.png" alt="Angled side view of Shellfegio Synthesizer at sunset">
+      <img src="imgs/IMG_2724.png" alt="Additional view of Shellfegio Synthesizer">
+    </div>
+    <div class="project-description">
+      <p>These days I trade time for money thinking about how "<a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i">good vibrations</a>" in the water column can either recruit or repel coral and fish larvae to suppport accelerated reef restoration.
+        So whilst I was in the midst of some downtime recovering post chest surgery, I picked up meditation and fell down a rabbit hole where I ended up in a meditation teacher training (with my mum no less), and was inspired and fascinated after learning about these so-called healing "Solfeggio frequencies" linked to energy centers (chakras). 
+        From there, the <a href="https://myfwc.com/research/saltwater/mollusc/bay-scallops/information/#:~:text=The%20bay%20scallop's%20upper%20shell,live%20up%20to%20two%20years.">Bay Scallop</a> shells I'd collected (over years of scallopping in the GoM) suddenly became the perfect "piano keys" for a digital synthesizer....
+        As a vocalist and <a href="https://en.wikipedia.org/wiki/Synesthesia">synesthetic</a>, acoustics literally change my mind. So I wanted to make something playful yet powerful for acoustic self-enrichment (which can also incorperate another human) using a 16 input MIDI controller <a href="https://shop.playtronica.com/products/playtron?srsltid=AfmBOorFIsdOihrVJUvO7M-n7JjlktFS_SgJgamrvwq7wtrATeQoq0fw">Playtron</a> (mercii Playtronica) reminding us how grounding a return to the 
+        ocean's within ourselves can be explored with a bit of listening...</p>
+     
+      <p>sooo voilà, the Shellfeggio Synth!</p>
+<div class="project-content">
+      <video src="imgs/rotated_shellfeggio.mov" controls style="max-width: 100%; height: auto;"></video>
+    </div>
+    
+      <p>This v0 prototype video uses an iPhone 14 with USB-C to MIDI controller, running GarageBand for now. Stay tuned for a vibe coded custom MIDI keyboard app for precise Solfeggio frequency calibration (396 Hz, 417 Hz, etc.) since it doesn't seem to exist yet. Live coding is another avenue I hope to explore with this, but that's for later.</p>
+    </div>
+
+    
+  </div>
+</body>
+</html>
