@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>No wiper? No problem. We've got you coated.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --accent: #99cccc;
+      --text-color: #111;
+      --bg-color: #fff;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: monospace;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: grey; }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .project-header {
+      margin-bottom: 32px;
+    }
+    
+    .project-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+    
+    .project-year {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    
+    .project-description {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .project-content {
+      margin-top: 32px;
+    }
+    
+    .project-content h2 {
+      font-size: 20px;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    
+    .project-content p {
+      margin-bottom: 16px;
+    }
+    
+    .project-image {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+    
+    .placeholder-image {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, var(--accent) 0%, #66a3a3 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      margin: 24px 0;
+    }
+    
+    figure {
+      margin: 24px 0;
+    }
+    
+    figcaption {
+      font-size: 14px;
+      color: #555;
+      margin-top: 12px;
+      line-height: 1.5;
+      font-style: italic;
+    }
+    
+    .image-row {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    
+    .image-row figure {
+      flex: 1;
+      margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .image-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+    
+    <div class="project-header">
+      <h1 class="project-title">No wiper? No problem. We've you coated. Plus, a deep dive into collaborative prototyping with the Scripps Sandbox Makerspace</h1>
+      <div class="project-year">2025 - 2026: Ongoing Experiment Under the SIO Pier</div>
+      <p class="project-description">
+        Scroll down to learn how a cross-colLaborative effort between the Thode Environmental Acoustic Lab, Coral Reef Ecophysiology and Engineering Lab and Scripps Makerspace Sandbox is keeping long term underwater cameras free of biofouling using simple, organic and nontoxic ingredients.
+      </p>
+    </div>
+    
+    <figure>
+      <img src="imgs/noSLIP_SLIP.jpeg" alt="Comparison of camera glass flange without SLIP (left) and with SLIP (right) after one month deployment" class="project-image">
+      <figcaption>
+        After existing for over a month underneath the SIO pier observing fish larvae, our experiment demonstrated that glass flanges with SLIPs (Slippery Liquid-Infused Porous Surfaces) can drastically reduce biofouling whilst requiring no extra energy expenditure (e.g. as mechanical wiper blades do) and remaining fully non-toxic to the environment. Left (no SLIP coating) and right (with SLIP coating).
+      </figcaption>
+    </figure>
+    
+    <div class="project-content">
+      <h2>Experiment Overview</h2>
+            <h3>Minimal Viable Experiment (Febuary-March 2025) </h3>
+
+      <p>
+        Long-term underwater camera deployments face a significant challenge: biofouling. The accumulation of marine organisms on camera lenses and housings degrades image quality over time, limiting the effectiveness of autonomous monitoring systems. This project develops organic, environmentally-friendly solutions to prevent biofouling without harming marine ecosystems.         Traditional anti-fouling coatings often contain harmful chemicals that can leach into the marine environment. Our approach focuses on bio-inspired and organic compounds that deter settlement of fouling organisms while remaining non-toxic to marine life.
+
+      </p>
+            <img src="imgs/v0_overview.png" alt="Experiment overview diagram" class="project-image">
+
+
+
+      
+      <h2>The Challenge</h2>
+            <h3>Designing A Custom Glass Flange with the SIO Makerspace</h3>
+      <p>
+        Turns out glass flanges are tricky to come by (which is required by the SLIPS coating for proper adhering) due to their fragility relative to the acrylic flange alternative. Since we are interested in using these flanges for coastal applications < 100m deep, we set out to design and microfabricate a glass flange for the <a href="https://bluerobotics.com/store/watertight-enclosures/wte-vp/" target="_blank" rel="noopener">2" BR underwater housings</a> that keep our ESP32 camera modules safe and dry (or so we hoped...) </p>
+            <figure>
+        <img src="imgs/preExp_noSLIP_SLIP.jpeg" alt="Autonomous long term cameras with acrylic caps" class="project-image">
+        <figcaption>
+          Autonomous long term cameras with acrylic caps before deployment in February 2025.
+        </figcaption>
+      </figure>
+      <p>Luckily for us, at SIO we have a state of the art <a href="https://scrippssandbox.ucsd.edu/" target="_blank" rel="noopener">Scripps Sandbox Makerspace</a>, fully fitted with helpful humans and tools to help collaboratively design and deploy early-stage experiments such as this one. As someone who personally has near-zero experience with a WAZER Waterjet CNC Machine, I reached out to Makerspace Sandbox Director, Riley Meehan, knowing only the dimensions of the underwater housings (and therefore the flange size required) and an idea...
+      </p>
+      <div class="image-row">
+        <figure>
+          <img src="imgs/wazer_jet.png" alt="WAZER waterjet cutting flange parts" class="project-image">
+          <figcaption>
+            WAZER waterjet used for cutting custom flange parts in the Makerspace.
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="imgs/flange_cap_design.png" alt="Custom glass flange cap design" class="project-image">
+          <figcaption>
+            Custom glass flange cap design specifications.
+          </figcaption>
+        </figure>
+      </div>
+      <figure>
+        <img src="imgs/waterjet_timelapse.gif" alt="WAZER waterjet cutting custom glass flange components - timelapse" class="project-image">
+        <figcaption>
+          WAZER waterjet in action cutting custom glass flange components (ultra-fast timelapse).
+        </figcaption>
+      </figure>
+      <h3>Wazerjet Watercutter Learnings</h3>
+      <p>
+        The WAZER waterjet CNC machine is a powerful tool the size of an inkjet printer used for cutting our custom glass flanges, and it certainly came with its own set of challenges. After getting trained (sign up here for SIO students [ref?]), we had to carefully calibrate the machine to ensure precise cuts without damaging the fragile glass (purchasedfrom a local glass shop, Encinitas Glass) whom typically make glasstop counters. 
+        We had to experiment with different cutting speeds and pressures to achieve clean edges while minimizing the risk of cracking (Thanks to Riley & co for that support). Finally, it was time to test how the cuts fared as flange caps...</p>
+      <div class="image-row">
+        <figure>
+          <img src="imgs/wonky_screw_glass_flange.jpeg" alt="Wonky screw glass flange" class="project-image">
+          <figcaption>
+            Custom glass flange with a wonky screw alignment possibly due to slight micromovements of the glass piece during cutting.
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="imgs/wonky_screw_glass_flange2.jpeg" alt="Second wonky screw glass flange" class="project-image">
+          <figcaption>
+            Another view of the custom glass flange assembly.
+          </figcaption>
+        </figure>
+      </div>
+      <p>Despite the wonkiness on some (not all, fortunately) of the custom cuts, we got the glass pieces prepped, coated, and depth tested in the ~27' Keck Pool. Following that test, we deployed off the pier on Febuary 25, 2025 and said a little protection blessing for our cameras admist the harsh winter conditions and surging tides typically experienced under the pier in winter months.</p>
+  
+      <h2>Results</h2>
+      <p>
+        After a month of deployment, we observed promising results. 
+        The SLIPS-coated glass flange showed significantly less biofouling compared to the uncoated acrylic flange, which was heavily covered in algae and barnacles. The SLIPS-coated surface remained clear (Treatment figure below shows preliminary results taken in-air), providing results that suggest SLIPs can be an effective, 
+        non-toxic solution for preventing biofouling on long-term underwater cameras, potentially extending their operational lifespan and improving visual data quality for marine research. Unfortunately, a fastening screw came loose during deployment, leading to flooding of the treatment camera housing and subsequent loss of the visual data taken from the camera's perspective. For the next iteration of the experiment, we have ordered custom cuts (Peninsula Glass) and are using a more secure fastening mechanism with O-ring washers to ensure the integrity of the glass flange on the housing during data collection in winter 2026...
+
+      </p>
+            <img src="imgs/results_v0.png" alt="Results of the biofouling experiment" class="project-image">
+            <img src="imgs/comparing_in_air_v0.png" alt="Results of the biofouling experiment" class="project-image">
+<figcaption>In-air visual image taken through the SLIPS-coated glass flange after a month long deployment under the SIO pier.</figcaption>
+
+      <h2>Current Experiment</h2>
+      <h3>Rethinking the glass flange</h3>
+      <p>After seeing the potential behind this glass coatede underwater housings from a physical perspective, we were able to rebudget and purchase manufactured custom glass flanges for the next iteration of the experiment. In terms of cost, the manufactured glass flange's were $90 USD more than the WAZERjet cuts, given a batch of 15 flanges created at one time. </p>
+
+      <h3>Redeployment Under the Pier</h3>
+      <figure>
+        <img src="imgs/camera_layout_v1.jpg" alt="Current layout of the v1 experiment" class="project-image">
+        <figcaption>
+          Current layout of the v1 experiment leveraging a more robust flange design and experimental redundancy in the case of potential flooding.
+        </figcaption>
+      </figure>
+      <p>This experiemnt is currently underway and we'd love if you want to follow along with the results! We redployed under the pier in January 2026 with a redesigned glass flange and a more robust fastening mechanism to ensure the integrity of the camera housing and data collection. Stay tuned for updates on how the experiment is going and whether our SLIPS coating continues to keep our cameras clear of biofouling.
+      </p>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <h3>Follow the Experiment</h3>
+        <p>Check out TEAL Master's Student and lead diver Corinne Pickering's reel showing the latest deployment:</p>
+        <a href="https://www.instagram.com/reel/DURuWWliRPl/?igsh=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener" style="display: inline-block; padding: 12px 24px; background: var(--accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
+          View Instagram Reel
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</body>
+</html>
