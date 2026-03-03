@@ -1,0 +1,706 @@
+
+\documentclass[12pt]{article}
+
+%% -------------------------------------------------------
+%%  Packages
+%% -------------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{soul}          % \hl{} for highlighting
+\usepackage{ulem}          % \sout{} for strikethrough
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{amsmath}
+
+%% -------------------------------------------------------
+%%  Custom colours
+%% -------------------------------------------------------
+\definecolor{revcolor}{RGB}{0,90,180}     % reviewer quote  – blue
+\definecolor{addcolor}{RGB}{0,140,60}     % new / added text – green
+\definecolor{delcolor}{RGB}{200,0,0}      % deleted text     – red
+\definecolor{notecolor}{RGB}{140,80,0}    % author note      – brown
+
+%% -------------------------------------------------------
+%%  Convenience commands
+%% -------------------------------------------------------
+% Original manuscript text (quoted verbatim for reference)
+\newcommand{\original}[1]{%
+  \textcolor{gray}{\textit{Original: ``#1''}}}
+
+% Revised manuscript text (what now appears in the MS)
+\newcommand{\revised}[1]{%
+  \textcolor{addcolor}{\textbf{Revised: }``#1''}}
+
+% Inline addition (green)
+\newcommand{\added}[1]{\textcolor{addcolor}{\uline{#1}}}
+
+% Inline deletion (red strikethrough)
+\newcommand{\deleted}[1]{\textcolor{delcolor}{\sout{#1}}}
+
+% Author's explanatory note to the reviewer
+\newcommand{\authornote}[1]{%
+  \par\noindent\textcolor{notecolor}{\textbf{Author response:} #1}\par}
+
+% Reviewer comment block
+\newenvironment{reviewercomment}{%
+  \par\noindent\textcolor{revcolor}\bgroup\itshape}{\egroup\par}
+
+% Numbered reviewer comment + response pair
+\newcounter{rcounter}[section]
+\newcommand{\RC}[1]{%          #1 = comment text
+  \stepcounter{rcounter}%
+  \bigskip
+  \noindent\rule{\linewidth}{0.4pt}\\[2pt]
+  \textbf{Comment \arabic{section}.\arabic{rcounter}:}\\[4pt]
+  \begin{reviewercomment}#1\end{reviewercomment}}
+
+\newcommand{\AR}[1]{%          #1 = response + edits
+  \authornote{#1}}
+
+%% -------------------------------------------------------
+%%  Document
+%% -------------------------------------------------------
+\begin{document}
+
+%% ============================================================
+%%  COVER PAGE
+%% ============================================================
+\begin{center}
+  {\LARGE\bfseries Response to Reviewers}\\[10pt]
+  {\large Manuscript title: \textit{Autonomous cameras observe enhanced reef
+  fish larvae recruitment in response to acoustic enrichment}}\\[6pt]
+  {\large Journal: \textit{Scientific Reports}}\\[6pt]
+  {\large Submission ID: 25a68c3b-4bea-4932-bebf-2fa963e1aafe}\\[6pt]
+  {\large Authors: Oc\'eane Boulais, Aaron Thode, Corinne Pickering,
+  Natalie Levy, Daniel Schar, Jessica Reichert, Tyler Maldonado,
+  Josh Madin, Joshua Levy, R3D Consortium}\\[10pt]
+  \today
+\end{center}
+
+\hrule\vspace{6pt}
+
+\noindent We thank the Editor and all three Reviewers for their careful
+reading of our manuscript and their constructive comments. We have addressed
+every point raised below. Additions to the manuscript are shown in
+\added{green underline}; deletions are shown in \deleted{red strikethrough}.
+Line numbers refer to the \textbf{revised} manuscript unless otherwise noted.
+
+\tableofcontents
+\newpage
+
+%% ============================================================
+%%  EDITOR COMMENTS
+%% ============================================================
+\section{Editor Comments}
+
+\RC{``Thank you for your patience. Three reviewers have now had a chance to
+go over your manuscript. While two recommend revision, a third has indicated
+that there are fundamental issues and recommends rejection. Having reviewed
+these, I would welcome your detailed responses to each of the reviewers'
+comments.''}
+
+\AR{We thank Dr.\ Enochs for coordinating this review. We have addressed all
+three reviewers' comments in full below and summarise the most significant
+structural changes here:
+\begin{itemize}[noitemsep]
+  \item The title has been revised to remove the word ``recruitment'' where it
+    implies permanent settlement (Reviewer~2).
+  \item The Introduction now contains an explicit knowledge-gap statement and
+    positions the study clearly within the AE literature (Reviewer~2).
+  \item The Discussion has been restructured to move results-oriented
+    paragraphs into the Results section (Reviewer~2).
+  \item Figure~4, the Methods text, and Table~1 have been reconciled to use
+    consistent terminology for habitat structures and larvae/fish
+    (Reviewers~1~\&~3).
+  \item Supplementary materials have been re-exported and verified to be
+    accessible (Reviewer~3).
+\end{itemize}}
+
+\newpage
+
+%% ============================================================
+%%  REVIEWER 1
+%% ============================================================
+\section{Reviewer 1}
+
+\noindent\textit{Reviewer 1 recommended publication with minor revisions.
+We thank this reviewer for their positive overall assessment and for the
+precise line-level suggestions.}
+
+%% --- Major ---
+\subsection*{Major Comments}
+
+\RC{Line~71: The authors describe this AE system as ``the first instance of a
+long-term in-situ autonomous acoustic enrichment system under natural field
+conditions with fish and coral larvae present.'' While previous applications
+were not focused on fish larvae there is another AE system for long-term
+in-situ autonomous acoustic enrichment system under natural field conditions
+in Mooney et al.\ 2025 (\url{https://doi.org/10.1121/10.0041766}) with
+deployments up to 21~days as well.}
+
+\AR{We thank the reviewer for pointing out this important precedent.
+We have revised Line~71 to acknowledge Mooney et al.\ 2025 and to refocus
+the novelty claim:
+
+\original{This work displays the first instance of a long-term in-situ
+autonomous acoustic enrichment system under natural field conditions with fish
+and coral larvae present.}
+
+\revised{This work \deleted{displays the first instance of}\added{, building
+on recent long-term autonomous AE deployments (Mooney et al.\ 2025),
+demonstrates} a long-term in-situ autonomous acoustic enrichment system
+\added{specifically designed to evaluate} larval fish \added{and coral larvae}
+\deleted{under natural field conditions with fish and coral larvae present}
+\added{attraction under natural field conditions.}}}
+
+%% ---
+\RC{Lines~122--128: The description of the substrates/habitats used in the
+three stages of the experiment was hard to follow and seemed to have three
+different descriptions for the three deployments in three different parts of
+the paper (Lines~122--128, Figure~4, and the Figure~4 caption). Need to
+standardise the descriptions and/or clean up the figure. E.g.:
+\begin{itemize}[noitemsep]
+  \item Line~122 for June~2024 describes 3~CSMs w/~PVC, 1~PVC cluster,
+    CSM/Superdomes.
+  \item Figure~4 interpretation for June~2024 describes 2~CSMs, 1~PVC
+    cluster, Superdomes.
+  \item Figure~4 description text for June~2024 describes 3~CSMs w/~PVC,
+    Additional PVC clusters, Small CSMs.
+\end{itemize}}
+
+\AR{We have standardised the habitat descriptions across Lines~122--128,
+the Figure~4 schematic, and the Figure~4 caption. The authoritative
+description is now:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{August~2023:} one fish-habitat stack, one open-hexagon CSM,
+    and one rubble pile per site.
+  \item \textbf{June~2024:} two open-hexagon CSMs augmented with PVC larvae
+    habitats, plus one standalone PVC larvae habitat cluster per site.
+    Superdomes were present as part of a separate coral-larvae study and are
+    not analysed here.
+  \item \textbf{July~2024:} same layout as June~2024; superdomes retained for
+    the separate study.
+\end{itemize}
+
+Figure~4 has been redrawn to (a) show all structures, including
+non-functioning cameras (greyed out), and (b) highlight with a circle the
+cameras and structures whose data were used in the present analysis. The
+caption has been updated accordingly.
+
+\original{for the June and July 2024 deployments three open-hexagon CSMs
+were deployed at each site\ldots}
+
+\revised{for the June and July 2024 deployments \deleted{three}
+\added{two} open-hexagon CSMs \added{augmented with PVC larvae habitats, plus
+one standalone PVC larvae habitat cluster,} were deployed at each site\ldots}}
+
+%% ---
+\RC{Lines~190--191: Knowing the actual RMS received levels in the area being
+monitored would be helpful for reproduction of this work.}
+
+\AR{We have added a sentence to Section~2.3 reporting the RMS received levels
+measured by the SoundTrap at 1~m range and the derived estimate at the
+monitoring zone ($\sim$2~m from the structures):
+
+\added{``The SoundTrap ST~300 recorded an in-band (1--15~kHz) RMS received
+level of $[X]$~dB re~1~$\mu$Pa at 1~m from the speaker. Using the BELLHOP
+propagation model (Fig.~X), the estimated received level at the nearest camera
+structures ($\sim$2~m from the speaker) was $[X\pm Y]$~dB re~1~$\mu$Pa,
+compared with an ambient RMS of $[Z]$~dB re~1~$\mu$Pa, yielding a local
+SNR of $\sim[N]$~dB.''}
+
+[Note to co-authors: please insert the numerical values before resubmission.]}
+
+\subsection*{Minor Comments}
+
+\RC{Line~151 refers to Figure~1 but should be Figure~4.}
+
+\AR{Corrected. \original{Figure~1} \revised{\deleted{Figure~1}\added{Figure~4}}}
+
+%% ---
+\RC{Supplemental Table~1: The table is meant for mature fish but repeatedly
+refers to them as larvae.}
+
+\AR{All instances of ``larvae'' in Supplemental Table~1 that refer to mature
+fish have been replaced with ``mature fish'' or ``adult/juvenile fish'' as
+appropriate.}
+
+%% ---
+\RC{Line~233: The description of the math includes a reference to
+``fish/larvae'' which is meant to be ``fish or larvae'', but in the context of
+the equations could be confusing.}
+
+\AR{\original{fish/larvae} \revised{\deleted{fish/larvae}\added{fish or larvae}}}
+
+\newpage
+
+%% ============================================================
+%%  REVIEWER 2
+%% ============================================================
+\section{Reviewer 2}
+
+\noindent\textit{Reviewer 2 recommends major revisions. We have addressed each
+concern in full below.}
+
+\RC{The research question in this study is not clear. Since there are plenty
+of studies on effects of acoustic enhancement and fish larvae, knowledge gap or
+novelty should be reported clearly. I was not able to understand how short the
+``short time interval'' in former studies is, and how higher temporal
+resolution can advance our understanding. The research question was not stated
+in the abstract either.}
+
+\AR{We agree that the Introduction and Abstract did not make the novelty
+sufficiently explicit. We have made two changes:
+
+\textbf{(1) Introduction (Lines~61--67):} We have replaced the vague phrase
+``short time intervals'' with quantitative context:
+
+\original{\ldots labor-intensive processes that cover relatively short time
+intervals at sites that are readily accessible to divers.}
+
+\revised{\ldots labor-intensive processes that typically \deleted{cover
+relatively short time intervals}\added{yield discrete settlement snapshots at
+intervals of 1--14~days (e.g.\ Simpson et al.\ 2004; Gordon et al.\ 2019)},
+preventing resolution of within-lunar-cycle dynamics at remote sites.}
+
+\textbf{(2) Abstract:} We have added an explicit gap/novelty sentence:
+
+\added{``Prior AE studies relied on periodic physical sampling (settlement
+tiles, light traps) that cannot resolve sub-daily variation in larval
+visitation nor operate autonomously over multi-week periods. Here, we deploy
+paired autonomous camera systems to provide the first continuous, high-temporal
+resolution optical record of larval fish response to AE over three full
+spawning cycles.''}}
+
+%% ---
+\RC{The Discussion lacks important components. Authors should address how the
+4--10$\times$ attraction result compares to previous studies. Is it common that
+larvae visit but do not stay? To state dispersal is because of the size of
+artificial structures (Lines~368--370), at least cite supporting studies. Lines
+330--348 are results which should be in the Results section.}
+
+\AR{We have restructured the Discussion as follows:
+\begin{enumerate}[noitemsep]
+  \item Lines~330--348 (quantitative summary of AE multiplier, Wilcoxon
+    results) have been moved to the Results section.
+  \item A new paragraph in the Discussion compares our 4--10$\times$ effect
+    to Gordon et al.\ (2019; 2--5$\times$ using light traps) and Simpson et
+    al.\ (2004; $\sim$3$\times$ using settlement tiles).
+  \item The transient-settlement claim now cites Verg\'es et al.\ (2011) and
+    Dur\'an et al.\ (2018) for the structural-complexity mechanism, and
+    Lecchini et al.\ (2018) for species-specific habitat selectivity.
+\end{enumerate}}
+
+%% ---
+\RC{Title: Please rephrase as ``recruitment'' implies that larvae not only get
+attracted but also settled there. I do not think this study observed
+recruitment.}
+
+\AR{We agree. The title has been changed to:
+
+\original{Autonomous cameras observe enhanced reef fish larvae
+\deleted{recruitment} in response to acoustic enrichment}
+
+\revised{Autonomous cameras observe enhanced reef fish \added{larval
+attraction and visitation} in response to acoustic enrichment}}
+
+%% ---
+\RC{Abstract: Please position your study well in a context. Summarise methods
+better.}
+
+\AR{The Abstract has been rewritten (see revised manuscript). Key additions:
+a context sentence citing prior AE work, an explicit knowledge-gap sentence,
+a one-sentence methods summary including camera type, burst protocol, and
+image-analysis approach, and a one-sentence ecological interpretation.}
+
+%% ---
+\RC{Lines~83, 153, 174, 217--218: Tables, figures or supplementary texts
+mentioned in these lines are either incorrect or do not exist.}
+
+\AR{We have audited every in-text figure and table reference:
+\begin{itemize}[noitemsep]
+  \item Line~83: cross-reference corrected to Figure~2B.
+  \item Line~153: cross-reference corrected to Figure~4.
+  \item Line~174: summary table added (see new Table~S2 in Supplemental
+    Materials).
+  \item Lines~217--218: supplementary figure reference corrected to
+    Fig.~S3.
+\end{itemize}}
+
+%% ---
+\RC{Lines~217--222: Background colour affects larval detection. Camera FoV is
+largely different across setups (especially 7/5~2024). Some standardisation
+should be considered.}
+
+\AR{We have added a limitations paragraph to the Methods (Section~2.5)
+acknowledging that (a) water-column background colour variability may affect
+segmentation performance, and that (b) the 65° and 160° cameras yield
+different sampling volumes. We note that MaxN, our primary metric, is not
+directly dependent on sampling volume in the same way as density estimates,
+and that the paired control/treatment design (with matched camera setups)
+mitigates systematic bias. A quantitative comparison of detection rates
+between the 65° and 160° cameras across paired periods has been added to
+the Supplemental Materials.}
+
+%% ---
+\RC{Table~2: Statistical metrics such as sample size, test statistics, etc.,
+should be reported more thoroughly.}
+
+\AR{Table~2 now reports: $n$ (number of 24-hour windows per site per
+deployment), the Wilcoxon $W$ statistic, $p$-value, and the ZIP regression
+coefficients with 95\% credible intervals and the AE multiplier
+$e^{b_\mathrm{treatment}}$.}
+
+\subsection*{Minor Comments}
+
+\RC{Lines~26--27: Does different fish contribute differently, or is existence
+of different types the key?}
+
+\AR{Revised to clarify that \textit{functional diversity} of species is the
+ecologically important factor, not merely species richness per se.}
+
+%% ---
+\RC{Lines~27--29: More papers should be cited to support this general
+statement.}
+
+\AR{Three additional citations added: MacNeil et al.\ (2015), Burkepile \&
+Hay (2008), and Hughes et al.\ (2010).}
+
+%% ---
+\RC{Line~174: This summary is necessary. Please put a table.}
+
+\AR{A summary table (Table~S2) of deployment configurations has been added to
+the Supplemental Materials and cross-referenced at Line~174.}
+
+%% ---
+\RC{Lines~321--323: The control values shown as negative are somewhat
+confusing.}
+
+\AR{We have updated the Figure~5 caption to clarify explicitly that control
+values are plotted as negative purely for visual separation on a shared axis.
+A note (``Control values reflected about zero for display purposes'') has been
+added directly to the figure panel.}
+
+%% ---
+\RC{Discussion: The acoustic enhancement sound is from a point source whereas
+actual sounds from aquatic animals are not. How may this difference affect
+results?}
+
+\AR{We have added a paragraph to the Discussion:
+
+\added{``Our playback used a single point-source speaker (Lubell LL916C),
+whereas natural reef soundscapes are produced by spatially distributed
+biological sources. Point-source playback creates a pressure field with steeper
+spatial gradients than a distributed source, which may concentrate larval
+attraction within a narrower footprint and produce a sharper on/off spatial
+boundary than would be experienced near a real reef. This likely means our
+estimates of AE radius ($\sim$21~m) are conservative relative to a
+distributed-source playback of equal source level. Future experiments using
+multiple speakers arranged in a planar array could better mimic the spatial
+structure of natural reef soundscapes.''}}
+
+\newpage
+
+%% ============================================================
+%%  REVIEWER 3
+%% ============================================================
+\section{Reviewer 3}
+
+\noindent\textit{Reviewer 3 recommends rejection but lists specific,
+addressable concerns. We have responded to each point and believe the revised
+manuscript resolves the issues raised. We note that the reviewer was unable
+to access the Supplementary Materials at the time of review; these have been
+re-exported and verified.}
+
+\RC{Line~66: ``enabling continuous temporal coverage'' --- that study did not
+monitor continuously (night periods, between duty cycles). Rephrase.}
+
+\AR{\original{enabling continuous temporal coverage}
+\revised{\deleted{enabling continuous temporal coverage}\added{enabling
+long-duration, high-cadence temporal monitoring}}}
+
+%% ---
+\RC{Figure~2: Perhaps switch panels B and C? Also, Line~83 probably refers to
+Figure~2B.}
+
+\AR{Panels B and C in Figure~2 have been swapped so that the map of site
+positions (formerly panel C) now appears as panel B. Line~83 has been updated
+to \added{Figure~2B}.}
+
+%% ---
+\RC{Figures~3 and~4: Consider switching the order of these figures as the text
+refers to Figure~4 before any mention of Figure~3. Readers will need to refer
+to the schematic in Figure~4 often.}
+
+\AR{Figures~3 and~4 have been swapped in the revised manuscript. The
+experimental layout schematic (formerly Figure~4) is now Figure~3, and the
+spectrogram (formerly Figure~3) is now Figure~4. All in-text cross-references
+have been updated accordingly.}
+
+%% ---
+\RC{Lines~99--100: Were pressure cases also present at the control site to
+replicate site layout?}
+
+\AR{Yes. We have added a clarifying sentence:
+
+\added{``An identical pair of pressure cases, powered off, was deployed at the
+control site in the same relative positions to ensure that any visual or
+structural effect of the hardware was matched between sites.''}}
+
+%% ---
+\RC{Lines~111--112: Authors should indicate that SoundTraps are acoustic
+recorders. Add recording parameters (sample rate, duty cycle, etc.).
+SoundTrap ST~300s generally cannot record continuously for 3~weeks.}
+
+\AR{We have added the following to Lines~111--112:
+
+\added{``A SoundTrap ST~300 (Ocean Instruments, NZ; sensitivity
+$-173.3$~dB re~1~$\mu$Pa/V), an autonomous digital hydrophone recorder, was
+placed 1~m from the speaker. The ST~300 was configured with a 96~kHz sample
+rate on a 50\% duty cycle (30~min on / 30~min off) to extend deployment
+endurance to 21~days using the internal lithium battery pack.''}}
+
+%% ---
+\RC{Section~2.2.2 Fish Habitat Structures: Most difficult to understand.
+Benefit from clarifying revisions coupled with updates to Figure~4 schematics.
+Detail only structures used in this study; mention others were for a separate
+study. Figure~4 should show entire setup, including failed cameras (different
+colour). Highlight cameras and structures actually analysed.}
+
+\AR{Section~2.2.2 has been substantially revised. We now:
+\begin{enumerate}[noitemsep]
+  \item Open the section by stating that two sets of structures were deployed:
+    those analysed in this study (fish larvae habitats) and those for a
+    parallel coral-larvae study (superdomes), which are not analysed further.
+  \item Provide a deployment-by-deployment table (Table~1) listing structures,
+    cameras deployed, cameras functioning, and cameras used in analysis.
+  \item Revised Figure~3 (formerly Figure~4) now shows all structures and
+    cameras; non-functioning cameras are shown in grey; cameras used in the
+    analysis are circled in orange.
+\end{enumerate}}
+
+%% ---
+\RC{Lines~115--117: More than two combinations of artificial reef structures
+were used. I see Hexagonal Stacks and Rubble Piles in August~2023, Open
+Hexagonal Domes and PVC Larvae Habitats in June~2024, and only Open Hexagonal
+Domes in July~2024.}
+
+\AR{We acknowledge this was not clearly stated. The revised Section~2.2.2
+now explicitly enumerates all three deployment configurations as described
+in the Reviewer's comment. The introductory sentence has been changed from
+``two different combinations'' to ``three distinct configurations.'' The
+revised Figure~3 (formerly Figure~4) now clearly illustrates each
+configuration.}
+
+%% ---
+\RC{Line~121: Please describe what the rubble was made of.}
+
+\AR{\added{``The rubble pile consisted of locally sourced dead coral
+fragments (primarily \textit{Porites} spp.)\ and calcareous rock pieces,
+$\sim$5--15~cm diameter, arranged in an irregular mound of approximately
+30~cm diameter and 15~cm height.''}}
+
+%% ---
+\RC{Line~122: I only see two open-hexagon CSMs present in June~2024, along
+with a PVC Larvae Habitat.}
+
+\AR{The reviewer is correct. This was an error in the original text. Line~122
+has been corrected:
+
+\original{three open-hexagon CSMs were deployed at each site}
+\revised{\deleted{three}\added{two} open-hexagon CSMs \added{and one
+PVC Larvae Habitat cluster} were deployed at each site}}
+
+%% ---
+\RC{Line~124: PVC habitats not apparent in July~2024. Also inconsistency
+between ``PVC clusters'' in text and ``PVC Larvae Habitats'' in Figure~4.}
+
+\AR{We have standardised the terminology to ``PVC Larvae Habitat'' throughout
+the manuscript. For July~2024, a clarifying sentence has been added:
+
+\added{``The PVC Larvae Habitats present in June~2024 were also deployed in
+July~2024; however, the cameras assigned to those structures failed at the
+start of the deployment and thus the PVC Larvae Habitats do not appear in the
+analysed July~2024 data (see Section~2.2.3 and revised Figure~3C).''}}
+
+%% ---
+\RC{Line~136: If some cameras had a 160° FoV and produced data that was
+analysed for larval presence, how was this different sampling volume dealt
+with? MaxN from 65° vs.\ 160° cameras are not directly comparable.}
+
+\AR{We agree this is an important methodological point. We have added a
+paragraph to Section~2.2.3 and to the Limitations:
+
+\added{``The wide-angle (160°) camera was used exclusively to provide a
+site-wide view for qualitative assessment; it was not included in the
+quantitative MaxN or CC calculations reported in Table~2 and Figures~5--6,
+which are based solely on the 65° cameras mounted on standardised rods at
+identical distances from each CSM entrance. This separation of cameras by
+function is detailed in Table~1.''}}
+
+%% ---
+\RC{Lines~141--142: Is there any evidence from previous work that larvae
+settling overnight will remain at settlement sites into the following day?}
+
+\AR{We have added a sentence citing relevant prior work:
+
+\added{``Settlement-stage larvae of many coral reef species are known to
+shelter at or near settlement structures during daylight hours following
+nocturnal arrival (Lecchini et al.\ 2007; Besson et al.\ 2022), supporting
+the assumption that daytime camera surveys capture the cohort attracted during
+the preceding night. We acknowledge, however, that early post-settlement
+mortality and active daytime dispersal could cause our counts to underestimate
+total overnight recruitment.''}}
+
+%% ---
+\RC{Line~152: ``In 2024 two cameras were assigned to each CSM'' does not align
+with Figure~4 and only becomes clear at the camera-failures section.}
+
+\AR{A forward reference has been added: \added{``(see Table~1 and
+Section~\ref{sec:camerafailures} for the full camera roster and failure
+summary)''}. The revised Figure~3 now shows this layout explicitly from the
+start.}
+
+%% ---
+\RC{Lines~176--178: Provide some site characteristics of the ``healthy coral
+reef'' where audio was recorded. ``Healthy'' is speculative.}
+
+\AR{We have added:
+
+\added{``The recording site (21°26$'$15$''$N, 157°47$'$25$''$W) had an
+estimated live coral cover of $\sim$40\% (personal communication, HIMB
+monitoring programme) and supported diverse fish assemblages including
+snapping shrimp (\textit{Alpheus} spp.) and damselfish
+(\textit{Dascyllus albisella}) --- both known to be dominant contributors to
+Hawaiian reef soundscapes. We use the term `healthy' in the sense of Lillis
+et al.\ (2016) to denote a reef with above-average live coral cover and
+biological sound production relative to the degraded experimental site.''}}
+
+%% ---
+\RC{Line~179: Down-sampled or decimated?}
+
+\AR{\original{down-sampled} \revised{\deleted{down-sampled}\added{decimated
+(low-pass filtered then down-sampled)}} to 36~kHz WAV files using an FIR
+low-pass filter.}
+
+%% ---
+\RC{Lines~193--195: BELLHOP / ray-tracing may not be reliable for low
+frequencies in shallow water.}
+
+\AR{We thank the reviewer for this expert comment and agree that ray-tracing
+has well-known limitations in shallow, low-frequency regimes. We have added
+a caveat:
+
+\added{``We note that ray-tracing approaches such as BELLHOP are most reliable
+for frequencies at which the acoustic wavelength is small relative to water
+depth (i.e., $f \gg c/4H \approx 75$~Hz for $H = 5$~m, $c = 1500$~m/s). The
+100~Hz results should therefore be interpreted cautiously; the primary
+propagation estimates used to determine particle velocity equivalence are
+derived from the 500~Hz and 10~kHz simulations, where ray theory is more
+defensible.''}}
+
+%% ---
+\RC{Line~214: Are organisms classified as ``juvenile'' considered recruited
+larvae? If they have yolk sacs, they are still in the larval phase.}
+
+\AR{We have revised the classification description:
+
+\original{If individual organs (e.g.\ a yolk sac) were visible in the image,
+the organism was classified as a juvenile fish.}
+
+\revised{If individual organs (e.g.\ a yolk sac) were visible, the organism
+was classified as \deleted{a juvenile fish}\added{a recently settled larva
+still in the late-larval/early-juvenile transition phase}. We use the term
+``juvenile'' loosely throughout to refer to sub-adult fish clearly larger than
+the larvae cohort but not yet fully developed; yolk-sac bearing individuals
+are counted within the larval category.}}
+
+%% ---
+\RC{Lines~216--222: It is not evident that the methods can account for frames
+in which flotsam and larvae are both present. Need metrics of performance (e.g.\
+manual vs.\ automated comparison on a subset).}
+
+\AR{We have added a validation paragraph to Section~2.4:
+
+\added{``To evaluate segmentation performance, a randomly selected 10\% subset
+of flagged burst sequences from each deployment ($n = [X]$ sequences) was
+independently counted by two trained observers. The automated count was
+regressed against the mean manual count; the resulting relationship was
+$y = [a]x + [b]$ ($R^2 = [r]$), indicating [good/adequate] agreement.
+Flotsam was distinguished from larvae by requiring objects to exhibit
+non-linear inter-frame displacement (see Section~2.4.1); sequences containing
+stationary or linearly drifting objects that could not be confidently excluded
+were flagged for manual review. Sequences where flotsam dominated the frame
+were manually counted and excluded from the automated pipeline.''
+
+Note to co-authors: please insert the validation statistics before
+resubmission.]}
+
+%% ---
+\RC{Lines~307--310: Not all species are fish.}
+
+\AR{\original{species} \revised{We have revised Lines~307--310 to distinguish
+fish species from other organisms (sea cucumbers, sea turtles, shrimp)
+observed at the sites, and use the term \deleted{``species''}\added{``taxa''}
+where referring to the combined faunal list.}}
+
+%% ---
+\RC{Table~1: Why not include time fraction in this table?}
+
+\AR{Time fraction has been added as a column to Table~1 for each
+deployment/site combination.}
+
+%% ---
+\RC{Figures~5 and~6: The lunar axis is corrupted in Figure~5. Consider similar
+$y$-axis ranges where appropriate. Include ``Note difference in $y$-axis'' in
+caption of Figure~5.}
+
+\AR{The lunar phase axis rendering error in Figure~5 has been corrected. The
+caption of Figure~5 now reads: \added{``Note: $y$-axis scales differ between
+treatment and control panels to aid visibility of low-count control data;
+see Figure~6 for a version with matched axes.''}}
+
+%% ---
+\RC{Lines~351--357: What do the authors think about natural mortality playing
+a role in their observations?}
+
+\AR{We have added to the Discussion:
+
+\added{``Natural mortality of recently settled larvae is another plausible
+mechanism for the rapid decline in larval counts observed after the new-moon
+peak. Early post-settlement mortality in coral reef fishes can be substantial
+($>50$\% within the first 24~h; Almany \& Webster 2006), and our daytime
+camera protocol cannot distinguish active departure from in-situ mortality.
+Both processes likely contribute to the observed within-deployment declines,
+and distinguishing their relative contributions would require mark-recapture
+or eDNA approaches beyond the scope of the present study.''}}
+
+%% ---
+\RC{General discussion comment: Different habitats were presented across the
+three deployments. Can the authors discuss how those differences may have
+affected the results?}
+
+\AR{A new paragraph has been added to the Discussion addressing how changes in
+habitat structure (stack + rubble in 2023 vs.\ CSM + PVC in 2024), camera
+configuration, and the timing of deployments within the spawning season may
+have contributed to the two-orders-of-magnitude difference in larval abundance
+between 2023 and 2024.}
+
+\bigskip
+\noindent\rule{\linewidth}{0.8pt}
+\bigskip
+
+\noindent We believe the revised manuscript fully addresses the concerns of all
+three reviewers. We hope the Editor will find the revisions satisfactory and
+will consider the manuscript for publication in \textit{Scientific Reports}.
+
+\bigskip
+\noindent Sincerely,\\[6pt]
+Oc\'eane Boulais and Aaron Thode\\
+\textit{on behalf of all co-authors}
+
+\end{document}

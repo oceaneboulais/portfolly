@@ -99,26 +99,56 @@
       <h1 class="project-title">Detect All The Fish</h1>
       <div class="project-year">2026</div>
       <p class="project-description">
-        An advanced fish detection and classification system leveraging state-of-the-art computer vision and deep learning techniques for comprehensive marine species identification.
+        Living digital journal documenting of an engineer-ecologist chimera's journey with the <a href="https://lila.science/datasets/community-fish-detection-dataset/" target="_blank" rel="noopener">Community Fish Detector</a> (CFD) - exploring its capabilities, limitations, and potential for advancing marine ecology research.
       </p>
     </div>
     
-    <img src="projects/detect-all-the-fish/imgs/cluster.jpg" alt="Detected fish clusters" class="project-image" />
+    <img src="imgs/cfd_demo.gif" alt="CFD detecting fish in Hawaiian reef footage" class="project-image" style="width: 100%; border-radius: 8px;">
     
     <div class="project-content">
-      <h2>Overview</h2>
+      <h2>About the Community Fish Detector Dataset (from the <a href="https://lila.science/datasets/community-fish-detection-dataset/" target="_blank" rel="noopener">CFD landing page</a>) </h2>
       <p>
-        This project aims to develop a robust, scalable solution for detecting and classifying fish species in underwater imagery. By combining cutting-edge deep learning architectures with extensive marine biodiversity datasets, we're building tools that can support fisheries management, ecological research, and conservation efforts.
+        "This dataset is a curated compilation of fish imagery and annotations from a variety of publicly available datasets, with a focus on object detection. It includes >1.9M images/frames and >935,000 bounding boxes from around 17 individual datasets, spanning freshwater, marine, and lab-based captures.
+      </p>
+      <p>
+        The original datasets include bounding box annotations and metadata in a variety of formats, and the original labels vary in granularity from species-level identifications to generic "fish" labels. This dataset harmonizes the source metadata into a single COCO-formatted archive, with a single category ("fish").
+      </p>
+      <p>
+        These datasets were used to create CFD. Brief descriptions and license information for each dataset are included in the main documentation; for more detailed information and thumbnails from each dataset, see the <a href="https://github.com/filippovarini/fish-datasets?tab=readme-ov-file" target="_blank" rel="noopener">fish-datasets GitHub repo</a>. The dataset from which each image was drawn is available in the "dataset" field in the .json file."
       </p>
       
-      <h2>Methods</h2>
+      <h2>How We're Using It</h2>
       <p>
-        The system utilizes convolutional neural networks optimized for underwater imagery, accounting for variable lighting conditions, water clarity, and the diverse morphological features of marine species.
+       Currently I've been naively applying CFD to bulk visual data collected by the handy, low-power and mildly tempermental ESP32 AI Thinker cameras (reference figure below) that serve as our autonomous "eyes", helping us monitor the [who, how many, when] show up to our broadcasting of "good vibrations" at a degraded reef site. More details on that experiment <a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i" target="_blank" rel="noopener">here</a> if that is a rabbit hole of interest,
+       as we're keen to hear from others willing to co-test this system in different coastal environments.
+       CFD has been helpful to analyze the thousands of burst photo frames from these autonomous camera deployments, despite the suboptimal resolution of these low cost cameras The model helps automate the detection and counting of fish in hours of video data - a task that would be prohibitively time-consuming to do manually.
       </p>
       
-      <h2>Applications</h2>
+      <img src="imgs/cameras.png" alt="Autonomous underwater cameras used for reef fish monitoring" class="project-image">
+      
+      <h2>Where It's Helping</h2>
       <p>
-        This technology has applications in automated fish stock assessments, marine protected area monitoring, and citizen science initiatives aimed at cataloging marine biodiversity.
+        CFD has supported the first step: identifying fish presence and providing bounding boxes around detected individuals, with zero custom labeling. (HUZZAH!) This means that the (generous) marine biologists who volunteer on this project can focus on higher-level analysis, spending their time on deciphering and labeling down to the species level and assess the scene for contextual behaviours (e.g. feeding). 
+        This dramatically speeds up the initial data processing pipeline, providing a strong foundation that saves weeks of manual annotation and training time.
+      </p>
+      
+      <h2>Where It Could Use Refinement</h2>
+      <p>
+        The model struggles with certain challenging conditions common in the marine environnents where we deploy: inconsistent visibility water, heavily biofouled camera lenses, and fish partially obscured by other fish or benthic (e.g. coral) structures. 
+        And sometimes, a 63% confidence "this is fish" score goes to...a cinder block:
+      </p>
+
+      <img src="imgs/IMG_20230824082300_1.jpg" alt="CFD false positive detection on a cinder block" class="project-image">
+
+      <p>
+        Species-level classification remains limited, and the model sometimes confuses fish with other marine organisms or moving shadows. Fine-tuning on domain-specific data from our reef sites is necessary, but at the time of this writing, there is yet to exist a species-level labeled Hawaiian Reef Fish dataset, hence why we're working on creating one with the custom detection box labeler front end in the demo at the top of the page.
+        Additionally, handling variable camera angles and distances needs refinement for consistent detection performance across different deployment scenarios.
+      </p>
+      
+      <h2>Next Steps</h2>
+      <p>
+      As of now, we're working on creating a custom training set (vibe coded demo at the top; higher resolution video version here because Github gets salty towards files > 100MB+) from Maui and O'ahu field deployments to improve performance in challenging environmental conditions encountered. 
+      This includes collecting more in-situ data this spring/summer, exploring data augmentation strategies to better handle the biofouling/visibility challenges, and investigating active learning approaches to efficiently expand the training dataset with minimal manual annotation overhead.
       </p>
     </div>
   </div>
