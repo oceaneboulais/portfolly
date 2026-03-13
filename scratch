@@ -239,7 +239,7 @@
         <!-- Circle 1 -->
         <div class="d-flex flex-column align-items-center">
           <a class="project-circle"
-             href="projects/sm_gifs.html"
+             href="projects/acoustic-enrichment/acoustic_enrichment_project.html"
              aria-label="Acoustic Enrichment">
             <span class="label">Audio</span>
             <span class="name">Acoustic Enrichment</span>
