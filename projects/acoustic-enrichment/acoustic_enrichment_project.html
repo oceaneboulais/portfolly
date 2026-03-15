@@ -117,6 +117,70 @@
       color: #555;
       font-style: italic;
     }
+    .github-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #24292e;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: background 0.2s ease;
+      margin: 0 8px 20px 8px;
+    }
+    .github-button:hover {
+      background: #1b1f23;
+    }
+    .github-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .audio-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #0969da;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: background 0.2s ease;
+      margin: 0 8px 20px 8px;
+      cursor: pointer;
+      border: none;
+    }
+    .audio-button:hover {
+      background: #0860ca;
+    }
+    .audio-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .audio-player {
+      margin: 20px auto;
+      max-width: 400px;
+      display: none;
+    }
+    .audio-player.active {
+      display: block;
+    }
+    .audio-player audio {
+      width: 100%;
+      border-radius: 6px;
+    }
     @media (max-width: 700px) {
       .grid {
         grid-template-columns: 80px 1fr 1fr 1fr;
@@ -148,21 +212,48 @@
       .camera-images figure {
         max-width: 100%;
       }
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .github-button, .audio-button {
+        margin: 8px 0;
+        width: 90%;
+        max-width: 280px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h2>Supplemental Materials: Interactive Fish Larvae Observations</h2>
-    <h3>In support of manuscript under review, Scientific Reports (Nature):
-      "Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles"</h3>
-    <p>
-      For continuous visual monitoring, an <a href="https://github.com/oceaneboulais/ReefFishCam.git" target="_blank" rel="noopener">open-source</a> camera system was employed based on the ESP32-S chip and an OV2640 camera (2MP 1600 x 1200 resolution) with a 15 frames per second image transfer rate and 65-degree field of view (FoV).
+    <h2>Interactive In-situ Fish Larvae Observations from Acoustic Enrichment Field Experiments</h2>
+    <div class="button-container">
+      <a href="https://github.com/oceaneboulais/ReefFishCam" target="_blank" rel="noopener" class="github-button">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        View on GitHub
+      </a>
+      <button onclick="toggleAudio()" class="audio-button">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M11.536 14.01A8.473 8.473 0 0014.026 8a8.473 8.473 0 00-2.49-6.01l-.708.707A7.476 7.476 0 0113.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707zM10.121 12.596A6.48 6.48 0 0012.025 8a6.48 6.48 0 00-1.904-4.596l-.707.707A5.483 5.483 0 0111.025 8a5.483 5.483 0 01-1.61 3.889l.706.707zm-1.415-1.415A4.485 4.485 0 009.025 8a4.485 4.485 0 00-.319-1.682l-.707.707A3.488 3.488 0 018.025 8a3.487 3.487 0 01-1.026 2.475l.707.706zm-3.95-1.56l-1.5-1.5H1.5v3h1.756l1.5-1.5zm3.25-1.121v-2a.5.5 0 00-.85-.35L3.906 8.4h-2.15a.75.75 0 00-.75.75v2.1c0 .414.336.75.75.75h2.15l3.25 2.25a.5.5 0 00.85-.35z"></path>
+        </svg>
+        Listen to the Playback
+      </button>
+    </div>
+    <div id="audioPlayer" class="audio-player">
+      <audio controls>
+        <source src="sound/newmoontrim.wav" type="audio/wav">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+    <h3> <i>Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles</i>, Supplemental Materials (Under Review, 2025)</h3>
+    <!-- <h3>In support of manuscript under review, Scientific Reports (Nature): -->
+    <!-- "Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles"</h3> -->
+    <h3> Acoustic enrichment (AE)—the playback of ambient sound from healthy coral reefs—shows promise in attracting fish larvae to degraded or artificial reefs, but previous evaluations have used invasive diver-based sampling techniques, limiting most studies to short deployments in benign and accessible environments.  This study used fully autonomous cameras to non-invasively evaluate AE efficacy in attracting settlement-stage fish larvae and mature fish over large fractions of a lunar cycle. We deployed an autonomous AE system in Kāne'ohe Bay (O‘ahu, Hawai‘i) over three spawning events (August 2023, June–July 2024). Treatment (active speaker) and control (inactive speaker) sites were built by placing artificial structures, autonomous cameras, and autonomous hydrophones on a sandy seabed at 5 m water depth, with sites separated by 42-65 m. Treatment and control designations were alternated between deployments to remove potential spatial bias. Manual and semi-automated image analysis found larval counts at both sites peaking around the new moon, but the treatment site attracted 4-14 times more larvae.  Both sites encountered similar numbers of mature fish. These results demonstrate that autonomous camera systems can non-invasively study fish larval presence and provide further evidence that AE can enhance larval fish settlement.</h3>
+    
 
-      
-      The artificial reef structures below were designed and 3D printed or casted by our co-authors at the Hawai'i Institute of Marine Biology's Geometric Ecology Lab. The science behind the structural designs can be explored more 
-      <a href="https://doi.org/10.1016/j.biocon.2025.111407" target="_blank" rel="noopener">here</a>.
-    </p>
   </header>
   
   <section class="camera-section">
@@ -179,6 +270,12 @@
       </figure>
     </div>
   </section>
+
+  <p>
+      <!-- 𓆞 For continuous visual monitoring, an <a href="https://github.com/oceaneboulais/ReefFishCam.git" target="_blank" rel="noopener">open-source</a> camera system was employed based on the ESP32-S chip and an OV2640 camera (2MP 1600 x 1200 resolution) with a 15 frames per second image transfer rate and 65-degree field of view (FoV). -->
+      𓇼Learn more about the science behind the artificial reef structures used in these field experiments 
+      <a href="https://doi.org/10.1016/j.biocon.2025.111407" target="_blank" rel="noopener">here</a>𓇼
+  </p>
   
   <main>
     <div class="grid" id="grid">
@@ -213,6 +310,15 @@
     </div>
   </main>
   <script>
+    // Toggle audio player visibility
+    function toggleAudio() {
+      const player = document.getElementById('audioPlayer');
+      player.classList.toggle('active');
+      if (player.classList.contains('active')) {
+        player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    
     // Click-to-replay, minimal
     document.querySelectorAll('.tile img').forEach(img => {
       const base = img.getAttribute('data-gif');
