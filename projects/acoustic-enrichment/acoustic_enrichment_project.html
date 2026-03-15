@@ -95,6 +95,48 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       border-radius: 8px;
     }
+    .tile canvas {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 15;
+      object-fit: cover;
+      cursor: pointer;
+      display: none;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .tile.paused canvas {
+      display: block;
+    }
+    .tile.paused img {
+      display: none;
+    }
+    .pause-button {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.2s ease;
+      padding: 0;
+    }
+    .pause-button:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+    .pause-button svg {
+      width: 16px;
+      height: 16px;
+      fill: white;
+    }
     .overlay {
       display: none;
       position: fixed;
@@ -388,7 +430,6 @@
         </svg>
         Listen to the sounds from the vibrant reef shown below
       </button>
-    </div>
     <div id="audioPlayer" class="audio-player">
       <audio controls>
         <source src="sound/newmoon_shorty.wav" type="audio/wav">
@@ -480,6 +521,9 @@
       const overlay = document.getElementById('overlay');
       const base = img.getAttribute('data-gif');
       
+      // Always replay GIF on click
+      img.src = base.split('?')[0] + '?t=' + Date.now();
+      
       if (tile.classList.contains('expanded')) {
         // Close expanded tile
         tile.classList.remove('expanded');
@@ -494,8 +538,6 @@
         tile.classList.add('expanded');
         overlay.classList.add('active');
         expandedTile = tile;
-        // Replay GIF
-        img.src = base.split('?')[0] + '?t=' + Date.now();
       }
     }
     
@@ -509,13 +551,57 @@
       }
     }
     
+    // Toggle pause on tile
+    function togglePause(tile, e) {
+      e.stopPropagation();
+      const img = tile.querySelector('img');
+      const canvas = tile.querySelector('canvas');
+      const pauseBtn = tile.querySelector('.pause-button');
+      
+      if (tile.classList.contains('paused')) {
+        // Resume - show GIF
+        tile.classList.remove('paused');
+        pauseBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M5 3.5v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5zm8 0v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5z"/></svg>';
+        // Replay GIF from start
+        const base = img.getAttribute('data-gif');
+        img.src = base.split('?')[0] + '?t=' + Date.now();
+      } else {
+        // Pause - capture current frame to canvas
+        tile.classList.add('paused');
+        pauseBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M5 3.5l6 4.5-6 4.5V3.5z"/></svg>';
+        
+        // Draw current frame to canvas
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+    }
+    
     // Setup tile click handlers
     document.querySelectorAll('.tile').forEach(tile => {
       const img = tile.querySelector('img');
       const base = img.getAttribute('data-gif');
       img.src = base;
       
+      // Create canvas for pausing
+      const canvas = document.createElement('canvas');
+      tile.insertBefore(canvas, img.nextSibling);
+      
+      // Create pause button
+      const pauseBtn = document.createElement('button');
+      pauseBtn.className = 'pause-button';
+      pauseBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M5 3.5v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5zm8 0v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5z"/></svg>';
+      pauseBtn.title = 'Pause/Play';
+      pauseBtn.onclick = (e) => togglePause(tile, e);
+      tile.appendChild(pauseBtn);
+      
       img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTileExpansion(tile, img);
+      });
+      
+      canvas.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleTileExpansion(tile, img);
       });
