@@ -65,13 +65,64 @@
     .tile {
       /* No border, no bg, just the GIF */
       position: relative;
+      width: 100%;
+      max-width: 320px;
+      transition: all 0.3s ease;
+    }
+    .tile.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      z-index: 1000;
+      animation: zoomIn 0.3s ease;
     }
     .tile img {
-      width: 320px;
-      height: 300px;
-      object-fit: relative;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 15;
+      object-fit: cover;
       cursor: pointer;
       display: block;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .tile.expanded img {
+      max-height: 90vh;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 999;
+      cursor: pointer;
+    }
+    .overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .badge {
@@ -91,6 +142,40 @@
       margin: 32px auto;
       padding: 0 16px;
       text-align: center;
+    }
+    .ae-section {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 0 16px;
+      text-align: center;
+    }
+    .ae-images {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .ae-images figure {
+      margin: 0;
+      max-width: 450px;
+      text-align: center;
+    }
+    .ae-images img, .ae-images object {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .ae-images object {
+      min-height: 400px;
+    }
+    .ae-images figcaption {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #555;
+      font-style: italic;
     }
     .camera-images {
       display: flex;
@@ -144,7 +229,7 @@
       align-items: center;
       gap: 8px;
       padding: 10px 20px;
-      background: #0969da;
+      background: #24292e;
       color: #fff;
       text-decoration: none;
       border-radius: 6px;
@@ -156,7 +241,7 @@
       border: none;
     }
     .audio-button:hover {
-      background: #0860ca;
+      background: #1b1f23;
     }
     .audio-button svg {
       width: 20px;
@@ -181,18 +266,59 @@
       width: 100%;
       border-radius: 6px;
     }
+    
+    /* Tablet and medium screens */
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: 100px 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      .tile {
+        max-width: 240px;
+      }
+      .row-header {
+        width: 90px;
+        font-size: 15px;
+      }
+    }
+    
+    /* Small tablets */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 90px 1fr 1fr 1fr;
+        gap: 8px;
+      }
+      .tile {
+        max-width: 180px;
+      }
+      .row-header {
+        width: 75px;
+        font-size: 14px;
+      }
+      .col-header {
+        font-size: 13px;
+      }
+    }
+    
+    /* Mobile screens */
     @media (max-width: 700px) {
       .grid {
         grid-template-columns: 80px 1fr 1fr 1fr;
         justify-content: center;
+        gap: 6px;
       }
-      .tile img { 
-        width: 95px; 
-        height: 95px; 
+      .tile {
+        max-width: 120px;
+      }
+      .tile img {
+        border-radius: 3px;
       }
       .row-header { 
         width: 60px; 
-        font-size: 14px;
+        font-size: 13px;
+      }
+      .col-header {
+        font-size: 11px;
       }
       header, main {
         padding: 0 12px;
@@ -205,6 +331,15 @@
       }
       .camera-section {
         padding: 0 12px;
+      }
+      .ae-section {
+        padding: 0 12px;
+      }
+      .ae-images {
+        gap: 16px;
+      }
+      .ae-images figure {
+        max-width: 100%;
       }
       .camera-images {
         gap: 16px;
@@ -226,6 +361,7 @@
   </style>
 </head>
 <body>
+  <div id="overlay" class="overlay" onclick="closeExpandedTile()"></div>
   <header>
     <h2>Interactive In-situ Fish Larvae Observations from Acoustic Enrichment Field Experiments</h2>
     <div class="button-container">
@@ -233,13 +369,24 @@
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
         </svg>
-        View on GitHub
+        View Project on GitHub
       </a>
-      <button onclick="toggleAudio()" class="audio-button">
+    <h3> <i>Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles</i>, Supplemental Materials (Under Review, 2025)</h3>
+
+    <!-- <h3>In support of manuscript under review, Scientific Reports (Nature): -->
+    <h2>Research Overview</h2><!-- "Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles"</h3> -->
+    <h3> Acoustic enrichment (AE)—the playback of ambient sound from healthy coral reefs—shows promise in attracting fish larvae to degraded or artificial reefs, but previous evaluations have used invasive diver-based sampling techniques, limiting most studies to short deployments in benign and accessible environments.  This study used fully autonomous cameras to non-invasively evaluate AE efficacy in attracting settlement-stage fish larvae and mature fish over large fractions of a lunar cycle. We deployed an autonomous AE system in Kāne'ohe Bay (O‘ahu, Hawai‘i) over three spawning events (August 2023, June–July 2024). Treatment (active speaker) and control (inactive speaker) sites were built by placing artificial structures, autonomous cameras, and autonomous hydrophones on a sandy seabed at 5 m water depth, with sites separated by 42-65 m. Treatment and control designations were alternated between deployments to remove potential spatial bias. Manual and semi-automated image analysis found larval counts at both sites peaking around the new moon, but the treatment site attracted 4-14 times more larvae.  Both sites encountered similar numbers of mature fish. These results demonstrate that autonomous camera systems can non-invasively study fish larval presence and provide further evidence that AE can enhance larval fish settlement.</h3>
+
+  </header>
+  
+  <h2>Acoustic Enrichment Protocol</h2>
+  <p>Listen below to the snapping shrimp, purring damselfish and other reef sounds collected from a local vibrant reef.</p>
+<section class="ae-section">
+   <button onclick="toggleAudio()" class="audio-button">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M11.536 14.01A8.473 8.473 0 0014.026 8a8.473 8.473 0 00-2.49-6.01l-.708.707A7.476 7.476 0 0113.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707zM10.121 12.596A6.48 6.48 0 0012.025 8a6.48 6.48 0 00-1.904-4.596l-.707.707A5.483 5.483 0 0111.025 8a5.483 5.483 0 01-1.61 3.889l.706.707zm-1.415-1.415A4.485 4.485 0 009.025 8a4.485 4.485 0 00-.319-1.682l-.707.707A3.488 3.488 0 018.025 8a3.487 3.487 0 01-1.026 2.475l.707.706zm-3.95-1.56l-1.5-1.5H1.5v3h1.756l1.5-1.5zm3.25-1.121v-2a.5.5 0 00-.85-.35L3.906 8.4h-2.15a.75.75 0 00-.75.75v2.1c0 .414.336.75.75.75h2.15l3.25 2.25a.5.5 0 00.85-.35z"></path>
         </svg>
-        Listen to the Playback
+        Listen to the sounds from the vibrant reef shown below
       </button>
     </div>
     <div id="audioPlayer" class="audio-player">
@@ -248,14 +395,21 @@
         Your browser does not support the audio element.
       </audio>
     </div>
-    <h3> <i>Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles</i>, Supplemental Materials (Under Review, 2025)</h3>
-    <!-- <h3>In support of manuscript under review, Scientific Reports (Nature): -->
-    <!-- "Autonomous cameras observe enhanced reef fish larvae response to acoustic enrichment in natural field conditions over multiple lunar cycles"</h3> -->
-    <h3> Acoustic enrichment (AE)—the playback of ambient sound from healthy coral reefs—shows promise in attracting fish larvae to degraded or artificial reefs, but previous evaluations have used invasive diver-based sampling techniques, limiting most studies to short deployments in benign and accessible environments.  This study used fully autonomous cameras to non-invasively evaluate AE efficacy in attracting settlement-stage fish larvae and mature fish over large fractions of a lunar cycle. We deployed an autonomous AE system in Kāne'ohe Bay (O‘ahu, Hawai‘i) over three spawning events (August 2023, June–July 2024). Treatment (active speaker) and control (inactive speaker) sites were built by placing artificial structures, autonomous cameras, and autonomous hydrophones on a sandy seabed at 5 m water depth, with sites separated by 42-65 m. Treatment and control designations were alternated between deployments to remove potential spatial bias. Manual and semi-automated image analysis found larval counts at both sites peaking around the new moon, but the treatment site attracted 4-14 times more larvae.  Both sites encountered similar numbers of mature fish. These results demonstrate that autonomous camera systems can non-invasively study fish larval presence and provide further evidence that AE can enhance larval fish settlement.</h3>
-    
+    <div class="ae-images">
+      <figure>
+        <img src="imgs/Healthy_Reef_insitu_68dFoV.png" alt="Healthy Reef" />
+        <figcaption>Vibrant reef (300m away from experiment site) where the AE recording was collected. </figcaption>
 
-  </header>
-  
+      </figure>
+      <figure>
+        <object data="imgs/Soundscape.pdf" type="application/pdf" width="100%" height="400">
+          <p>Unable to display PDF. <a href="imgs/Soundscape.pdf" target="_blank">Download instead</a>.</p>
+        </object>
+        <figcaption>Four-second sample of healthy coral reef sound collected in Kāne'ohe Bay (O‘ahu, Hawai‘i) 300 m from the experimental site during the new moon (August 27, 2022). Hawaiian snapping shrimp (Synalpheus parneomeris) and reef fish, such as the Hawaiian Damselfish (Dascyllus albisella), dominate the ambient sound field.</figcaption>
+      </figure>
+    </div>
+  </section>
+  <h2>Open Source Cameras for Autonomous, Remote, Multi-Week Monitoring</h2>
   <section class="camera-section">
     <div class="camera-images">
       <figure>
@@ -270,12 +424,6 @@
       </figure>
     </div>
   </section>
-
-  <p>
-      <!-- 𓆞 For continuous visual monitoring, an <a href="https://github.com/oceaneboulais/ReefFishCam.git" target="_blank" rel="noopener">open-source</a> camera system was employed based on the ESP32-S chip and an OV2640 camera (2MP 1600 x 1200 resolution) with a 15 frames per second image transfer rate and 65-degree field of view (FoV). -->
-      𓇼Learn more about the science behind the artificial reef structures used in these field experiments 
-      <a href="https://doi.org/10.1016/j.biocon.2025.111407" target="_blank" rel="noopener">here</a>𓇼
-  </p>
   
   <main>
     <div class="grid" id="grid">
@@ -308,8 +456,16 @@
         <img src="imgs/ae_gifs/July_2024_Control.gif" alt="July 2024 Control" data-gif="imgs/ae_gifs/July_2024_Control.gif" />
       </figure>
     </div>
+
+    <p>
+      <!-- 𓆞 For continuous visual monitoring, an <a href="https://github.com/oceaneboulais/ReefFishCam.git" target="_blank" rel="noopener">open-source</a> camera system was employed based on the ESP32-S chip and an OV2640 camera (2MP 1600 x 1200 resolution) with a 15 frames per second image transfer rate and 65-degree field of view (FoV). -->
+      𓇼Learn more about the science behind the artificial reef structures used in these field experiments 
+      <a href="https://doi.org/10.1016/j.biocon.2025.111407" target="_blank" rel="noopener">here</a>𓇼
+  </p>
   </main>
   <script>
+    let expandedTile = null;
+    
     // Toggle audio player visibility
     function toggleAudio() {
       const player = document.getElementById('audioPlayer');
@@ -319,13 +475,57 @@
       }
     }
     
-    // Click-to-replay, minimal
-    document.querySelectorAll('.tile img').forEach(img => {
+    // Toggle tile expansion
+    function toggleTileExpansion(tile, img) {
+      const overlay = document.getElementById('overlay');
       const base = img.getAttribute('data-gif');
-      img.addEventListener('click', () => {
+      
+      if (tile.classList.contains('expanded')) {
+        // Close expanded tile
+        tile.classList.remove('expanded');
+        overlay.classList.remove('active');
+        expandedTile = null;
+      } else {
+        // Close any previously expanded tile
+        if (expandedTile) {
+          expandedTile.classList.remove('expanded');
+        }
+        // Expand this tile
+        tile.classList.add('expanded');
+        overlay.classList.add('active');
+        expandedTile = tile;
+        // Replay GIF
         img.src = base.split('?')[0] + '?t=' + Date.now();
-      });
+      }
+    }
+    
+    // Close expanded tile
+    function closeExpandedTile() {
+      if (expandedTile) {
+        expandedTile.classList.remove('expanded');
+        const overlay = document.getElementById('overlay');
+        overlay.classList.remove('active');
+        expandedTile = null;
+      }
+    }
+    
+    // Setup tile click handlers
+    document.querySelectorAll('.tile').forEach(tile => {
+      const img = tile.querySelector('img');
+      const base = img.getAttribute('data-gif');
       img.src = base;
+      
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTileExpansion(tile, img);
+      });
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeExpandedTile();
+      }
     });
   </script>
 </body>
