@@ -76,6 +76,10 @@
       max-width: 100%;
       height: auto;
     }
+    
+    .image-gallery picture {
+      display: contents;
+    }
   </style>
 </head>
 <body>
@@ -88,8 +92,14 @@
     </header>
 
     <div class="image-gallery">
-      <img src="imgs/angled_side_main_sunset.png" alt="Angled side view of Shellfegio Synthesizer at sunset">
-      <img src="imgs/IMG_2724.png" alt="Additional view of Shellfegio Synthesizer">
+      <picture>
+        <source srcset="imgs/optimized/angled_side_main_sunset.webp" type="image/webp">
+        <img src="imgs/optimized/angled_side_main_sunset.png" alt="Angled side view of Shellfegio Synthesizer at sunset" loading="lazy">
+      </picture>
+      <picture>
+        <source srcset="imgs/optimized/IMG_2724.webp" type="image/webp">
+        <img src="imgs/optimized/IMG_2724.png" alt="Additional view of Shellfegio Synthesizer" loading="lazy">
+      </picture>
     </div>
     <div class="project-description">
       <p>These days I trade time for money thinking about how "<a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i">good vibrations</a>" in the water column can either recruit or repel coral and fish larvae to suppport accelerated reef restoration.
@@ -100,8 +110,7 @@
      
       <p>sooo voilà, the Shellfeggio Synth!</p>
 <div class="project-content">
-      <video controls style="max-width: 100%; height: auto;">
-        <source src="imgs/rotated_shellfeggio.mp4" type="video/mp4">
+      <video controls preload="metadata" style="max-width: 100%; height: auto;">
         Your browser does not support the video tag.
       </video>
     </div>
