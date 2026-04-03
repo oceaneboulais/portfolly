@@ -81,6 +81,7 @@
       z-index: 1000;
       animation: zoomIn 0.3s ease;
     }
+    .tile video,
     .tile img {
       width: 100%;
       height: auto;
@@ -91,6 +92,7 @@
       border-radius: 4px;
       transition: all 0.3s ease;
     }
+    .tile.expanded video,
     .tile.expanded img {
       max-height: 90vh;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -109,8 +111,15 @@
     .tile.paused canvas {
       display: block;
     }
+    .tile.paused video,
     .tile.paused img {
       display: none;
+    }
+    .tile video {
+      background: #f5f5f5;
+    }
+    .tile video[poster] {
+      background: transparent;
     }
     .pause-button {
       position: absolute;
@@ -432,14 +441,18 @@
         Listen to the sounds from the vibrant reef shown below
       </button>
     <div id="audioPlayer" class="audio-player">
-      <audio controls>
+      <audio controls preload="none">
+        <source src="sound/optimized/newmoon_shorty.mp3" type="audio/mpeg">
         <source src="sound/newmoon_shorty.wav" type="audio/wav">
         Your browser does not support the audio element.
       </audio>
     </div>
     <div class="ae-images">
       <figure>
-        <img src="imgs/Healthy_Reef_insitu_68dFoV.png" alt="Healthy Reef" />
+        <picture>
+          <source srcset="imgs/optimized/Healthy_Reef_insitu_68dFoV.webp" type="image/webp">
+          <img src="imgs/optimized/Healthy_Reef_insitu_68dFoV.png" alt="Healthy Reef" loading="lazy" />
+        </picture>
         <figcaption>Vibrant reef (300m away from experiment site) where the AE recording was collected. </figcaption>
 
       </figure>
@@ -455,12 +468,18 @@
   <section class="camera-section">
     <div class="camera-images">
       <figure>
-        <img src="imgs/Camera_Facing_FHM.JPG" alt="Camera facing forward" />
+        <picture>
+          <source srcset="imgs/optimized/Camera_Facing_FHM.webp" type="image/webp">
+          <img src="imgs/optimized/Camera_Facing_FHM.JPG" alt="Camera facing forward" loading="lazy" />
+        </picture>
         <figcaption>Cameras were mounted on a 1.27 cm diameter threaded steel rod 33 cm away from a FHM entrance, ensuring consistent distance and coverage for each camera.</figcaption>
       
       </figure>
       <figure>
-        <img src="imgs/camera_side_profile.png" alt="Camera side profile" />
+        <picture>
+          <source srcset="imgs/optimized/camera_side_profile.webp" type="image/webp">
+          <img src="imgs/optimized/camera_side_profile.png" alt="Camera side profile" loading="lazy" />
+        </picture>
         <figcaption>Autonomous and accessible visual monitoring: ESP32-S microcontroller with the OV2640 camera and real time clock ATMEGA325P (Ecologis Consulting, Inc) module encased in a watertight clear acrylic housing with flanged endcaps.  The system is powered by two nickel metal hydride battery packs installed in a custom battery mount.  
           All components cost 255.00 USD as of January 2025, with housing accounting for approximately 75 percent of the total cost</figcaption>
       </figure>
@@ -477,25 +496,43 @@
       
       <div class="row-header">Treatment</div>
       <figure class="tile">
-        <img src="imgs/ae_gifs/August_2023_Treatment.gif" alt="August 2023 Treatment" data-gif="imgs/ae_gifs/August_2023_Treatment.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/August_2023_Treatment.mp4" data-src-webm="imgs/ae_gifs_optimized/August_2023_Treatment.webm" data-gif="imgs/ae_gifs/August_2023_Treatment.gif" aria-label="August 2023 Treatment">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
         <!-- <figcaption class="badge">Play</figcaption> -->
       </figure>
       <figure class="tile">
-        <img src="imgs/ae_gifs/T_KCW_202406.gif" alt="June 2024 Treatment" data-gif="imgs/ae_gifs/June_2024_Treatment.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/T_KCW_202406.mp4" data-src-webm="imgs/ae_gifs_optimized/T_KCW_202406.webm" data-gif="imgs/ae_gifs/T_KCW_202406.gif" aria-label="June 2024 Treatment">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
       </figure>
       <figure class="tile">
-        <img src="imgs/ae_gifs/larvae_2.gif" alt="July 2024 Treatment" data-gif="imgs/ae_gifs/July_2024_Treatment.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/larvae_2.mp4" data-src-webm="imgs/ae_gifs_optimized/larvae_2.webm" data-gif="imgs/ae_gifs/larvae_2.gif" aria-label="July 2024 Treatment">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
       </figure>
 
       <div class="row-header">Control</div>
       <figure class="tile">
-        <img src="imgs/ae_gifs/gobi_mouth_wrestle.gif" alt="August 2023 Control" data-gif="imgs/ae_gifs/August_2023_Control.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/gobi_mouth_wrestle.mp4" data-src-webm="imgs/ae_gifs_optimized/gobi_mouth_wrestle.webm" data-gif="imgs/ae_gifs/gobi_mouth_wrestle.gif" aria-label="August 2023 Control">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
       </figure>
       <figure class="tile">
-        <img src="imgs/ae_gifs/C_KC2W_202406.gif" alt="June 2024 Control" data-gif="imgs/ae_gifs/June_2024_Control.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/C_KC2W_202406.mp4" data-src-webm="imgs/ae_gifs_optimized/C_KC2W_202406.webm" data-gif="imgs/ae_gifs/C_KC2W_202406.gif" aria-label="June 2024 Control">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
       </figure>
       <figure class="tile">
-        <img src="imgs/ae_gifs/July_2024_Control.gif" alt="July 2024 Control" data-gif="imgs/ae_gifs/July_2024_Control.gif" />
+        <video loop muted playsinline preload="metadata" data-src-mp4="imgs/ae_gifs_optimized/July_2024_Control.mp4" data-src-webm="imgs/ae_gifs_optimized/July_2024_Control.webm" data-gif="imgs/ae_gifs/July_2024_Control.gif" aria-label="July 2024 Control">
+          <source type="video/mp4">
+          <source type="video/webm">
+        </video>
       </figure>
     </div>
 
@@ -507,6 +544,7 @@
   </main>
   <script>
     let expandedTile = null;
+    let loadedVideos = new Set();
     
     // Toggle audio player visibility
     function toggleAudio() {
@@ -517,13 +555,42 @@
       }
     }
     
-    // Toggle tile expansion
-    function toggleTileExpansion(tile, img) {
-      const overlay = document.getElementById('overlay');
-      const base = img.getAttribute('data-gif');
+    // Lazy load video when it enters viewport
+    function loadVideo(video) {
+      if (loadedVideos.has(video)) return;
       
-      // Always replay GIF on click
-      img.src = base.split('?')[0] + '?t=' + Date.now();
+      const sources = video.querySelectorAll('source');
+      const mp4Src = video.getAttribute('data-src-mp4');
+      const webmSrc = video.getAttribute('data-src-webm');
+      
+      if (sources.length >= 2) {
+        sources[0].src = mp4Src;
+        sources[1].src = webmSrc;
+        video.load();
+        loadedVideos.add(video);
+      }
+    }
+    
+    // Intersection Observer for lazy loading
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const video = entry.target;
+          loadVideo(video);
+          video.play().catch(() => {}); // Auto-play when visible
+        }
+      });
+    }, {
+      rootMargin: '50px' // Start loading slightly before entering viewport
+    });
+    
+    // Toggle tile expansion
+    function toggleTileExpansion(tile, video) {
+      const overlay = document.getElementById('overlay');
+      
+      // Restart video from beginning
+      video.currentTime = 0;
+      video.play().catch(() => {});
       
       if (tile.classList.contains('expanded')) {
         // Close expanded tile
@@ -534,6 +601,8 @@
         // Close any previously expanded tile
         if (expandedTile) {
           expandedTile.classList.remove('expanded');
+          const prevVideo = expandedTile.querySelector('video');
+          if (prevVideo) prevVideo.pause();
         }
         // Expand this tile
         tile.classList.add('expanded');
@@ -548,6 +617,12 @@
         expandedTile.classList.remove('expanded');
         const overlay = document.getElementById('overlay');
         overlay.classList.remove('active');
+        const video = expandedTile.querySelector('video');
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
         expandedTile = null;
       }
     }
@@ -555,39 +630,38 @@
     // Toggle pause on tile
     function togglePause(tile, e) {
       e.stopPropagation();
-      const img = tile.querySelector('img');
+      const video = tile.querySelector('video');
       const canvas = tile.querySelector('canvas');
       const pauseBtn = tile.querySelector('.pause-button');
       
       if (tile.classList.contains('paused')) {
-        // Resume - show GIF
+        // Resume - show video and play
         tile.classList.remove('paused');
         pauseBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M5 3.5v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5zm8 0v9a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h2a.5.5 0 01.5.5z"/></svg>';
-        // Replay GIF from start
-        const base = img.getAttribute('data-gif');
-        img.src = base.split('?')[0] + '?t=' + Date.now();
+        video.currentTime = 0;
+        video.play().catch(() => {});
       } else {
         // Pause - capture current frame to canvas
         tile.classList.add('paused');
         pauseBtn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M5 3.5l6 4.5-6 4.5V3.5z"/></svg>';
+        video.pause();
         
         // Draw current frame to canvas
         const ctx = canvas.getContext('2d');
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.width = video.videoWidth || video.clientWidth;
+        canvas.height = video.videoHeight || video.clientHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       }
     }
     
     // Setup tile click handlers
     document.querySelectorAll('.tile').forEach(tile => {
-      const img = tile.querySelector('img');
-      const base = img.getAttribute('data-gif');
-      img.src = base;
+      const video = tile.querySelector('video');
+      if (!video) return;
       
       // Create canvas for pausing
       const canvas = document.createElement('canvas');
-      tile.insertBefore(canvas, img.nextSibling);
+      tile.insertBefore(canvas, video.nextSibling);
       
       // Create pause button
       const pauseBtn = document.createElement('button');
@@ -597,15 +671,19 @@
       pauseBtn.onclick = (e) => togglePause(tile, e);
       tile.appendChild(pauseBtn);
       
-      img.addEventListener('click', (e) => {
+      // Click handlers for video and canvas
+      video.addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleTileExpansion(tile, img);
+        toggleTileExpansion(tile, video);
       });
       
       canvas.addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleTileExpansion(tile, img);
+        toggleTileExpansion(tile, video);
       });
+      
+      // Observe video for lazy loading
+      videoObserver.observe(video);
     });
     
     // Close on Escape key
