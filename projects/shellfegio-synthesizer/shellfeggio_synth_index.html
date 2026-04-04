@@ -51,12 +51,22 @@
     }
 
     .project-description {
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 24px;
     }
 
     .project-content {
       margin-bottom: 32px;
+    }
+    
+    .video-container {
+      margin-bottom: 32px;
+    }
+    
+    .video-container video {
+      width: 100%;
+      max-height: 600px;
+      border-radius: 8px;
     }
 
     img {
@@ -67,14 +77,15 @@
 
     .image-gallery {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 32px;
     }
 
     .image-gallery img {
       max-width: 100%;
       height: auto;
+      border-radius: 4px;
     }
     
     .image-gallery picture {
@@ -91,6 +102,25 @@
       <div class="project-year">2026</div>
     </header>
 
+    <div class="video-container">
+      <video controls preload="metadata">
+        <source src="imgs/rotated_shellfeggio.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="project-description">
+      <p>These days I trade time for money thinking about how "<a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i">good vibrations</a>" in the water column can either recruit or repel coral and fish larvae to suppport accelerated reef restoration.
+        So whilst I was in the midst of some downtime recovering post chest surgery, I picked up meditation and fell down a rabbit hole where I ended up in a meditation teacher training (with my mum no less), and was inspired and fascinated after learning about these so-called healing "Solfeggio frequencies" linked to energy centers (chakras). 
+        From there, the <a href="https://myfwc.com/research/saltwater/mollusc/bay-scallops/information/#:~:text=The%20bay%20scallop's%20upper%20shell,live%20up%20to%20two%20years.">Bay Scallop</a> shells I'd collected (over years of scallopping in the GoM) suddenly became the perfect "piano keys" for a digital synthesizer....
+        As a vocalist and <a href="https://en.wikipedia.org/wiki/Synesthesia">synesthetic</a>, acoustics literally change my mind. So I wanted to make something playful yet powerful for acoustic self-enrichment (which can also incorperate another human) using a 16 input MIDI controller <a href="https://shop.playtronica.com/products/playtron?srsltid=AfmBOorFIsdOihrVJUvO7M-n7JjlktFS_SgJgamrvwq7wtrATeQoq0fw">Playtron</a> (mercii Playtronica) reminding us how grounding a return to the 
+        ocean's within ourselves can be explored with a bit of listening...</p>
+     
+      <p>sooo voilà, the Shellfeggio Synth!</p>
+      
+      <p>This v0 prototype video uses an iPhone 14 with USB-C to MIDI controller, running GarageBand for now. Stay tuned for a vibe coded custom MIDI keyboard app for precise Solfeggio frequency calibration (396 Hz, 417 Hz, etc.) since it doesn't seem to exist yet. Live coding is another avenue I hope to explore with this, but that's for later.</p>
+    </div>
+
     <div class="image-gallery">
       <picture>
         <source srcset="imgs/optimized/angled_side_main_sunset.webp" type="image/webp">
@@ -100,25 +130,24 @@
         <source srcset="imgs/optimized/IMG_2724.webp" type="image/webp">
         <img src="imgs/optimized/IMG_2724.png" alt="Additional view of Shellfegio Synthesizer" loading="lazy">
       </picture>
-    </div>
-    <div class="project-description">
-      <p>These days I trade time for money thinking about how "<a href="https://pubs.aip.org/asa/poma/article/52/1/010001/3284502/A-demonstration-of-acoustic-enrichment-in-Hawai-i">good vibrations</a>" in the water column can either recruit or repel coral and fish larvae to suppport accelerated reef restoration.
-        So whilst I was in the midst of some downtime recovering post chest surgery, I picked up meditation and fell down a rabbit hole where I ended up in a meditation teacher training (with my mum no less), and was inspired and fascinated after learning about these so-called healing "Solfeggio frequencies" linked to energy centers (chakras). 
-        From there, the <a href="https://myfwc.com/research/saltwater/mollusc/bay-scallops/information/#:~:text=The%20bay%20scallop's%20upper%20shell,live%20up%20to%20two%20years.">Bay Scallop</a> shells I'd collected (over years of scallopping in the GoM) suddenly became the perfect "piano keys" for a digital synthesizer....
-        As a vocalist and <a href="https://en.wikipedia.org/wiki/Synesthesia">synesthetic</a>, acoustics literally change my mind. So I wanted to make something playful yet powerful for acoustic self-enrichment (which can also incorperate another human) using a 16 input MIDI controller <a href="https://shop.playtronica.com/products/playtron?srsltid=AfmBOorFIsdOihrVJUvO7M-n7JjlktFS_SgJgamrvwq7wtrATeQoq0fw">Playtron</a> (mercii Playtronica) reminding us how grounding a return to the 
-        ocean's within ourselves can be explored with a bit of listening...</p>
-     
-      <p>sooo voilà, the Shellfeggio Synth!</p>
-<div class="project-content">
-      <video controls preload="metadata" style="max-width: 100%; height: auto;">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-    
-      <p>This v0 prototype video uses an iPhone 14 with USB-C to MIDI controller, running GarageBand for now. Stay tuned for a vibe coded custom MIDI keyboard app for precise Solfeggio frequency calibration (396 Hz, 417 Hz, etc.) since it doesn't seem to exist yet. Live coding is another avenue I hope to explore with this, but that's for later.</p>
+      <picture>
+        <source srcset="imgs/optimized/IMG_2726.webp" type="image/webp">
+        <img src="imgs/optimized/IMG_2726.png" alt="Shellfegio Synthesizer detail" loading="lazy">
+      </picture>
+      <picture>
+        <source srcset="imgs/optimized/main_front.webp" type="image/webp">
+        <img src="imgs/optimized/main_front.png" alt="Front view of Shellfegio Synthesizer" loading="lazy">
+      </picture>
+      <picture>
+        <source srcset="imgs/optimized/nadir_top_kelp.webp" type="image/webp">
+        <img src="imgs/optimized/nadir_top_kelp.png" alt="Top view with kelp background" loading="lazy">
+      </picture>
+      <picture>
+        <source srcset="imgs/optimized/side_main.webp" type="image/webp">
+        <img src="imgs/optimized/side_main.png" alt="Side view of Shellfegio Synthesizer" loading="lazy">
+      </picture>
     </div>
 
-    
   </div>
 </body>
 </html>
