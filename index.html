@@ -325,7 +325,7 @@
           <!-- Project 5 -->
           <div class="project">
             <a class="project-circle" href="javascript:void(0)" data-url="docs/SEAMAPD21.pdf" data-title="Download 'SEAMAPD21: a large-scale reef fish dataset for fine-grained categorization'" data-download="true" aria-label="SEAMAPD21">
-              <video class="circle-thumb" autoplay loop muted playsinline>
+              <video class="circle-thumb" autoplay loop muted playsinline width="1920" height="1088">
                 <source src="project_imgs/trim_seamapd21_demo.mp4" type="video/mp4">
               </video>
               <span class="label">2021</span>
@@ -396,13 +396,13 @@
         </div>
       </main>
 <script>
-// Force autoplay for the Detect All The Fish project video bubble
+// Force autoplay for all project video bubbles
 document.addEventListener('DOMContentLoaded', function() {
-  var video = document.querySelector('.project-circle video.circle-thumb');
-  if (video) {
+  var videos = document.querySelectorAll('.project-circle video.circle-thumb');
+  videos.forEach(function(video) {
     video.muted = true;
     video.play().catch(function(){});
-  }
+  });
 });
 </script>
 
