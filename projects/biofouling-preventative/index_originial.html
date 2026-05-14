@@ -125,13 +125,19 @@
     <a href="../../index.html" class="back-link">← Back to Portfolio</a>
     
     <div class="project-header">
-      <h1 class="project-title">A deep dive into collaborative prototyping with the Scripps Sandbox Makerspace</h1>
+      <h1 class="project-title">No wiper? No problem. We've you coated. Plus, a deep dive into collaborative prototyping with the Scripps Sandbox Makerspace</h1>
       <div class="project-year">2025 - 2026: Ongoing Experiment Under the SIO Pier</div>
       <p class="project-description">
         Scroll down to learn how a cross-colLaborative effort between the Thode Environmental Acoustic Lab, Coral Reef Ecophysiology and Engineering Lab and Scripps Makerspace Sandbox is keeping long term underwater cameras free of biofouling using simple, organic and nontoxic ingredients.
       </p>
     </div>
     
+    <figure>
+      <img src="imgs/noSLIP_SLIP.jpeg" alt="Comparison of camera glass flange without SLIP (left) and with SLIP (right) after one month deployment" class="project-image">
+      <figcaption>
+        After existing for over a month underneath the SIO pier observing fish larvae, our experiment demonstrated that glass flanges with SLIPs (Slippery Liquid-Infused Porous Surfaces) can drastically reduce biofouling whilst requiring no extra energy expenditure (e.g. as mechanical wiper blades do) and remaining fully non-toxic to the environment. Left (no SLIP coating) and right (with SLIP coating).
+      </figcaption>
+    </figure>
     
     <div class="project-content">
       <h2>Experiment Overview</h2>
@@ -149,7 +155,7 @@
       <h2>The Challenge</h2>
             <h3>Designing A Custom Glass Flange with the SIO Makerspace</h3>
       <p>
-        Turns out glass flanges are tricky to come by due to their fragility relative to the acrylic flange alternative. Since we are interested in using these flanges for coastal applications < 100m deep, we set out to design and microfabricate a glass flange for the <a href="https://bluerobotics.com/store/watertight-enclosures/wte-vp/" target="_blank" rel="noopener">2" BR underwater housings</a> that keep our ESP32 camera modules safe and dry (or so we hoped...) </p>
+        Turns out glass flanges are tricky to come by (which is required by the SLIPS coating for proper adhering) due to their fragility relative to the acrylic flange alternative. Since we are interested in using these flanges for coastal applications < 100m deep, we set out to design and microfabricate a glass flange for the <a href="https://bluerobotics.com/store/watertight-enclosures/wte-vp/" target="_blank" rel="noopener">2" BR underwater housings</a> that keep our ESP32 camera modules safe and dry (or so we hoped...) </p>
             <figure>
         <img src="imgs/preExp_noSLIP_SLIP.jpeg" alt="Autonomous long term cameras with acrylic caps" class="project-image">
         <figcaption>
@@ -198,6 +204,38 @@
       </div>
       <p>Despite the wonkiness on some (not all, fortunately) of the custom cuts, we got the glass pieces prepped, coated, and depth tested in the ~27' Keck Pool. Following that test, we deployed off the pier on Febuary 25, 2025 and said a little protection blessing for our cameras admist the harsh winter conditions and surging tides typically experienced under the pier in winter months.</p>
   
+      <h2>Results</h2>
+      <p>
+        After a month of deployment, we observed promising results. 
+        The SLIPS-coated glass flange showed significantly less biofouling compared to the uncoated acrylic flange, which was heavily covered in algae and barnacles. The SLIPS-coated surface remained clear (Treatment figure below shows preliminary results taken in-air), providing results that suggest SLIPs can be an effective, 
+        non-toxic solution for preventing biofouling on long-term underwater cameras, potentially extending their operational lifespan and improving visual data quality for marine research. Unfortunately, a fastening screw came loose during deployment, leading to flooding of the treatment camera housing and subsequent loss of the visual data taken from the camera's perspective. For the next iteration of the experiment, we have ordered custom cuts (Peninsula Glass) and are using a more secure fastening mechanism with O-ring washers to ensure the integrity of the glass flange on the housing during data collection in winter 2026...
+
+      </p>
+            <img src="imgs/results_v0.png" alt="Results of the biofouling experiment" class="project-image">
+            <img src="imgs/comparing_in_air_v0.png" alt="Results of the biofouling experiment" class="project-image">
+<figcaption>In-air visual image taken through the SLIPS-coated glass flange after a month long deployment under the SIO pier.</figcaption>
+
+      <h2>Current Experiment</h2>
+      <h3>Rethinking the glass flange</h3>
+      <p>After seeing the potential behind this glass coatede underwater housings from a physical perspective, we were able to rebudget and purchase manufactured custom glass flanges for the next iteration of the experiment. In terms of cost, the manufactured glass flange's were $90 USD more than the WAZERjet cuts, given a batch of 15 flanges created at one time. </p>
+
+      <h3>Redeployment Under the Pier</h3>
+      <figure>
+        <img src="imgs/camera_layout_v1.jpg" alt="Current layout of the v1 experiment" class="project-image">
+        <figcaption>
+          Current layout of the v1 experiment leveraging a more robust flange design and experimental redundancy in the case of potential flooding.
+        </figcaption>
+      </figure>
+      <p>This experiemnt is currently underway and we'd love if you want to follow along with the results! We redployed under the pier in January 2026 with a redesigned glass flange and a more robust fastening mechanism to ensure the integrity of the camera housing and data collection. Stay tuned for updates on how the experiment is going and whether our SLIPS coating continues to keep our cameras clear of biofouling.
+      </p>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <h3>Follow the Experiment</h3>
+        <p>Check out TEAL Master's Student and lead diver Corinne Pickering's reel showing the latest deployment:</p>
+        <a href="https://www.instagram.com/reel/DURuWWliRPl/?igsh=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener" style="display: inline-block; padding: 12px 24px; background: var(--accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
+          View Instagram Reel
+        </a>
+      </div>
       
     </div>
   </div>
