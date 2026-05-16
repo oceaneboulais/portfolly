@@ -268,6 +268,14 @@
       <!-- Left: projects -->
       <main class="main" aria-label="Featured projects">
         <div class="circle-grid">
+            <!-- Project: AI Empowered Research Curriculum (2026) -->
+            <div class="project">
+              <a class="project-circle" href="javascript:void(0)" data-url="projects/ai-4-researchers-kelpstyle-lecture/AI_Enabled_Research_OEB_05082026.html" data-title="AI Empowered Research Curriculum" data-protected="true" aria-label="AI Empowered Research Curriculum">
+                <span class="label">2026</span>
+                <span class="name">AI Empowered Research Curriculum</span>
+              </a>
+              <div class="caption">AI Empowered Research Curriculum — A PhD Student's Perspective on AI-Enabled Ocean Science</div>
+            </div>
             <!-- Project: Detect All The Fish (2026) -->
             <div class="project">
               <a class="project-circle" href="javascript:void(0)" data-url="projects/detect-all-the-fish/index.html" data-title="Detect All The Fish Project" aria-label="Detect All The Fish">
@@ -443,6 +451,25 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 
+  <!-- Password gate modal -->
+  <div class="modal-backdrop" id="pwModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 id="pwModalTitle" style="margin:0;font-family:monospace;">🦦 enter password</h3>
+        <button class="close-btn" id="pwModalClose" aria-label="Close">×</button>
+      </div>
+      <div style="padding:8px 0 4px;">
+        <input id="pwInput" type="password" placeholder="password" autocomplete="off"
+               style="width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,0.15);border-radius:8px;font-family:monospace;font-size:15px;box-sizing:border-box;outline:none;">
+        <p id="pwError" style="color:#c0392b;font-size:13px;margin:8px 0 0;display:none;">incorrect password — try again</p>
+        <button id="pwSubmit"
+                style="margin-top:12px;width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;font-family:monospace;font-size:14px;cursor:pointer;color:#fff;">
+          dive in →
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Reusable modal for embedded project site -->
   <div class="modal-backdrop" id="siteModal" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="siteModalTitle">
@@ -513,6 +540,67 @@ document.addEventListener('DOMContentLoaded', function() {
     const siteClose = document.getElementById('siteModalClose');
     let lastTrigger = null;
 
+    // Password gate
+    const pwModal   = document.getElementById('pwModal');
+    const pwInput   = document.getElementById('pwInput');
+    const pwSubmit  = document.getElementById('pwSubmit');
+    const pwClose   = document.getElementById('pwModalClose');
+    const pwError   = document.getElementById('pwError');
+    let pendingProtectedTrigger = null;
+
+    function openSiteModal(trigger) {
+      const url = trigger.getAttribute('data-url');
+      siteFrame.src = url;
+      const customTitle = trigger.getAttribute('data-title');
+      const isDownload = trigger.getAttribute('data-download') === 'true';
+      const siteModalTitle = document.getElementById('siteModalTitle');
+      if (customTitle) {
+        const downloadAttr = isDownload ? ' download' : '';
+        siteModalTitle.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener"' + downloadAttr + ' style="color: inherit; text-decoration: underline;">' + customTitle + '</a>';
+      } else {
+        siteModalTitle.textContent = 'Project preview';
+      }
+      siteModal.style.display = 'flex';
+      siteModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      siteClose.focus();
+    }
+
+    function openPwModal(trigger) {
+      pendingProtectedTrigger = trigger;
+      pwInput.value = '';
+      pwError.style.display = 'none';
+      pwModal.style.display = 'flex';
+      pwModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      pwInput.focus();
+    }
+
+    function closePwModal() {
+      pwModal.style.display = 'none';
+      pwModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      if (pendingProtectedTrigger) { pendingProtectedTrigger.focus(); }
+      pendingProtectedTrigger = null;
+    }
+
+    function attemptUnlock() {
+      if (pwInput.value === 'otterlicious') {
+        const trigger = pendingProtectedTrigger;
+        closePwModal();
+        lastTrigger = trigger;
+        openSiteModal(trigger);
+      } else {
+        pwError.style.display = 'block';
+        pwInput.select();
+      }
+    }
+
+    pwSubmit.addEventListener('click', attemptUnlock);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptUnlock(); });
+    pwClose.addEventListener('click', closePwModal);
+    pwModal.addEventListener('click', (e) => { if (e.target === pwModal) closePwModal(); });
+
     document.addEventListener('click', (e) => {
       const trigger = e.target.closest('.project-circle');
       if (!trigger) return;
@@ -521,6 +609,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!url) return;
 
       e.preventDefault();
+
+      if (trigger.getAttribute('data-protected') === 'true') {
+        openPwModal(trigger);
+        return;
+      }
+
       lastTrigger = trigger;
 
       // Set iframe src (external sites may block framing)
@@ -561,6 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (e) => {
       // Close either modal on Escape
       if (e.key === 'Escape') {
+        if (pwModal.style.display === 'flex') closePwModal();
         if (siteModal.style.display === 'flex') closeSiteModal();
         if (introModal.style.display === 'flex') {
           introModal.style.display = 'none';

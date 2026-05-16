@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="slides-format" content="viewport">
+ <title>AI-Enabled Research: A PhD Student's Perspective</title>
+
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300..700&display=swap" rel="stylesheet">
+
+ <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+ <style type="text/tailwindcss">
+ @theme {
+ --color-bg: #041a1f;
+ --color-bg-deep: #021015;
+ --color-surface: #072830;
+ --color-text: #e8f5f0;
+ --color-text-secondary: #a8d4c4;
+ --color-text-muted: #6aabA0;
+ --color-accent-1: #2dd4bf;
+ --color-accent-2: #86efac;
+ --color-accent-3: #fbbf24;
+ --color-glass-bg: rgba(255,255,255,0.05);
+ --color-glass-border: rgba(45,212,191,0.15);
+ --color-vignette: rgba(2,16,21,0.6);
+ --font-display: 'Instrument Serif', Georgia, serif;
+ --font-body: 'DM Sans', system-ui, sans-serif;
+ }
+ </style>
+
+ <style>
+ :root {
+ --color-bg: #041a1f;
+ --color-text: #e8f5f0;
+ --glow-color-rgb: 45,212,191;
+ }
+ *, *::before, *::after { box-sizing: border-box; }
+ html, body { background: var(--color-bg); margin: 0; }
+ body { font-family: 'DM Sans', system-ui, sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+
+ .deck { width: 100vw; height: 100vh; position: relative; }
+ .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; overflow: hidden; }
+ .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+ .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1.5rem, 4vw, 4rem); }
+
+ .nav-controls { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 100; background: rgba(4,26,31,0.8); backdrop-filter: blur(12px); padding: 8px 20px; border-radius: 40px; border: 1px solid rgba(45,212,191,0.2); }
+ .nav-btn { width: 38px; height: 38px; border: none; background: rgba(45,212,191,0.08); color: #2dd4bf; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+ .nav-btn:hover { background: rgba(45,212,191,0.2); }
+ .slide-dots { display: flex; gap: 6px; }
+ .slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(45,212,191,0.2); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+ .slide-dots .dot.active { background: #2dd4bf; transform: scale(1.3); }
+ .slide-counter { font-size: 0.75rem; color: #6aabaA; min-width: 36px; text-align: center; font-family: 'DM Sans', sans-serif; }
+
+ .reveal { opacity: 0; transform: translateY(20px); }
+
+ /* Glow effects */
+ .text-glow { text-shadow: 0 0 20px rgba(45,212,191,0.5), 0 0 40px rgba(45,212,191,0.2); }
+ .stat-glow { text-shadow: 0 0 30px rgba(45,212,191,0.6), 0 0 60px rgba(45,212,191,0.25); }
+ @keyframes glow-pulse {
+ 0%, 100% { text-shadow: 0 0 20px rgba(45,212,191,0.5), 0 0 40px rgba(45,212,191,0.2); }
+ 50% { text-shadow: 0 0 30px rgba(45,212,191,0.9), 0 0 60px rgba(45,212,191,0.4); }
+ }
+ .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+ /* Gradient mesh */
+ @keyframes float-slow {
+ 0% { transform: translate(0,0) scale(1); }
+ 25% { transform: translate(50px,-40px) scale(1.1); }
+ 50% { transform: translate(-30px,35px) scale(0.92); }
+ 75% { transform: translate(40px,15px) scale(1.07); }
+ 100% { transform: translate(0,0) scale(1); }
+ }
+ @keyframes float-drift {
+ 0% { transform: translate(0,0) scale(1) rotate(0deg); }
+ 33% { transform: translate(-40px,-50px) scale(1.12) rotate(3deg); }
+ 66% { transform: translate(35px,25px) scale(0.9) rotate(-2deg); }
+ 100% { transform: translate(0,0) scale(1) rotate(0deg); }
+ }
+ @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+ @keyframes breathe {
+ 0%, 100% { opacity: 0.25; transform: scale(1); }
+ 50% { opacity: 0.5; transform: scale(1.04); }
+ }
+
+ .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+ .blob { position: absolute; border-radius: 50%; filter: blur(80px); animation: float-slow 12s ease-in-out infinite; }
+ .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+ .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+ .blob:nth-child(4) { animation: float-drift 14s ease-in-out infinite reverse; }
+
+ .slide::before {
+ content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+ background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+ background-repeat: repeat; background-size: 256px 256px; opacity: 0.03; mix-blend-mode: overlay;
+ }
+ .slide::after {
+ content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+ background: radial-gradient(ellipse at center, transparent 50%, var(--color-vignette) 100%);
+ }
+
+ /* Kelp forest deco elements */
+ @keyframes kelp-sway {
+ 0%, 100% { transform: rotate(-4deg) scaleY(1); }
+ 50% { transform: rotate(4deg) scaleY(1.03); }
+ }
+ @keyframes bubble-rise {
+ 0% { transform: translateY(0) scale(1); opacity: 0.6; }
+ 100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
+ }
+ .kelp-strand { position: absolute; bottom: 0; width: 6px; border-radius: 3px; background: linear-gradient(to top, #065f46, #10b981, #6ee7b7); transform-origin: bottom center; animation: kelp-sway 4s ease-in-out infinite; opacity: 0.15; }
+ .bubble { position: absolute; border-radius: 50%; border: 1px solid rgba(45,212,191,0.3); animation: bubble-rise 6s ease-in-out infinite; }
+
+ /* Shimmer for key headings */
+ @keyframes shimmer {
+ 0% { background-position: -200% 0; }
+ 100% { background-position: 200% 0; }
+ }
+ .shimmer-text {
+ background: linear-gradient(90deg, #2dd4bf 0%, #86efac 40%, #fbbf24 60%, #2dd4bf 100%);
+ background-size: 200% auto;
+ -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+ background-clip: text;
+ animation: shimmer 5s linear infinite;
+ }
+
+ /* Bar fills */
+ .bar-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 0.7s ease; }
+ .bar-track { background: rgba(45,212,191,0.1); border-radius: 4px; overflow: hidden; }
+
+ /* Otter narrative badge */
+ .otter-badge {
+ display: inline-flex; align-items: center; gap: 8px;
+ background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.2);
+ border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: #2dd4bf;
+ font-family: 'DM Sans', sans-serif; letter-spacing: 0.06em; text-transform: uppercase;
+ }
+
+ /* Card hover */
+ .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+ .card-hover:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(45,212,191,0.15); }
+
+ /* Noise + depth */
+ @media (prefers-reduced-motion: reduce) {
+ *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+ }
+ </style>
+</head>
+<body>
+
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+
+<div class="deck">
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 1: TITLE — The Otter Finds Its Rock
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide active" data-slide="1">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:500px;height:500px;top:-80px;right:-100px;background:#2dd4bf;opacity:0.12;"></div>
+ <div class="blob" style="width:350px;height:350px;bottom:-60px;left:-80px;background:#065f46;opacity:0.18;"></div>
+ <div class="blob" style="width:250px;height:250px;top:40%;left:10%;background:#86efac;opacity:0.08;"></div>
+ <div class="blob" style="width:180px;height:180px;top:20%;right:20%;background:#fbbf24;opacity:0.06;"></div>
+ </div>
+ <!-- Kelp strands -->
+ <div class="kelp-strand" style="left:5%;height:180px;animation-delay:0s;animation-duration:3.5s;"></div>
+ <div class="kelp-strand" style="left:8%;height:140px;animation-delay:0.8s;width:5px;"></div>
+ <div class="kelp-strand" style="right:6%;height:200px;animation-delay:1.2s;animation-duration:4.2s;"></div>
+ <div class="kelp-strand" style="right:10%;height:160px;animation-delay:0.4s;"></div>
+ <div class="kelp-strand" style="left:50%;height:120px;animation-delay:2s;animation-duration:3.8s;opacity:0.08;"></div>
+ <div class="bubble" style="width:10px;height:10px;bottom:30%;left:15%;animation-delay:1s;animation-duration:5s;"></div>
+ <div class="bubble" style="width:7px;height:7px;bottom:20%;right:20%;animation-delay:3s;animation-duration:7s;"></div>
+ <div class="bubble" style="width:5px;height:5px;bottom:40%;left:40%;animation-delay:2s;animation-duration:6s;"></div>
+ <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content text-center">
+ <div class="reveal" style="margin-bottom:1rem;">
+ <span class="otter-badge">🦦 A PhD Student's Field Notes</span>
+ </div>
+ <div class="text-[clamp(5rem,12vw,9rem)] mb-2 animate-[float_3s_ease-in-out_infinite] reveal" style="line-height:1;">🦦</div>
+ <h1 class="font-display text-[clamp(2.4rem,5.5vw,4.5rem)] font-black tracking-tight mb-4 reveal shimmer-text">AI-Enabled Research</h1>
+ <p class="text-[clamp(1rem,1.8vw,1.5rem)] font-light text-text-secondary tracking-[4px] uppercase mb-2 reveal">From Student to AI Powered Otter-ator</p>
+ <p class="text-[clamp(0.8rem,1.2vw,1rem)] text-text-muted tracking-wider reveal" style="margin-top:0.5rem;">
+ <em>"The otter that uses a rock is not smarter — it's more resourceful."</em>
+ </p>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 2: AGENDA — The Kelp Forest Map
+ ═══════════════════════════════════════════════════════ -->
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 2: ABOUT THE PRESENTER
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="2">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:420px;height:420px;top:-80px;right:-80px;background:#2dd4bf;opacity:0.1;"></div>
+ <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#065f46;opacity:0.08;"></div>
+ <div class="blob" style="width:180px;height:180px;top:45%;left:20%;background:#0d9488;opacity:0.06;"></div>
+ </div>
+ <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="kelp-strand" style="right:2%;height:200px;animation-delay:1s;opacity:0.15;"></div>
+ <div class="content">
+ <!-- Header row -->
+ <div class="reveal mb-3" style="display:flex;align-items:center;gap:0.6rem;">
+ <span class="otter-badge">🦦 Your Guide Today</span>
+ </div>
+
+ <!-- Split layout: left bio | right ML work -->
+ <div style="display:grid;grid-template-columns:1fr 1.55fr;gap:1.6rem;align-items:start;">
+
+ <!-- Left: Who I am -->
+ <div>
+ <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.6rem)] font-bold reveal" style="background:linear-gradient(135deg,#2dd4bf,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15;margin-bottom:0.3rem;">Océane<br>Boulais</h2>
+ <p class="reveal" style="color:#2dd4bf;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.8rem;">PhD Candidate · Scripps Institution of Oceanography, UCSD</p>
+
+ <div class="reveal" style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.9rem 1rem;margin-bottom:0.75rem;">
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.65;margin:0;">
+ I work at the intersection of <strong style="color:#e8f5f0;">marine bioacoustics</strong>, <strong style="color:#e8f5f0;">computer vision</strong>, and <strong style="color:#e8f5f0;">self-supervised learning</strong> — building ML tools to listen to and watch coral reef &amp; kelp ecosystems and accelerate their restoration via acoustic enrichment.
+ </p>
+ </div>
+
+ <!-- Journey pills -->
+ <div class="reveal" style="display:flex;flex-direction:column;gap:0.4rem;">
+ <div style="display:flex;align-items:center;gap:0.6rem;">
+ <div style="width:8px;height:8px;border-radius:50%;background:#2dd4bf;flex-shrink:0;"></div>
+ <span style="color:#a8d4c4;font-size:0.78rem;"><strong style="color:#e8f5f0;">Thode Environmental Acoustics Lab</strong> — Scripps SIO / UCSD</span>
+ </div>
+ <div style="display:flex;align-items:center;gap:0.6rem;">
+ <div style="width:8px;height:8px;border-radius:50%;background:#86efac;flex-shrink:0;"></div>
+ <span style="color:#a8d4c4;font-size:0.78rem;"><strong style="color:#e8f5f0;">MIT Media Lab</strong> — Responsive Environments Group (prev.)</span>
+ </div>
+ <div style="display:flex;align-items:center;gap:0.6rem;">
+ <div style="width:8px;height:8px;border-radius:50%;background:#fbbf24;flex-shrink:0;"></div>
+ <span style="color:#a8d4c4;font-size:0.78rem;"><strong style="color:#e8f5f0;">NOAA Southeast Fisheries Science Center</strong> — Research Engineer (prev.)</span>
+ </div>
+ <div style="display:flex;align-items:center;gap:0.6rem;">
+ <div style="width:8px;height:8px;border-radius:50%;background:#c084fc;flex-shrink:0;"></div>
+ <span style="color:#a8d4c4;font-size:0.78rem;"><strong style="color:#e8f5f0;"></strong> Google Scholar</span>
+ </div>
+ </div>
+ </div>
+
+ <!-- Right: ML work cards -->
+ <div class="reveal">
+ <p style="color:#6aabaA;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.09em;font-weight:700;margin-bottom:0.6rem;">Where I've Applied ML to Ocean Science</p>
+ <div style="display:flex;flex-direction:column;gap:0.5rem;">
+
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.18);border-radius:9px;padding:0.6rem 0.9rem;display:flex;align-items:flex-start;gap:0.7rem;">
+ <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">🌊</span>
+ <div>
+ <div style="color:#e8f5f0;font-size:0.8rem;font-weight:700;">FathomNet <span style="color:#6aabaA;font-weight:400;font-size:0.72rem;">— Sci. Reports 2022</span></div>
+ <div style="color:#a8d4c4;font-size:0.74rem;line-height:1.5;">Open-source image DB with <strong style="color:#2dd4bf;">6.8M annotations</strong> enabling CV &amp; object-detection models for underwater species across 233 classes — trained on 26,000+ hrs of ROV footage</div>
+ </div>
+ </div>
+
+ <div style="background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.18);border-radius:9px;padding:0.6rem 0.9rem;display:flex;align-items:flex-start;gap:0.7rem;">
+ <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">🐟</span>
+ <div>
+ <div style="color:#e8f5f0;font-size:0.8rem;font-weight:700;">SeaMapD21 <span style="color:#6aabaA;font-weight:400;font-size:0.72rem;">— FGVC8/CVPR 2021</span></div>
+ <div style="color:#a8d4c4;font-size:0.74rem;line-height:1.5;">Large-scale <strong style="color:#86efac;">fine-grained reef fish dataset</strong> for species recognition; deep learning pipeline with NOAA Gulf of Mexico survey data (~140 species)</div>
+ </div>
+ </div>
+
+ <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.18);border-radius:9px;padding:0.6rem 0.9rem;display:flex;align-items:flex-start;gap:0.7rem;">
+ <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">🎵</span>
+ <div>
+ <div style="color:#e8f5f0;font-size:0.8rem;font-weight:700;">Reef Bioacoustics + SSL <span style="color:#6aabaA;font-weight:400;font-size:0.72rem;">— Scripps / in progress</span></div>
+ <div style="color:#a8d4c4;font-size:0.74rem;line-height:1.5;"><strong style="color:#fbbf24;">Self-supervised &amp; reinforcement learning</strong> on underwater ambient sound to detect ecosystem health and guide acoustic enrichment-based restoration (Kāneʻohe Bay, Hawaiʻi)</div>
+ </div>
+ </div>
+
+ <div style="background:rgba(192,132,252,0.05);border:1px solid rgba(192,132,252,0.18);border-radius:9px;padding:0.6rem 0.9rem;display:flex;align-items:flex-start;gap:0.7rem;">
+ <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">🌀</span>
+ <div>
+ <div style="color:#e8f5f0;font-size:0.8rem;font-weight:700;">Physics-informed GANs <span style="color:#6aabaA;font-weight:400;font-size:0.72rem;">— MIT / IEEE TGRS 2024</span></div>
+ <div style="color:#a8d4c4;font-size:0.74rem;line-height:1.5;">Generative models constrained by physical equations to <strong style="color:#c084fc;">visualize coastal flooding</strong> from satellite imagery — co-authored at MIT with IBM Research</div>
+ </div>
+ </div>
+
+ </div>
+ </div>
+ </div>
+
+ <!-- Footer links -->
+ <div class="reveal" style="margin-top:0.8rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+ <a href="https://www.oceaneboulais.net" target="_blank" style="color:#2dd4bf;font-size:0.75rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;">🌐 oceaneboulais.net</a>
+ <a href="https://github.com/oceaneboulais" target="_blank" style="color:#86efac;font-size:0.75rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+ github.com/oceaneboulais
+ </a>
+ <a href="https://scholar.google.com/citations?user=iuuU0fwAAAAJ" target="_blank" style="color:#a8d4c4;font-size:0.75rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;">📚 Google Scholar</a>
+ <span style="color:#6aabaA;font-size:0.75rem;">oboulais@ucsd.edu</span>
+ </div>
+ </div>
+ </div>
+
+<div class="slide" data-slide="3">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:400px;height:400px;top:-60px;right:-60px;background:#065f46;opacity:0.15;"></div>
+ <div class="blob" style="width:250px;height:250px;bottom:-50px;left:-40px;background:#2dd4bf;opacity:0.08;"></div>
+ </div>
+ <div class="kelp-strand" style="right:4%;height:160px;animation-delay:0.5s;"></div>
+ <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content">
+ <div class="reveal mb-1"><span class="otter-badge">🗺️ Today's Dive Plan</span></div>
+ <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal" style="color:#2dd4bf;">Our Journey Through the Kelp Forest</h2>
+ <div class="grid grid-cols-2 gap-4 reveal">
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.4rem;">🌊</div>
+ <div style="font-weight:600;color:#2dd4bf;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">The Ecosystem</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Why AI has transformed the research landscape for PhD students</div>
+ </div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.4rem;">🪨</div>
+ <div style="font-weight:600;color:#86efac;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">The Toolkit</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Core AI tools the otter reaches for — literature, coding, analysis</div>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.4rem;">🧠</div>
+ <div style="font-weight:600;color:#fbbf24;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Deep Foraging</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Advanced AI for hyper-technical research: code, models, experiments</div>
+ </div>
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.4rem;">⚖️</div>
+ <div style="font-weight:600;color:#2dd4bf;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">The Balance</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Ethics, integrity, and staying the true scientist beneath the fur</div>
+ </div>
+ </div>
+ <p class="reveal" style="margin-top:1rem;font-size:0.85rem;color:#6aabaA;text-align:center;font-style:italic;">~45–60 min discussion · Bring your rocks</p>
+ </div>
+ </div>
+
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 3: TOOLS YOU'LL NEED
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="4">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-30px;background:#065f46;opacity:0.1;"></div>
+ </div>
+ <div class="kelp-strand" style="left:4%;height:160px;animation-delay:0.5s;"></div>
+ <div class="content">
+ <div class="reveal mb-1"><span class="otter-badge">🛠️ Before We Dive In</span></div>
+ <h2 class="font-display text-[clamp(1.4rem,3vw,2.1rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Tools You'll Need Access To</h2>
+ <p class="reveal" style="color:#a8d4c4;font-size:0.82rem;margin-bottom:0.7rem;">Most are <strong style="color:#2dd4bf;">free</strong>. Set these up before the hands-on sessions — you won't need to learn them yet.</p>
+
+ <!-- 3-col tools grid -->
+ <div class="grid grid-cols-3 gap-3 reveal" style="font-size:0.78rem;">
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.2);border-radius:10px;padding:0.8rem;">
+ <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
+ <div style="background:#86efac;color:#041a1f;border-radius:4px;padding:1px 6px;font-size:0.65rem;font-weight:800;text-transform:uppercase;">FREE</div>
+ <span style="color:#86efac;font-weight:700;">No card needed</span>
+ </div>
+ <ul style="color:#a8d4c4;line-height:1.75;list-style:none;padding:0;margin:0;">
+ <li>🔵 <strong style="color:#e8f5f0;">ChatGPT</strong> — chatgpt.com</li>
+ <li>📓 <strong style="color:#e8f5f0;">NotebookLM</strong> — Google account</li>
+ <li>🔬 <strong style="color:#e8f5f0;">Elicit</strong> — elicit.com</li>
+ <li>🐇 <strong style="color:#e8f5f0;">Research Rabbit</strong> — always free</li>
+ <li>📊 <strong style="color:#e8f5f0;">Consensus AI</strong> — free tier</li>
+ <li>⭐ <strong style="color:#e8f5f0;">Semantic Scholar</strong> — always free</li>
+ </ul>
+ </div>
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:10px;padding:0.8rem;">
+ <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
+ <div style="background:#2dd4bf;color:#041a1f;border-radius:4px;padding:1px 6px;font-size:0.65rem;font-weight:800;text-transform:uppercase;">FREE+</div>
+ <span style="color:#2dd4bf;font-weight:700;">Free signup / .edu email</span>
+ </div>
+ <ul style="color:#a8d4c4;line-height:1.75;list-style:none;padding:0;margin:0;">
+ <li>🟣 <strong style="color:#e8f5f0;">Claude</strong> — claude.ai</li>
+ <li>⚡ <strong style="color:#e8f5f0;">Perplexity</strong> — free tier</li>
+ <li>🐙 <strong style="color:#e8f5f0;">GitHub Copilot</strong> — free for students</li>
+ <li>📝 <strong style="color:#e8f5f0;">Paperpal</strong> — free plan</li>
+ <li>🔍 <strong style="color:#e8f5f0;">Scite AI</strong> — limited free</li>
+ <li>🌐 <strong style="color:#e8f5f0;">Google Colab</strong> — Google account</li>
+ </ul>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:0.8rem;">
+ <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
+ <div style="background:#fbbf24;color:#041a1f;border-radius:4px;padding:1px 6px;font-size:0.65rem;font-weight:800;text-transform:uppercase;">DEMO</div>
+ <span style="color:#fbbf24;font-weight:700;">Instructor-provided</span>
+ </div>
+ <ul style="color:#a8d4c4;line-height:1.75;list-style:none;padding:0;margin:0;">
+ <li>🧬 <strong style="color:#e8f5f0;">AlphaFold</strong> — alphafold.ebi.ac.uk</li>
+ <li>🤖 <strong style="color:#e8f5f0;">n8n / LangGraph</strong> — agent demos</li>
+ <li>🔑 <strong style="color:#e8f5f0;">OpenAI API key</strong> — camp provides</li>
+ <li>📦 <strong style="color:#e8f5f0;">Python + conda env</strong> — pre-installed</li>
+ <li>🗂️ <strong style="color:#e8f5f0;">Camp shared drive</strong> — papers + data</li>
+ <li style="color:#6aabaA;">↑ ask instructor if unsure</li>
+ </ul>
+ </div>
+ </div>
+
+ <!-- Privacy caveat — single clean block -->
+ <div class="reveal" style="margin-top:0.7rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:0.65rem 0.9rem;">
+ <div style="display:flex;align-items:flex-start;gap:0.65rem;">
+ <span style="font-size:1rem;flex-shrink:0;margin-top:2px;">⚠️</span>
+ <div style="width:100%;">
+ <strong style="color:#fbbf24;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.06em;">Privacy Heads-Up: ChatGPT vs. Claude</strong>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem;">
+ <div style="background:rgba(0,0,0,0.12);border-radius:6px;padding:0.45rem 0.65rem;border-left:2px solid rgba(251,191,36,0.5);">
+ <div style="color:#fbbf24;font-size:0.73rem;font-weight:700;margin-bottom:0.2rem;">🔵 ChatGPT (OpenAI) — Free tier</div>
+ <ul style="color:#a8d4c4;font-size:0.71rem;line-height:1.6;list-style:none;padding:0;margin:0;">
+ <li>• Chats may train future models — opt out: <em>Settings → Data Controls</em></li>
+ <li>• Apr 2026: policy now allows <strong style="color:#fbbf24;">ad targeting</strong> — aggregated usage shared with ad partners <em>(Adweek, 2026)</em></li>
+ <li>• Paid plans stay ad-free. <strong style="color:#fbbf24;">Use paid/API for real research data</strong></li>
+ </ul>
+ </div>
+ <div style="background:rgba(0,0,0,0.12);border-radius:6px;padding:0.45rem 0.65rem;border-left:2px solid rgba(134,239,172,0.4);">
+ <div style="color:#86efac;font-size:0.73rem;font-weight:700;margin-bottom:0.2rem;">🟣 Claude (Anthropic) — All tiers</div>
+ <ul style="color:#a8d4c4;font-size:0.71rem;line-height:1.6;list-style:none;padding:0;margin:0;">
+ <li>• Training use is <strong style="color:#86efac;">opt-in only</strong> — default is opted out <em>(Wired, 2025)</em></li>
+ <li>• <strong style="color:#86efac;">No ads. No data sales to third parties.</strong></li>
+ <li>• Stronger default privacy posture of the two tools</li>
+ </ul>
+ </div>
+ </div>
+ <p style="color:#6aabaA;font-size:0.68rem;margin:0.35rem 0 0 0;font-style:italic;">Rule: never enter passwords, personal info, or unpublished research into any AI tool. Treat it like a public forum.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+<div class="slide" data-slide="5">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;left:-60px;background:#2dd4bf;opacity:0.1;"></div>
+ <div class="blob" style="width:280px;height:280px;bottom:-40px;right:-50px;background:#065f46;opacity:0.12;"></div>
+ </div>
+ <div class="kelp-strand" style="left:3%;height:200px;animation-delay:1s;"></div>
+ <div class="kelp-strand" style="left:6%;height:160px;animation-delay:0.3s;opacity:0.1;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🌊 The Ecosystem</span></div>
+ <h2 class="font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">The Ocean Has Changed</h2>
+ <p class="reveal" style="color:#a8d4c4;margin-bottom:1.2rem;font-size:0.95rem;">3,800 PhD students surveyed by <em>Nature</em>, 2025</p>
+ <div class="grid grid-cols-3 gap-4 reveal">
+ <div style="background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.2);border-radius:14px;padding:1.4rem;text-align:center;" class="card-hover">
+ <div class="stat-glow glow-pulse" style="font-size:2.2rem;font-weight:900;color:#2dd4bf;font-family:'DM Sans',sans-serif;" data-count="75">0%</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">believe AI improves efficiency</div>
+ </div>
+ <div style="background:rgba(134,239,172,0.07);border:1px solid rgba(134,239,172,0.2);border-radius:14px;padding:1.4rem;text-align:center;" class="card-hover">
+ <div class="stat-glow glow-pulse" style="font-size:2.2rem;font-weight:900;color:#86efac;font-family:'DM Sans',sans-serif;" data-count="71">0%</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">find AI use acceptable</div>
+ </div>
+ <div style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:1.4rem;text-align:center;" class="card-hover">
+ <div class="stat-glow glow-pulse" style="font-size:2.2rem;font-weight:900;color:#fbbf24;font-family:'DM Sans',sans-serif;" data-count="81">0%</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">don't fully trust AI output</div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:1.2rem;background:rgba(45,212,191,0.05);border-left:3px solid #2dd4bf;border-radius:0 10px 10px 0;padding:1rem 1.2rem;">
+ <p style="color:#e8f5f0;font-size:0.9rem;margin:0;">AI manuscript use <strong>jumped from 53% → 88%</strong> in UK undergraduate assessments in a single year (2024→2025). Scientists using LLMs saw output grow <strong>&gt;50% on bioRxiv/SSRN</strong>. The kelp is growing fast.</p>
+ </div>
+ <div class="reveal" style="margin-top:0.8rem;display:flex;gap:1rem;align-items:center;">
+ <div style="flex:1;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.8rem;">
+ <div style="font-size:0.75rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">Kelp Forest Parallel</div>
+ <div style="font-size:0.85rem;color:#a8d4c4;">Like a kelp forest — tiny changes ripple out everywhere. One researcher using AI effectively can open doors for their entire lab, just like one otter keeps the whole reef healthy.</div>
+ </div>
+ <div style="font-size:3rem;">🦦</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 4: THE OTTER'S PHILOSOPHY
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="6">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:450px;height:450px;top:-80px;right:-80px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:300px;height:300px;bottom:-50px;left:-60px;background:#86efac;opacity:0.07;"></div>
+ </div>
+ <div class="bubble" style="width:14px;height:14px;bottom:25%;right:15%;animation-delay:0.5s;animation-duration:5.5s;"></div>
+ <div class="bubble" style="width:8px;height:8px;bottom:45%;left:10%;animation-delay:2.5s;animation-duration:7s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🪨 The Otter's Philosophy</span></div>
+ <h2 class="font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Tools Enable Specialization</h2>
+ <div class="grid grid-cols-2 gap-5 reveal">
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:14px;padding:1.5rem;" class="card-hover">
+ <div style="font-size:2rem;margin-bottom:0.6rem;">🦦</div>
+ <h3 style="color:#2dd4bf;font-weight:600;font-size:1rem;margin-bottom:0.5rem;">The Sea Otter</h3>
+ <ul style="color:#a8d4c4;font-size:0.85rem;line-height:1.7;list-style:none;padding:0;margin:0;">
+ <li>→ Uses rocks to crack open hard-shelled prey</li>
+ <li>→ Primarily <strong style="color:#e8f5f0;">female otters</strong> use tools most (smaller body, raising pups)</li>
+ <li>→ Enables broader diet when preferred food runs low</li>
+ <li>→ Reduces tooth damage, improves survival</li>
+ </ul>
+ </div>
+ <div style="background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.15);border-radius:14px;padding:1.5rem;" class="card-hover">
+ <div style="font-size:2rem;margin-bottom:0.6rem;">🎓</div>
+ <h3 style="color:#86efac;font-weight:600;font-size:1rem;margin-bottom:0.5rem;">The PhD Student</h3>
+ <ul style="color:#a8d4c4;font-size:0.85rem;line-height:1.7;list-style:none;padding:0;margin:0;">
+ <li>→ Uses AI to crack open complex datasets & literature</li>
+ <li>→ Non-native English speakers gain most: <strong style="color:#e8f5f0;">up to 90%</strong> productivity boost</li>
+ <li>→ Enables tackling problems beyond prior bandwidth</li>
+ <li>→ Reduces cognitive overload, protects deep thinking</li>
+ </ul>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:1.2rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1rem 1.4rem;text-align:center;">
+ <p style="color:#e8f5f0;font-size:0.95rem;margin:0;font-style:italic;">"Tools enable otters to specialize on different diets they otherwise wouldn't be able to eat. This allows them to maintain their energetic requirements." — Dr. Chris Law, UC Santa Cruz</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 5: SECTION BREAK — Literature & Discovery
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="7">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:500px;height:500px;top:-100px;left:-100px;background:#065f46;opacity:0.2;"></div>
+ <div class="blob" style="width:400px;height:400px;bottom:-80px;right:-80px;background:#2dd4bf;opacity:0.1;"></div>
+ <div class="blob" style="width:200px;height:200px;top:30%;right:15%;background:#86efac;opacity:0.08;"></div>
+ </div>
+ <div class="kelp-strand" style="left:4%;height:220px;animation-delay:0s;"></div>
+ <div class="kelp-strand" style="left:8%;height:180px;animation-delay:1.5s;width:8px;"></div>
+ <div class="kelp-strand" style="right:5%;height:200px;animation-delay:0.8s;"></div>
+ <div class="kelp-strand" style="right:9%;height:150px;animation-delay:2s;width:5px;"></div>
+ <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content text-center">
+ <div class="text-[5rem] mb-3 animate-[float_3.5s_ease-in-out_infinite] reveal">📚</div>
+ <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#2dd4bf,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part I: The Literature Hunt</h2>
+ <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">Finding the abalone beneath the waves</p>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 6: LITERATURE TOOLS
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="8">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:360px;height:360px;top:-40px;right:-40px;background:#2dd4bf;opacity:0.08;"></div>
+ <div class="blob" style="width:240px;height:240px;bottom:-40px;left:-40px;background:#065f46;opacity:0.1;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🔍 Literature Discovery</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Your Foraging Toolkit</h2>
+ <div class="grid grid-cols-3 gap-3 reveal">
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">🔬</div>
+ <div style="font-weight:700;color:#2dd4bf;font-size:0.9rem;margin-bottom:0.3rem;">Elicit</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;">Semantic search across <strong style="color:#e8f5f0;">126M+ papers</strong>. Extracts structured data into comparison tables.</div>
+ </div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">🐇</div>
+ <div style="font-weight:700;color:#86efac;font-size:0.9rem;margin-bottom:0.3rem;">Research Rabbit</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;">Citation-network mapping. Start with one paper → explore the entire rabbit hole.</div>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">📊</div>
+ <div style="font-weight:700;color:#fbbf24;font-size:0.9rem;margin-bottom:0.3rem;">Consensus AI</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;"><strong style="color:#e8f5f0;">200M papers</strong>. "Consensus meter" shows how much evidence supports a claim.</div>
+ </div>
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">📓</div>
+ <div style="font-weight:700;color:#2dd4bf;font-size:0.9rem;margin-bottom:0.3rem;">NotebookLM</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;">Upload <strong style="color:#e8f5f0;">50 PDFs</strong>. Chat within your corpus. Grounded answers, zero hallucination risk.</div>
+ </div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">🔗</div>
+ <div style="font-weight:700;color:#86efac;font-size:0.9rem;margin-bottom:0.3rem;">Scite AI</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;">Smart citations: see if papers <em>support</em>, <em>contradict</em>, or <em>merely mention</em> each other.</div>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
+ <div style="font-size:1.5rem;margin-bottom:0.4rem;">⭐</div>
+ <div style="font-weight:700;color:#fbbf24;font-size:0.9rem;margin-bottom:0.3rem;">Semantic Scholar</div>
+ <div style="font-size:0.8rem;color:#a8d4c4;">Allen Institute. <strong style="color:#e8f5f0;">200M+ papers</strong>. Finds novel publications LLM searches miss.</div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.9rem;padding:0.8rem 1.2rem;background:rgba(45,212,191,0.04);border-radius:8px;font-size:0.82rem;color:#6aabaA;">
+ 🦦 <em>Otter Tip: Combine NotebookLM (grounded synthesis) + Claude (gap framing) to cut lit review time by ~60–70% without sacrificing rigor.</em>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 7: NOTEBOOKLM WORKFLOW DEEP DIVE
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="9">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:350px;height:350px;top:-50px;right:-50px;background:#065f46;opacity:0.12;"></div>
+ <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#2dd4bf;opacity:0.07;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">📓 NotebookLM Masterclass</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">The Otter's Rock-Cracking Ritual</h2>
+ <p class="reveal" style="color:#a8d4c4;font-size:0.9rem;margin-bottom:1rem;">A repeatable literature-to-gap workflow</p>
+ <div class="reveal" style="display:flex;flex-direction:column;gap:0.7rem;">
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="background:#2dd4bf;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">1</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Load the Kelp Bed:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Upload 20–50 focused papers into one notebook (not split by subtopic)</span>
+ </div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="background:#86efac;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">2</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Dive for Themes:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Ask: "What are the main research themes?" → "What evidence supports and challenges theme X?"</span>
+ </div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="background:#fbbf24;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">3</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Surface the Gap:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Ask: "Where are the contradictions? What remains unresolved?" → Hand to Claude for gap framing</span>
+ </div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="background:#2dd4bf;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">4</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Validate & Refine:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Return to NotebookLM to stress-test: "What in my sources contradicts this gap?" Iterate 2–3×</span>
+ </div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.8rem;display:flex;gap:0.8rem;">
+ <div style="flex:1;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;text-align:center;">
+ <div style="font-size:1.4rem;font-weight:900;color:#2dd4bf;" data-count="60">0</div>
+ <div style="font-size:0.7rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.05em;">% faster gap ID</div>
+ </div>
+ <div style="flex:1;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;text-align:center;">
+ <div style="font-size:1.4rem;font-weight:900;color:#86efac;">53%</div>
+ <div style="font-size:0.7rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.05em;">less labor (meta-analysis)</div>
+ </div>
+ <div style="flex:1;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;text-align:center;">
+ <div style="font-size:1.4rem;font-weight:900;color:#fbbf24;">90+</div>
+ <div style="font-size:0.7rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.05em;">hours saved</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 8: SECTION BREAK — Technical Research
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="10">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:500px;height:500px;bottom:-100px;right:-100px;background:#2dd4bf;opacity:0.1;"></div>
+ <div class="blob" style="width:350px;height:350px;top:-60px;left:-60px;background:#065f46;opacity:0.15;"></div>
+ <div class="blob" style="width:200px;height:200px;top:40%;left:40%;background:#fbbf24;opacity:0.06;"></div>
+ </div>
+ <div class="kelp-strand" style="left:5%;height:250px;animation-delay:0.3s;"></div>
+ <div class="kelp-strand" style="right:4%;height:230px;animation-delay:1.8s;"></div>
+ <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content text-center">
+ <div class="text-[5rem] mb-3 animate-[float_3s_ease-in-out_infinite] reveal">⚙️</div>
+ <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#fbbf24,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part II: Deep Technical Foraging</h2>
+ <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">AI for the hyper-specialized researcher</p>
+ </div>
+ </div>
+
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 9: VOCABULARY — Agents vs Agentic AI
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="11">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:340px;height:340px;top:-50px;right:-50px;background:#fbbf24;opacity:0.07;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-30px;background:#2dd4bf;opacity:0.08;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">⚙️ Code & Analysis</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">Cracking the Technical Shell</h2>
+ <div class="grid grid-cols-2 gap-4 reveal">
+ <div>
+ <h3 style="color:#2dd4bf;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">For Data Analysis & Modeling</h3>
+ <div style="display:flex;flex-direction:column;gap:0.5rem;">
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">Claude / GPT-4</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — generate Python/R scripts, debug pipelines, interpret statistics</span>
+ </div>
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">GitHub Copilot</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — inline code suggestions within your IDE; understands your full codebase</span>
+ </div>
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">PaperCoder</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — multi-agent LLM that converts ML <em>papers</em> directly into runnable code repositories</span>
+ </div>
+ </div>
+ </div>
+ <div>
+ <h3 style="color:#fbbf24;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">For Scientific AI Applications</h3>
+ <div style="display:flex;flex-direction:column;gap:0.5rem;">
+ <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">AlphaFold 3</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — predicts protein, DNA, RNA, drug-ligand structures; <strong style="color:#fbbf24;">200M+ structures</strong> free</span>
+ </div>
+ <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">NVivo / ATLAS.ti</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — AI-suggested codes and theme clusters for qualitative datasets</span>
+ </div>
+ <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:0.7rem 0.9rem;">
+ <strong style="color:#e8f5f0;font-size:0.85rem;">LLM-driven SDLs</strong>
+ <span style="color:#a8d4c4;font-size:0.8rem;"> — self-driving labs using Claude for instrument selection, function calling & experiment design</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.9rem;background:rgba(251,191,36,0.06);border-left:3px solid #fbbf24;border-radius:0 8px 8px 0;padding:0.8rem 1rem;font-size:0.82rem;color:#a8d4c4;">
+ ⚡ AlphaFold has been cited in <strong style="color:#fbbf24;">35,000+ papers</strong>. Researchers using it see <strong style="color:#fbbf24;">40%+ more novel structure submissions</strong> and research is <strong style="color:#fbbf24;">twice as likely</strong> to be cited in clinical articles.
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 10: CODING & ANALYSIS WITH AI
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="12">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-30px;background:#065f46;opacity:0.11;"></div>
+ </div>
+ <div class="kelp-strand" style="right:4%;height:170px;animation-delay:0.7s;"></div>
+ <div class="bubble" style="width:9px;height:9px;bottom:35%;left:12%;animation-delay:1.2s;animation-duration:6s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">📖 Vocabulary Dive</span></div>
+ <h2 class="font-display text-[clamp(1.5rem,3.2vw,2.2rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Knowing Your Rocks: Key Terms</h2>
+ <p class="reveal" style="color:#6aabaA;font-size:0.78rem;margin-bottom:0.8rem;font-style:italic;">Sources: Sapkota et al. 2025 (arXiv:2505.10468); Händler 2023 (SCITEPRESS); Guo et al. 2024 (IEEE Access); MIT Sloan, 2026</p>
+ <div class="grid grid-cols-2 gap-3 reveal">
+ <!-- LLM -->
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
+ <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+ <div style="background:#2dd4bf;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">LLM</div>
+ <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Large Language Model</span>
+ </div>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A neural network trained on massive text data that can read, write, reason, and generate. Think of it as the <em>otter's brain</em> — pattern recognition at scale. Examples: GPT-4, Claude, Gemini.</p>
+ </div>
+ <!-- AI Agent -->
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
+ <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+ <div style="background:#86efac;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">AI AGENT</div>
+ <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Modular Task Executor</span>
+ </div>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A software system that uses an LLM to complete a <em>specific, bounded task</em> — searching the web, writing code, sending an email. Like <em>one otter with one rock</em> cracking one type of shell.</p>
+ </div>
+ <!-- Agentic AI -->
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
+ <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+ <div style="background:#fbbf24;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">AGENTIC AI</div>
+ <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Orchestrated Autonomy</span>
+ </div>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;"><em>"Multi-agent collaboration, dynamic task decomposition, persistent memory, and coordinated autonomy"</em> (Sapkota et al., 2025). The whole otter pod working together on a complex goal — planning, routing, adapting.</p>
+ </div>
+ <!-- Multi-Agent System -->
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
+ <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+ <div style="background:#2dd4bf;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">MAS</div>
+ <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Multi-Agent System</span>
+ </div>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">Multiple AI agents coordinating together, each handling a sub-task. One finds papers, one writes code, one checks logic. Händler (2023) identifies this as the key leap beyond single-agent capability limits.</p>
+ </div>
+ </div>
+ <!-- Spectrum bar -->
+ <div class="reveal" style="margin-top:0.8rem;background:rgba(255,255,255,0.03);border-radius:10px;padding:0.8rem 1rem;">
+ <div style="font-size:0.72rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Autonomy Spectrum (Sapkota et al., 2025)</div>
+ <div style="display:flex;align-items:center;gap:0;position:relative;">
+ <div style="flex:1;text-align:center;padding:0.4rem 0.3rem;background:rgba(45,212,191,0.08);border-radius:8px 0 0 8px;border:1px solid rgba(45,212,191,0.15);">
+ <div style="font-size:0.75rem;font-weight:700;color:#2dd4bf;">Generative AI</div>
+ <div style="font-size:0.68rem;color:#6aabaA;">Responds when asked</div>
+ </div>
+ <div style="color:#a8d4c4;font-size:0.9rem;padding:0 0.2rem;z-index:1;">→</div>
+ <div style="flex:1;text-align:center;padding:0.4rem 0.3rem;background:rgba(134,239,172,0.08);border:1px solid rgba(134,239,172,0.15);">
+ <div style="font-size:0.75rem;font-weight:700;color:#86efac;">AI Agent</div>
+ <div style="font-size:0.68rem;color:#6aabaA;">Executes one task</div>
+ </div>
+ <div style="color:#a8d4c4;font-size:0.9rem;padding:0 0.2rem;z-index:1;">→</div>
+ <div style="flex:1;text-align:center;padding:0.4rem 0.3rem;background:rgba(251,191,36,0.08);border-radius:0 8px 8px 0;border:1px solid rgba(251,191,36,0.15);">
+ <div style="font-size:0.75rem;font-weight:700;color:#fbbf24;">Agentic AI</div>
+ <div style="font-size:0.68rem;color:#6aabaA;">Plans + coordinates goals</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 10: THE PROMPT ENGINEERING ROCK
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="13">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:400px;height:400px;top:-60px;left:-60px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:280px;height:280px;bottom:-40px;right:-40px;background:#065f46;opacity:0.11;"></div>
+ </div>
+ <div class="bubble" style="width:12px;height:12px;bottom:30%;left:12%;animation-delay:1s;animation-duration:6s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🪨 Prompt Engineering</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Choosing the Right Rock</h2>
+ <p class="reveal" style="color:#a8d4c4;font-size:0.88rem;margin-bottom:1rem;">The CORE Framework for Scientific Prompting</p>
+ <div class="grid grid-cols-2 gap-3 reveal">
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;font-weight:900;color:#2dd4bf;font-family:'DM Sans',sans-serif;margin-bottom:0.3rem;">C</div>
+ <div style="color:#e8f5f0;font-weight:600;font-size:0.9rem;margin-bottom:0.3rem;">Context</div>
+ <div style="color:#a8d4c4;font-size:0.82rem;">Give background on your research domain, dataset size, methodology. The more the AI knows, the sharper the rock.</div>
+ </div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.2);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;font-weight:900;color:#86efac;font-family:'DM Sans',sans-serif;margin-bottom:0.3rem;">O</div>
+ <div style="color:#e8f5f0;font-weight:600;font-size:0.9rem;margin-bottom:0.3rem;">Output format</div>
+ <div style="color:#a8d4c4;font-size:0.82rem;">Specify: table, bullet list, Python function, LaTeX equation, 300-word draft. Vague prompts get vague answers.</div>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;font-weight:900;color:#fbbf24;font-family:'DM Sans',sans-serif;margin-bottom:0.3rem;">R</div>
+ <div style="color:#e8f5f0;font-weight:600;font-size:0.9rem;margin-bottom:0.3rem;">Role</div>
+ <div style="color:#a8d4c4;font-size:0.82rem;">"You are a structural biologist reviewing a methods section." Role-assignment shifts the AI into specialist mode.</div>
+ </div>
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;font-weight:900;color:#2dd4bf;font-family:'DM Sans',sans-serif;margin-bottom:0.3rem;">E</div>
+ <div style="color:#e8f5f0;font-weight:600;font-size:0.9rem;margin-bottom:0.3rem;">Exclusions</div>
+ <div style="color:#a8d4c4;font-size:0.82rem;">State what NOT to do: "Don't cite papers after 2022. Don't simplify the math. Don't repeat the question."</div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.9rem;background:rgba(45,212,191,0.04);border-radius:10px;padding:0.9rem;font-size:0.82rem;color:#6aabaA;">
+ 🦦 <em>Lazy prompt: "Explain my results." → CORE prompt: "You are a computational neuroscientist. Interpret these regression coefficients [table] in the context of synaptic plasticity models. Output: 2 paragraphs, technical language, no introduction filler."</em>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 11: ADVANCED PROMPTING PATTERNS
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="14">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:360px;height:360px;top:-50px;right:-40px;background:#2dd4bf;opacity:0.08;"></div>
+ <div class="blob" style="width:240px;height:240px;bottom:-30px;left:-30px;background:#fbbf24;opacity:0.06;"></div>
+ </div>
+ <div class="kelp-strand" style="right:3%;height:180px;animation-delay:0.6s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🧩 Advanced Patterns</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Chaining Your Rocks</h2>
+ <div class="reveal" style="display:flex;flex-direction:column;gap:0.8rem;">
+ <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:1rem 1.2rem;" class="card-hover">
+ <div style="font-size:1.5rem;">⛓️</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Prompt Chaining:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Break complex tasks into sequential steps. Step 1: "Identify all assumptions in this methods section." → Step 2: "For each assumption, suggest a robustness test."</span>
+ </div>
+ </div>
+ <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.12);border-radius:10px;padding:1rem 1.2rem;" class="card-hover">
+ <div style="font-size:1.5rem;">🗺️</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Plan-First Execution:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Ask: "Before answering, outline your plan." Catches wrong approaches before wasted output. Critical for multi-file code tasks.</span>
+ </div>
+ </div>
+ <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:10px;padding:1rem 1.2rem;" class="card-hover">
+ <div style="font-size:1.5rem;">🔁</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Upside-Down Critique:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> After generating a hypothesis, immediately ask: "What are the three strongest arguments <em>against</em> this?" Forces steel-manned opposition.</span>
+ </div>
+ </div>
+ <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:1rem 1.2rem;" class="card-hover">
+ <div style="font-size:1.5rem;">📎</div>
+ <div>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Attachment Hygiene:</strong>
+ <span style="color:#a8d4c4;font-size:0.85rem;"> Name files semantically: <code style="background:rgba(45,212,191,0.1);padding:1px 5px;border-radius:3px;font-size:0.8rem;">methods_chapter_v3.md</code> not <code style="background:rgba(45,212,191,0.1);padding:1px 5px;border-radius:3px;font-size:0.8rem;">doc1.pdf</code>. Use structured Markdown for complex inputs—agents perform better.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 12: AI-POWERED RESEARCH WORKFLOWS MAP
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="15">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:400px;height:400px;top:-60px;right:-60px;background:#065f46;opacity:0.14;"></div>
+ <div class="blob" style="width:280px;height:280px;bottom:-50px;left:-40px;background:#2dd4bf;opacity:0.08;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🌊 Full Research Pipeline</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Otter's Complete Foraging Run</h2>
+ <div class="reveal" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;align-items:start;">
+ <!-- Stage 1 -->
+ <div style="text-align:center;">
+ <div style="background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);border-radius:10px;padding:0.8rem 0.5rem;margin-bottom:0.4rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">💡</div>
+ <div style="color:#2dd4bf;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Ideation</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">ChatGPT, Claude, Perplexity</div>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;justify-content:center;margin-top:2.5rem;color:#2dd4bf;font-size:1.2rem;">→</div>
+ <!-- Stage 2 -->
+ <div style="text-align:center;">
+ <div style="background:rgba(134,239,172,0.08);border:1px solid rgba(134,239,172,0.2);border-radius:10px;padding:0.8rem 0.5rem;margin-bottom:0.4rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">📚</div>
+ <div style="color:#86efac;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Lit Review</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">Elicit, NotebookLM, Scite, Research Rabbit</div>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;justify-content:center;margin-top:2.5rem;color:#2dd4bf;font-size:1.2rem;">→</div>
+ <!-- Stage 3 -->
+ <div style="text-align:center;">
+ <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:0.8rem 0.5rem;margin-bottom:0.4rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">🧪</div>
+ <div style="color:#fbbf24;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Experiment</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">AlphaFold, LLM-SDL, Claude</div>
+ </div>
+ </div>
+ </div>
+ <div class="reveal" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;align-items:start;margin-top:0.5rem;">
+ <div style="text-align:center;">
+ <div style="background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);border-radius:10px;padding:0.8rem 0.5rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">📝</div>
+ <div style="color:#2dd4bf;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Writing</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">Claude, Grammarly, Paperpal</div>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;justify-content:center;margin-top:2rem;color:#2dd4bf;font-size:1.2rem;">←</div>
+ <div style="text-align:center;">
+ <div style="background:rgba(134,239,172,0.08);border:1px solid rgba(134,239,172,0.2);border-radius:10px;padding:0.8rem 0.5rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">📊</div>
+ <div style="color:#86efac;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Analysis</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">ChatGPT Code, PandasAI, NVivo, R</div>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;justify-content:center;margin-top:2rem;color:#2dd4bf;font-size:1.2rem;">←</div>
+ <div style="text-align:center;">
+ <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:0.8rem 0.5rem;">
+ <div style="font-size:1.4rem;margin-bottom:0.3rem;">🗂️</div>
+ <div style="color:#fbbf24;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Data Mgmt</div>
+ <div style="color:#a8d4c4;font-size:0.72rem;">Zotero AI, Citavi, Mendeley</div>
+ </div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.8rem;background:rgba(45,212,191,0.04);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:#6aabaA;text-align:center;">
+ 🦦 <em>Each stage has a dedicated rock. The master otter knows which one to pick up — and when to put it down.</em>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 13: THE AI SCIENTIST — Horizon
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="16">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:450px;height:450px;bottom:-80px;left:-80px;background:#065f46;opacity:0.15;"></div>
+ <div class="blob" style="width:300px;height:300px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.09;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🤖 The Frontier</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">When the Otter Learns to Fish on Its Own</h2>
+ <div class="grid grid-cols-3 gap-4 reveal">
+ <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:14px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.5rem;">🧬</div>
+ <h3 style="color:#2dd4bf;font-size:0.9rem;font-weight:700;margin-bottom:0.4rem;">Level 1: LLM as Tool</h3>
+ <p style="color:#a8d4c4;font-size:0.8rem;line-height:1.5;">Literature search, code snippets, editing. Human drives every step. This is where most PhD students operate <em>today</em>.</p>
+ </div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.15);border-radius:14px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.5rem;">🔬</div>
+ <h3 style="color:#86efac;font-size:0.9rem;font-weight:700;margin-bottom:0.4rem;">Level 2: LLM as Analyst</h3>
+ <p style="color:#a8d4c4;font-size:0.8rem;line-height:1.5;">AI interprets complex data, offers independent insights. Human validates. Emerging in computational and life sciences.</p>
+ </div>
+ <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:14px;padding:1.2rem;" class="card-hover">
+ <div style="font-size:1.8rem;margin-bottom:0.5rem;">🚀</div>
+ <h3 style="color:#fbbf24;font-size:0.9rem;font-weight:700;margin-bottom:0.4rem;">Level 3: LLM as Scientist</h3>
+ <p style="color:#a8d4c4;font-size:0.8rem;line-height:1.5;"><em>The AI Scientist</em> (2026, Nature): AI generates ideas, runs experiments, writes, and <strong style="color:#fbbf24;">passed peer review</strong> at a top ML workshop.</p>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+ <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:0.9rem;border-left:3px solid #2dd4bf;">
+ <div style="font-size:0.8rem;font-weight:600;color:#2dd4bf;margin-bottom:0.3rem;">AlphaFold Impact</div>
+ <div style="font-size:0.82rem;color:#a8d4c4;">Cited in <strong style="color:#e8f5f0;">35,000+ papers</strong>. Solved the 50-year protein-folding problem. Earned the 2024 Nobel Prize.</div>
+ </div>
+ <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:0.9rem;border-left:3px solid #fbbf24;">
+ <div style="font-size:0.8rem;font-weight:600;color:#fbbf24;margin-bottom:0.3rem;">Otter Insight</div>
+ <div style="font-size:0.82rem;color:#a8d4c4;">The best outcomes come from stacking tools: AlphaFold + knowledge graphs + general agents. Not one rock — a whole toolkit.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 14: SECTION BREAK — Ethics
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="17">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:450px;height:450px;top:-80px;right:-60px;background:#065f46;opacity:0.18;"></div>
+ <div class="blob" style="width:350px;height:350px;bottom:-70px;left:-60px;background:#2dd4bf;opacity:0.1;"></div>
+ <div class="blob" style="width:200px;height:200px;top:35%;left:35%;background:#fbbf24;opacity:0.07;"></div>
+ </div>
+ <div class="kelp-strand" style="left:5%;height:220px;animation-delay:0.2s;"></div>
+ <div class="kelp-strand" style="right:5%;height:200px;animation-delay:1.3s;"></div>
+ <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content text-center">
+ <div class="text-[5rem] mb-3 animate-[float_3.5s_ease-in-out_infinite] reveal">⚖️</div>
+ <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#fbbf24,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part III: The Balance of the Reef</h2>
+ <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">Ethics, integrity & the scientist's responsibility</p>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 15: ETHICS & INTEGRITY
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="18">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.08;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-30px;background:#065f46;opacity:0.1;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">⚖️ Ethics & Integrity</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Urchin Problem: When Otters Overeat</h2>
+ <div class="grid grid-cols-2 gap-4 reveal">
+ <div>
+ <h3 style="color:#86efac;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">✅ Healthy Foraging (AI as Tool)</h3>
+ <div style="display:flex;flex-direction:column;gap:0.4rem;">
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.12);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Literature search & summarization with citation verification</div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.12);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Debugging code you wrote and understand</div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.12);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Polishing prose, grammar, clarity — with disclosure</div>
+ <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.12);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Brainstorming hypotheses that <em>you</em> then design experiments to test</div>
+ </div>
+ </div>
+ <div>
+ <h3 style="color:#ef4444;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🚫 Urchin Barren (AI as Replacement)</h3>
+ <div style="display:flex;flex-direction:column;gap:0.4rem;">
+ <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Fabricating, altering, or interpreting data with AI</div>
+ <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Submitting AI-written sections without disclosure</div>
+ <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Citing unverified AI-generated references</div>
+ <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:0.65rem 0.85rem;font-size:0.82rem;color:#a8d4c4;">Letting AI do the thinking you need to develop yourself</div>
+ </div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.9rem 1.1rem;font-size:0.85rem;color:#a8d4c4;">
+ <strong style="color:#2dd4bf;">Oxford/Cambridge Framework (2024, Nature Machine Intelligence):</strong> Three criteria — (1) Human vetting of accuracy, (2) Substantial human contribution, (3) Transparent disclosure. All AI use must be acknowledged in Methods or Acknowledgements.
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 16: THE CRITICAL COUNTERPOINT
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="19">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:400px;height:400px;top:-60px;left:-60px;background:#065f46;opacity:0.12;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;right:-40px;background:#2dd4bf;opacity:0.07;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🌡️ Critical Perspective</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">When More Kelp Isn't Better</h2>
+ <div class="reveal" style="background:rgba(251,191,36,0.06);border-left:4px solid #fbbf24;border-radius:0 12px 12px 0;padding:1rem 1.2rem;margin-bottom:1rem;">
+ <p style="color:#e8f5f0;font-size:0.9rem;margin:0;">"We found an inverse relationship between writing sophistication and quality. If you're human, more complex writing = better paper. If you're a robot, the opposite." — UC Berkeley Haas / Cornell, <em>Science</em>, 2026</p>
+ </div>
+ <div class="grid grid-cols-3 gap-3 reveal">
+ <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;text-align:center;" class="card-hover">
+ <div style="font-size:2rem;font-weight:900;color:#fbbf24;font-family:'DM Sans',sans-serif;" data-count="65">0</div>
+ <div style="font-size:0.72rem;color:#a8d4c4;margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.05em;">% of PhD students worried AI weakens thinking skills</div>
+ </div>
+ <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;text-align:center;" class="card-hover">
+ <div style="font-size:2rem;font-weight:900;color:#ef4444;font-family:'DM Sans',sans-serif;">40–60%</div>
+ <div style="font-size:0.72rem;color:#a8d4c4;margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.05em;">of global kelp forests damaged in last 50 years</div>
+ </div>
+ <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;text-align:center;" class="card-hover">
+ <div style="font-size:2rem;font-weight:900;color:#fbbf24;font-family:'DM Sans',sans-serif;">50%+</div>
+ <div style="font-size:0.72rem;color:#a8d4c4;margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.05em;">AI-driven paper output increase — quality tracking needed</div>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:1rem;background:rgba(45,212,191,0.04);border-radius:10px;padding:0.9rem 1.1rem;font-size:0.85rem;color:#a8d4c4;">
+ 🦦 <em>Like sea otters balancing urchin populations: the goal isn't zero urchins (AI-free research) or urchin barrens (AI does everything). The keystone species maintains equilibrium. You are the keystone.</em>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 17: WHAT AI CANNOT DO
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="20">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-30px;background:#065f46;opacity:0.11;"></div>
+ </div>
+ <div class="bubble" style="width:10px;height:10px;bottom:35%;right:10%;animation-delay:1.5s;animation-duration:5s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🧬 What Only You Can Do</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Otter's Irreplaceable Role</h2>
+ <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
+ <div>
+ <div style="color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">What AI cannot generate</div>
+ <ul style="color:#a8d4c4;font-size:0.87rem;line-height:1.8;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.35rem;">
+ <li style="display:flex;gap:0.6rem;align-items:flex-start;"><span style="color:#2dd4bf;flex-shrink:0;">🔬</span> Novel empirical data from real-world experiments</li>
+ <li style="display:flex;gap:0.6rem;align-items:flex-start;"><span style="color:#86efac;flex-shrink:0;">🧠</span> Domain intuition built through years of messy lab work</li>
+ <li style="display:flex;gap:0.6rem;align-items:flex-start;"><span style="color:#fbbf24;flex-shrink:0;">🌊</span> Recognition of when "surprising" results are real vs. artifact</li>
+ <li style="display:flex;gap:0.6rem;align-items:flex-start;"><span style="color:#2dd4bf;flex-shrink:0;">🗣️</span> Ethical accountability for published conclusions</li>
+ <li style="display:flex;gap:0.6rem;align-items:flex-start;"><span style="color:#86efac;flex-shrink:0;">💡</span> Questions that reframe an entire field</li>
+ </ul>
+ </div>
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:14px;padding:1.2rem;">
+ <div style="color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">The Keystone Parallel</div>
+ <p style="color:#a8d4c4;font-size:0.85rem;line-height:1.6;margin-bottom:0.7rem;">Sea otters keep urchin populations in check. Remove them and you get urchin barrens — no kelp, no ecosystem.</p>
+ <p style="color:#a8d4c4;font-size:0.85rem;line-height:1.6;margin-bottom:0.7rem;">Without human researchers maintaining rigor, AI produces an "urchin barren" of polished-but-shallow papers.</p>
+ <p style="color:#e8f5f0;font-size:0.85rem;line-height:1.6;font-style:italic;">You are the keystone species of your research ecosystem.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 18: DISCUSSION PROMPTS
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="21">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:420px;height:420px;top:-70px;left:-60px;background:#2dd4bf;opacity:0.09;"></div>
+ <div class="blob" style="width:300px;height:300px;bottom:-50px;right:-50px;background:#065f46;opacity:0.12;"></div>
+ </div>
+ <div class="kelp-strand" style="left:4%;height:180px;animation-delay:0.4s;"></div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">💬 Discussion Time</span></div>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Bring Your Rocks to the Reef</h2>
+ <div class="reveal" style="display:flex;flex-direction:column;gap:0.7rem;">
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="font-size:1.3rem;flex-shrink:0;">🌊</div>
+ <div style="font-size:0.88rem;color:#a8d4c4;"><strong style="color:#e8f5f0;">The Ecosystem Question:</strong> Which stage of your research has been most transformed by AI? Which feels most resistant to it — and why?</div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="font-size:1.3rem;flex-shrink:0;">🪨</div>
+ <div style="font-size:0.88rem;color:#a8d4c4;"><strong style="color:#e8f5f0;">The Tool Question:</strong> Share one AI tool or prompt pattern that genuinely changed how you work. What made it click?</div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="font-size:1.3rem;flex-shrink:0;">⚖️</div>
+ <div style="font-size:0.88rem;color:#a8d4c4;"><strong style="color:#e8f5f0;">The Integrity Question:</strong> Where is the line between "AI as tool" and "AI as replacement" in your field? How does your lab/advisor navigate it?</div>
+ </div>
+ <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
+ <div style="font-size:1.3rem;flex-shrink:0;">🔭</div>
+ <div style="font-size:0.88rem;color:#a8d4c4;"><strong style="color:#e8f5f0;">The Horizon Question:</strong> If Level 3 AI Scientist systems become common in 5 years, what does that mean for what a PhD should actually develop?</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 19: QUICK REFERENCE CHEAT SHEET
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="22">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:360px;height:360px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.08;"></div>
+ <div class="blob" style="width:240px;height:240px;bottom:-40px;left:-30px;background:#065f46;opacity:0.1;"></div>
+ </div>
+ <div class="content">
+ <div class="reveal mb-2"><span class="otter-badge">🗂️ Cheat Sheet</span></div>
+ <h2 class="font-display text-[clamp(1.4rem,3vw,2rem)] font-bold mb-3 reveal" style="color:#2dd4bf;">The Otter's Field Guide — Keep This Slide</h2>
+ <div class="grid grid-cols-3 gap-3 reveal">
+ <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.9rem;">
+ <div style="color:#2dd4bf;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">📚 Literature</div>
+ <ul style="color:#a8d4c4;font-size:0.78rem;line-height:1.7;list-style:none;padding:0;margin:0;">
+ <li>• Elicit — semantic search</li>
+ <li>• Research Rabbit — network map</li>
+ <li>• Consensus AI — evidence weight</li>
+ <li>• NotebookLM — closed corpus</li>
+ <li>• Scite — citation context</li>
+ </ul>
+ </div>
+ <div style="background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.15);border-radius:10px;padding:0.9rem;">
+ <div style="color:#86efac;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">⚙️ Technical</div>
+ <ul style="color:#a8d4c4;font-size:0.78rem;line-height:1.7;list-style:none;padding:0;margin:0;">
+ <li>• Claude / GPT-4 — code + interpret</li>
+ <li>• GitHub Copilot — inline IDE</li>
+ <li>• AlphaFold 3 — structure prediction</li>
+ <li>• PaperCoder — paper→code</li>
+ <li>• NVivo — qual analysis</li>
+ </ul>
+ </div>
+ <div style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:0.9rem;">
+ <div style="color:#fbbf24;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">🪨 CORE Prompting</div>
+ <ul style="color:#a8d4c4;font-size:0.78rem;line-height:1.7;list-style:none;padding:0;margin:0;">
+ <li>• <strong style="color:#e8f5f0;">C</strong>ontext — your domain</li>
+ <li>• <strong style="color:#e8f5f0;">O</strong>utput — specify the format</li>
+ <li>• <strong style="color:#e8f5f0;">R</strong>ole — assign expertise</li>
+ <li>• <strong style="color:#e8f5f0;">E</strong>xclusions — what NOT to do</li>
+ <li>• Chain + plan first + critique</li>
+ </ul>
+ </div>
+ </div>
+ <div class="reveal" style="margin-top:0.9rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem;">
+ <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;font-size:0.78rem;color:#a8d4c4;border-left:2px solid #2dd4bf;">
+ <strong style="color:#e8f5f0;display:block;margin-bottom:0.2rem;">Always disclose</strong>
+ Include AI use in Methods / Acknowledgements. Every reference verified by you.
+ </div>
+ <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;font-size:0.78rem;color:#a8d4c4;border-left:2px solid #86efac;">
+ <strong style="color:#e8f5f0;display:block;margin-bottom:0.2rem;">Keep your depth</strong>
+ AI handles the surface work. Use freed time for the 5% only you can contribute.
+ </div>
+ <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;font-size:0.78rem;color:#a8d4c4;border-left:2px solid #fbbf24;">
+ <strong style="color:#e8f5f0;display:block;margin-bottom:0.2rem;">You are keystone</strong>
+ AI expands what you can eat. You still have to know <em>what</em> to look for.
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 20: CLOSING — The Otter Floats
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="23">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:550px;height:550px;top:-100px;right:-100px;background:#2dd4bf;opacity:0.12;"></div>
+ <div class="blob" style="width:400px;height:400px;bottom:-80px;left:-80px;background:#065f46;opacity:0.18;"></div>
+ <div class="blob" style="width:250px;height:250px;top:30%;left:10%;background:#86efac;opacity:0.08;"></div>
+ <div class="blob" style="width:180px;height:180px;bottom:20%;right:15%;background:#fbbf24;opacity:0.06;"></div>
+ </div>
+ <div class="kelp-strand" style="left:4%;height:240px;animation-delay:0s;"></div>
+ <div class="kelp-strand" style="left:8%;height:180px;animation-delay:1s;width:5px;"></div>
+ <div class="kelp-strand" style="right:5%;height:220px;animation-delay:0.6s;"></div>
+ <div class="kelp-strand" style="right:9%;height:160px;animation-delay:1.8s;width:5px;opacity:0.1;"></div>
+ <div class="bubble" style="width:12px;height:12px;bottom:30%;left:18%;animation-delay:0.8s;animation-duration:5.5s;"></div>
+ <div class="bubble" style="width:8px;height:8px;bottom:50%;right:18%;animation-delay:2.5s;animation-duration:7s;"></div>
+ <div class="bubble" style="width:6px;height:6px;bottom:40%;left:45%;animation-delay:1.5s;animation-duration:6s;"></div>
+ <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+ <div class="content text-center">
+ <div class="text-[5.5rem] mb-2 animate-[float_3.5s_ease-in-out_infinite] reveal" style="line-height:1.1;">🦦🪨</div>
+ <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal shimmer-text">The Otter That Uses a Rock</h2>
+ <p class="text-[clamp(0.95rem,1.6vw,1.3rem)] text-text-secondary mb-4 reveal" style="max-width:680px;margin-left:auto;margin-right:auto;line-height:1.6;">
+ Is not smarter than those who don't — it's more <em>resourceful</em>. It survives a changing ocean, raises healthier pups, and keeps the kelp forest alive for every species beneath it.
+ </p>
+ <div class="reveal" style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:1.5rem;">
+ <div style="text-align:center;">
+ <div style="font-size:1.6rem;font-weight:900;color:#2dd4bf;">60–70%</div>
+ <div style="font-size:0.72rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;">faster lit review w/ AI</div>
+ </div>
+ <div style="width:1px;background:rgba(45,212,191,0.2);"></div>
+ <div style="text-align:center;">
+ <div style="font-size:1.6rem;font-weight:900;color:#86efac;">35K+</div>
+ <div style="font-size:0.72rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;">papers cite AlphaFold</div>
+ </div>
+ <div style="width:1px;background:rgba(45,212,191,0.2);"></div>
+ <div style="text-align:center;">
+ <div style="font-size:1.6rem;font-weight:900;color:#fbbf24;">You</div>
+ <div style="font-size:0.72rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;">are the keystone species</div>
+ </div>
+ </div>
+ <div class="reveal">
+ <span class="otter-badge">Thank you · Questions · Let's discuss 🌊</span>
+ </div>
+ </div>
+ </div>
+
+
+ <!-- ═══════════════════════════════════════════════════════
+ SLIDE 23: TECHNICAL REFERENCES
+ ═══════════════════════════════════════════════════════ -->
+ <div class="slide" data-slide="24">
+ <div class="gradient-mesh">
+ <div class="blob" style="width:380px;height:380px;top:-50px;right:-50px;background:#2dd4bf;opacity:0.08;"></div>
+ <div class="blob" style="width:260px;height:260px;bottom:-40px;left:-40px;background:#065f46;opacity:0.1;"></div>
+ </div>
+ <div class="kelp-strand" style="right:3%;height:160px;animation-delay:0.5s;opacity:0.12;"></div>
+ <div class="content" style="max-width:1140px;">
+ <div class="reveal mb-1" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+ <span class="otter-badge">📚 Technical References</span>
+ <a href="https://github.com/oceaneboulais" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.25);border-radius:20px;padding:5px 14px;font-size:0.78rem;color:#2dd4bf;text-decoration:none;font-family:'DM Sans',sans-serif;letter-spacing:0.04em;">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+ github.com/oceaneboulais
+ </a>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;" class="reveal">
+
+ <!-- Col 1: Agentic AI & LLMs -->
+ <div>
+ <div style="color:#2dd4bf;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.5rem;border-bottom:1px solid rgba(45,212,191,0.15);padding-bottom:0.3rem;">🤖 Agentic AI & LLM Architecture</div>
+ <div style="display:flex;flex-direction:column;gap:0.35rem;">
+ <div style="background:rgba(45,212,191,0.04);border-left:2px solid rgba(45,212,191,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Sapkota et al. (2025)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"AI Agents vs. Agentic AI: A Conceptual Taxonomy, Applications and Challenges." <em>arXiv:2505.10468</em></div>
+ </div>
+ <div style="background:rgba(45,212,191,0.04);border-left:2px solid rgba(45,212,191,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Händler (2023)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"A Taxonomy for Autonomous LLM-Powered Multi-Agent Architectures." <em>SCITEPRESS ICAART 2023</em></div>
+ </div>
+ <div style="background:rgba(45,212,191,0.04);border-left:2px solid rgba(45,212,191,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Guo et al. (2025)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"Agentic AI: A Comprehensive Survey of Technologies, Applications and Challenges." <em>IEEE Access, 2025</em></div>
+ </div>
+ <div style="background:rgba(45,212,191,0.04);border-left:2px solid rgba(45,212,191,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Wang et al. (2024)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"Large Language Model Agent: A Survey on Methodology, Applications and Challenges." <em>OpenReview / arXiv</em></div>
+ </div>
+ <div style="background:rgba(45,212,191,0.04);border-left:2px solid rgba(45,212,191,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Lu et al. (2024)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery." <em>Nature, 2026; arXiv:2408.06292</em></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Col 2: AI in Research & Specific Tools -->
+ <div>
+ <div style="color:#86efac;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.5rem;border-bottom:1px solid rgba(134,239,172,0.15);padding-bottom:0.3rem;">🔬 AI Tools in Scientific Research</div>
+ <div style="display:flex;flex-direction:column;gap:0.35rem;">
+ <div style="background:rgba(134,239,172,0.04);border-left:2px solid rgba(134,239,172,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Abramson et al. (2024)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"Accurate structure prediction of biomolecular interactions with AlphaFold 3." <em>Nature 630, 493–500 (2024)</em></div>
+ </div>
+ <div style="background:rgba(134,239,172,0.04);border-left:2px solid rgba(134,239,172,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Liang et al. (2025)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"Paper2Code: Automating Code Generation from Scientific Papers in Machine Learning." <em>arXiv:2504.17192</em></div>
+ </div>
+ <div style="background:rgba(134,239,172,0.04);border-left:2px solid rgba(134,239,172,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Peng et al. (2025)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"The evolving role of programming and LLMs in the development of AI research." <em>AIP AML 3, 026111 (2025)</em></div>
+ </div>
+ <div style="background:rgba(134,239,172,0.04);border-left:2px solid rgba(134,239,172,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Bail et al. (2026)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"AI is transforming research: more papers, less quality, strained review system." <em>UC Berkeley Haas / Science, 2026</em></div>
+ </div>
+ <div style="background:rgba(134,239,172,0.04);border-left:2px solid rgba(134,239,172,0.3);border-radius:0 6px 6px 0;padding:0.45rem 0.65rem;">
+ <div style="color:#e8f5f0;font-size:0.78rem;font-weight:600;">Floridi & Cowls (2024)</div>
+ <div style="color:#a8d4c4;font-size:0.73rem;line-height:1.4;">"Ethical framework for AI in academic research." <em>Oxford/Cambridge — Nature Machine Intelligence (2024)</em></div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Presenter's own work + GitHub -->
+ <div class="reveal" style="margin-top:0.7rem;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:0.8rem 1rem;">
+ <div style="color:#fbbf24;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.5rem;">🦦 Presenter's Research — Océane Boulais, Scripps Institution of Oceanography</div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;">
+ <div style="font-size:0.73rem;color:#a8d4c4;line-height:1.4;"><strong style="color:#e8f5f0;">Katija, Boulais et al. (2022)</strong><br>"FathomNet: A global image database for enabling AI in the ocean." <em>Scientific Reports 12, 15914</em></div>
+ <div style="font-size:0.73rem;color:#a8d4c4;line-height:1.4;"><strong style="color:#e8f5f0;">Boulais et al. (2021)</strong><br>"SeaMapD21: A large-scale reef fish dataset for fine-grained categorization." <em>FGVC8 Workshop, CVPR</em></div>
+ <div style="font-size:0.73rem;color:#a8d4c4;line-height:1.4;"><strong style="color:#e8f5f0;">Thode, Boulais et al. (2025)</strong><br>Coral reef bioacoustics &amp; restoration, Kāneʻohe Bay. <em>Scripps SIO — in press</em></div>
+ </div>
+ <div style="margin-top:0.5rem;display:flex;align-items:center;gap:0.6rem;font-size:0.75rem;color:#6aabaA;">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="#fbbf24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+ <span>Slide deck source &amp; demo notebooks: <strong style="color:#fbbf24;">github.com/oceaneboulais</strong> &nbsp;·&nbsp; Presenter: Océane Boulais, PhD Candidate, Thode Environmental Acoustics Lab, Scripps SIO / UCSD &nbsp;·&nbsp; <a href="mailto:oboulais@ucsd.edu" style="color:#2dd4bf;text-decoration:none;">oboulais@ucsd.edu</a></span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+</div><!-- end .deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+ <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+ <div class="slide-dots" id="dots"></div>
+ <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+ <span class="slide-counter" id="counter">1 / 24</span>
+</div>
+
+<script>
+ /* === Deck Navigation === */
+ let current = 1;
+ const total = document.querySelectorAll('.slide').length;
+ const dotsContainer = document.getElementById('dots');
+ const counter = document.getElementById('counter');
+ for (let i = 1; i <= total; i++) {
+ const dot = document.createElement('div');
+ dot.className = 'dot' + (i === 1 ? ' active' : '');
+ dot.onclick = () => goToSlide(i);
+ dotsContainer.appendChild(dot);
+ }
+ function goToSlide(n) {
+ const prev = document.querySelector('.slide.active');
+ const next = document.querySelector(`.slide[data-slide="${n}"]`);
+ if (prev) prev.classList.remove('active');
+ if (next) { next.classList.add('active'); animateSlide(next); }
+ current = n; updateNav();
+ }
+ function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+ function updateNav() {
+ document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i + 1 === current); });
+ counter.textContent = current + ' / ' + total;
+ }
+ document.addEventListener('keydown', (e) => {
+ if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+ if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+ });
+ let touchStartX = 0;
+ document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+ document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+ /* === Animate reveal elements === */
+ function animateSlide(slide) {
+ slide.querySelectorAll('.reveal').forEach((el, i) => {
+ el.style.transition = 'none';
+ el.style.opacity = '0';
+ el.style.transform = 'translateY(20px)';
+ el.offsetHeight;
+ const delay = i * 0.08;
+ el.style.transition = `opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
+ el.style.opacity = '1';
+ el.style.transform = 'translateY(0px)';
+ });
+ animateSlideEffects(slide);
+ }
+
+ function animateSlideEffects(slide) {
+ /* Counter [data-count] */
+ slide.querySelectorAll('[data-count]:not(.counted)').forEach(el => {
+ el.classList.add('counted');
+ const target = parseInt(el.dataset.count);
+ const suffix = el.dataset.suffix || '%';
+ let cur = 0; const step = target / 40;
+ const timer = setInterval(() => {
+ cur += step;
+ if (cur >= target) { cur = target; clearInterval(timer); }
+ el.textContent = Math.round(cur) + suffix;
+ }, 30);
+ });
+ /* Bar fills */
+ slide.querySelectorAll('.bar-fill:not(.fill-init)').forEach((bar, i) => {
+ bar.classList.add('fill-init');
+ bar.style.width = '0%';
+ bar.style.transition = `width 0.6s ease ${i * 0.1}s`;
+ bar.offsetHeight;
+ bar.style.width = bar.dataset.width + '%';
+ });
+ }
+
+ /* === Mouse Spotlight === */
+ document.addEventListener('mousemove', (e) => {
+ const spotlight = document.querySelector('.mouse-spotlight');
+ if (spotlight) {
+ spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(45,212,191,0.05), transparent 40%)`;
+ }
+ });
+
+ /* === Parallax deco shapes === */
+ (function() {
+ let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+ const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+ document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+ (function tick() {
+ const ox = (mouseX - cx) / cx, oy = (mouseY - cy) / cy;
+ document.querySelectorAll('.deco-shape').forEach(shape => {
+ const speed = parseFloat(shape.dataset.speed) || 0.03;
+ shape.style.transform = `translate(${ox * speed * 100}px, ${oy * speed * 100}px)`;
+ });
+ requestAnimationFrame(tick);
+ })();
+ })();
+
+ /* === Particle Canvas === */
+ window.initParticles = function(canvas, options) {
+ if (!canvas) return;
+ const ctx = canvas.getContext('2d');
+ canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+ const interactive = options.interactive !== false;
+ const count = options.count || (interactive ? 45 : 16);
+ let mx = -1000, my = -1000;
+ const [r, g, b] = [45, 212, 191];
+ const particles = Array.from({ length: count }, () => ({
+ x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+ vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+ size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+ }));
+ if (interactive) {
+ canvas.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mx = e.clientX - rect.left; my = e.clientY - rect.top; });
+ canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+ }
+ (function animate() {
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
+ particles.forEach(p => {
+ if (interactive) {
+ const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx * dx + dy * dy);
+ if (dist < 120) { const force = (120 - dist) / 120 * 2; p.vx += (dx / dist) * force * 0.08; p.vy += (dy / dist) * force * 0.08; }
+ }
+ p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+ if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+ if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+ ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+ ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`; ctx.fill();
+ });
+ requestAnimationFrame(animate);
+ })();
+ };
+ document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { interactive: true, count: 45 }));
+ document.querySelectorAll('.particle-canvas-ambient').forEach(c => window.initParticles(c, { interactive: false, count: 16 }));
+
+ /* Animate first slide */
+ try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+</body>
+</html>
