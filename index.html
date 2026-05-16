@@ -240,11 +240,92 @@
         transform: translateY(0px);
       }
     }
+
+    /* Right-to-left fish */
+    .fish-rtl {
+      position: absolute;
+      font-family: monospace;
+      font-size: 14px;
+      color: rgba(153, 204, 204, 0.65);
+      animation: swim-rtl linear infinite;
+      opacity: 0;
+    }
+    @media (max-width: 576px) { .fish-rtl { font-size: 12px; } }
+
+    .fish-rtl:nth-child(1) { top: 74%; animation-duration: 29s; animation-delay: 3s;  }
+    .fish-rtl:nth-child(2) { top: 80%; animation-duration: 24s; animation-delay: 11s; }
+    .fish-rtl:nth-child(3) { top: 77%; animation-duration: 33s; animation-delay: 7s;  }
+    .fish-rtl:nth-child(4) { top: 85%; animation-duration: 27s; animation-delay: 17s; }
+
+    @keyframes swim-rtl {
+      0%   { left: calc(100% + 100px); opacity: 0; transform: translateY(0px); }
+      5%   { opacity: 1; }
+      25%  { transform: translateY(7px); }
+      50%  { transform: translateY(-5px); }
+      75%  { transform: translateY(3px); }
+      95%  { opacity: 1; }
+      100% { left: -100px; opacity: 0; transform: translateY(0px); }
+    }
+
+    /* Side ASCII kelp decorations — tip at top, holdfast at bottom of viewport */
+    .kelp-side, .kelp-side-short, .kelp-side-left {
+      position: fixed;
+      top: var(--navbar-h);
+      height: calc(100vh - var(--navbar-h));
+      overflow: hidden;
+      font-family: monospace;
+      font-size: 9px;
+      pointer-events: none;
+      z-index: 0;
+      white-space: pre;
+      display: none;
+      user-select: none;
+    }
+    /* Tall right kelp — 76 lines × line-height fills exactly 100vh */
+    .kelp-side {
+      right: 12px;
+      line-height: calc((100vh - var(--navbar-h)) / 76);
+      color: rgba(153, 204, 204, 0.42);
+      text-align: right;
+      transform-origin: bottom right;
+      animation: kelp-sway 4.5s ease-in-out infinite;
+    }
+    /* Shorter right kelp — 44 lines, wider spacing so it also spans full height */
+    .kelp-side-short {
+      right: 58px;
+      line-height: calc((100vh - var(--navbar-h)) / 44);
+      color: rgba(153, 204, 204, 0.26);
+      text-align: right;
+      transform-origin: bottom right;
+      animation: kelp-sway 3.7s ease-in-out infinite;
+      animation-delay: 0.9s;
+    }
+    /* Left kelp (mirrored) — 76 lines × line-height fills exactly 100vh */
+    .kelp-side-left {
+      left: 12px;
+      line-height: calc((100vh - var(--navbar-h)) / 76);
+      color: rgba(153, 204, 204, 0.38);
+      text-align: left;
+      transform-origin: bottom left;
+      animation: kelp-sway-left 5.1s ease-in-out infinite;
+      animation-delay: 0.4s;
+    }
+    @keyframes kelp-sway {
+      0%, 100% { transform: rotate(-2.5deg); }
+      50%       { transform: rotate(2.5deg);  }
+    }
+    @keyframes kelp-sway-left {
+      0%, 100% { transform: rotate(2.5deg); }
+      50%       { transform: rotate(-2.5deg); }
+    }
+    @media (min-width: 1380px) {
+      .kelp-side, .kelp-side-short, .kelp-side-left { display: block; }
+    }
   </style>
 </head>
 
 <body>
-  <!-- Fish school animation -->
+  <!-- Fish school: left-to-right -->
   <div class="fish-school">
     <div class="fish">><(((°></div>
     <div class="fish">><(((°></div>
@@ -253,6 +334,216 @@
     <div class="fish">><(((°></div>
     <div class="fish">><(((°></div>
   </div>
+
+  <!-- Fish school: right-to-left (bottom of page) -->
+  <div class="fish-school" aria-hidden="true">
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+  </div>
+
+  <!-- Right side: tall ASCII kelp with holdfast -->
+  <div class="kelp-side" aria-hidden="true">    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    |
+   (|
+(((|)))
+ ~~~~~</div>
+
+  <!-- Right side: shorter ASCII kelp with holdfast -->
+  <div class="kelp-side-short" aria-hidden="true">    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    }
+   /|
+  ( |
+   \|
+    |
+   (|
+(((|)))
+ ~~~~~</div>
+
+  <!-- Left side: tall ASCII kelp mirrored -->
+  <div class="kelp-side-left" aria-hidden="true">{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+{
+|\
+| )
+|/
+  |
+ |)
+(((|)))
+~~~~~</div>
 
   <!-- Top bar -->
   <div class="topbar">
@@ -271,6 +562,7 @@
             <!-- Project: AI Empowered Research Curriculum (2026) -->
             <div class="project">
               <a class="project-circle" href="javascript:void(0)" data-url="projects/ai-4-researchers-kelpstyle-lecture/AI_Enabled_Research_OEB_05082026.html" data-title="AI Empowered Research Curriculum" data-protected="true" aria-label="AI Empowered Research Curriculum">
+                <img class="circle-thumb" src="project_imgs/otter_coder.svg" alt="otter coding on belly">
                 <span class="label">2026</span>
                 <span class="name">AI Empowered Research Curriculum</span>
               </a>

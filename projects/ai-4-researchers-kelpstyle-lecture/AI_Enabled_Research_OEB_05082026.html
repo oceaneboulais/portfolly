@@ -101,16 +101,12 @@
  background: radial-gradient(ellipse at center, transparent 50%, var(--color-vignette) 100%);
  }
 
- /* Kelp forest deco elements */
- @keyframes kelp-sway {
- 0%, 100% { transform: rotate(-4deg) scaleY(1); }
- 50% { transform: rotate(4deg) scaleY(1.03); }
- }
+ /* Decorative elements */
  @keyframes bubble-rise {
  0% { transform: translateY(0) scale(1); opacity: 0.6; }
  100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
  }
- .kelp-strand { position: absolute; bottom: 0; width: 6px; border-radius: 3px; background: linear-gradient(to top, #065f46, #10b981, #6ee7b7); transform-origin: bottom center; animation: kelp-sway 4s ease-in-out infinite; opacity: 0.15; }
+ .kelp-strand { display: none; }
  .bubble { position: absolute; border-radius: 50%; border: 1px solid rgba(45,212,191,0.3); animation: bubble-rise 6s ease-in-out infinite; }
 
  /* Shimmer for key headings */
@@ -176,11 +172,10 @@
  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
  <div class="content text-center">
  <div class="reveal" style="margin-bottom:1rem;">
- <span class="otter-badge">🦦 A PhD Student's Field Notes</span>
+ <span class="otter-badge">A PhD Student's Perspective</span>
  </div>
- <div class="text-[clamp(5rem,12vw,9rem)] mb-2 animate-[float_3s_ease-in-out_infinite] reveal" style="line-height:1;">🦦</div>
  <h1 class="font-display text-[clamp(2.4rem,5.5vw,4.5rem)] font-black tracking-tight mb-4 reveal shimmer-text">AI-Enabled Research</h1>
- <p class="text-[clamp(1rem,1.8vw,1.5rem)] font-light text-text-secondary tracking-[4px] uppercase mb-2 reveal">From Student to AI Powered Otter-ator</p>
+ <p class="text-[clamp(1rem,1.8vw,1.5rem)] font-light text-text-secondary tracking-[4px] uppercase mb-2 reveal">From PhD Student to AI-Empowered Researcher</p>
  <p class="text-[clamp(0.8rem,1.2vw,1rem)] text-text-muted tracking-wider reveal" style="margin-top:0.5rem;">
  <em>"The otter that uses a rock is not smarter — it's more resourceful."</em>
  </p>
@@ -204,7 +199,7 @@
  <div class="content">
  <!-- Header row -->
  <div class="reveal mb-3" style="display:flex;align-items:center;gap:0.6rem;">
- <span class="otter-badge">🦦 Your Guide Today</span>
+ <span class="otter-badge">About the Presenter</span>
  </div>
 
  <!-- Split layout: left bio | right ML work -->
@@ -305,7 +300,7 @@
  <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
  <div class="content">
  <div class="reveal mb-1"><span class="otter-badge">🗺️ Today's Dive Plan</span></div>
- <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal" style="color:#2dd4bf;">Our Journey Through the Kelp Forest</h2>
+ <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal" style="color:#2dd4bf;">Today's Agenda</h2>
  <div class="grid grid-cols-2 gap-4 reveal">
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;margin-bottom:0.4rem;">🌊</div>
@@ -315,20 +310,20 @@
  <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;margin-bottom:0.4rem;">🪨</div>
  <div style="font-weight:600;color:#86efac;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">The Toolkit</div>
- <div style="color:#a8d4c4;font-size:0.85rem;">Core AI tools the otter reaches for — literature, coding, analysis</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Core AI tools — literature, coding, analysis</div>
  </div>
  <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;margin-bottom:0.4rem;">🧠</div>
- <div style="font-weight:600;color:#fbbf24;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Deep Foraging</div>
+ <div style="font-weight:600;color:#fbbf24;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Deep Dive</div>
  <div style="color:#a8d4c4;font-size:0.85rem;">Advanced AI for hyper-technical research: code, models, experiments</div>
  </div>
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;margin-bottom:0.4rem;">⚖️</div>
  <div style="font-weight:600;color:#2dd4bf;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">The Balance</div>
- <div style="color:#a8d4c4;font-size:0.85rem;">Ethics, integrity, and staying the true scientist beneath the fur</div>
+ <div style="color:#a8d4c4;font-size:0.85rem;">Ethics, integrity, and staying the scientist</div>
  </div>
  </div>
- <p class="reveal" style="margin-top:1rem;font-size:0.85rem;color:#6aabaA;text-align:center;font-style:italic;">~45–60 min discussion · Bring your rocks</p>
+ <p class="reveal" style="margin-top:1rem;font-size:0.85rem;color:#6aabaA;text-align:center;font-style:italic;">~45–60 min · interactive discussion</p>
  </div>
  </div>
 
@@ -432,7 +427,7 @@
  <div class="kelp-strand" style="left:3%;height:200px;animation-delay:1s;"></div>
  <div class="kelp-strand" style="left:6%;height:160px;animation-delay:0.3s;opacity:0.1;"></div>
  <div class="content">
- <div class="reveal mb-2"><span class="otter-badge">🌊 The Ecosystem</span></div>
+ <div class="reveal mb-2"><span class="otter-badge">📊 The Landscape</span></div>
  <h2 class="font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">The Ocean Has Changed</h2>
  <p class="reveal" style="color:#a8d4c4;margin-bottom:1.2rem;font-size:0.95rem;">3,800 PhD students surveyed by <em>Nature</em>, 2025</p>
  <div class="grid grid-cols-3 gap-4 reveal">
@@ -450,14 +445,13 @@
  </div>
  </div>
  <div class="reveal" style="margin-top:1.2rem;background:rgba(45,212,191,0.05);border-left:3px solid #2dd4bf;border-radius:0 10px 10px 0;padding:1rem 1.2rem;">
- <p style="color:#e8f5f0;font-size:0.9rem;margin:0;">AI manuscript use <strong>jumped from 53% → 88%</strong> in UK undergraduate assessments in a single year (2024→2025). Scientists using LLMs saw output grow <strong>&gt;50% on bioRxiv/SSRN</strong>. The kelp is growing fast.</p>
+ <p style="color:#e8f5f0;font-size:0.9rem;margin:0;">AI manuscript use <strong>jumped from 53% → 88%</strong> in UK undergraduate assessments in a single year (2024→2025). Scientists using LLMs saw output grow <strong>&gt;50% on bioRxiv/SSRN</strong>. The field is evolving fast.</p>
  </div>
  <div class="reveal" style="margin-top:0.8rem;display:flex;gap:1rem;align-items:center;">
  <div style="flex:1;background:rgba(255,255,255,0.03);border-radius:8px;padding:0.8rem;">
- <div style="font-size:0.75rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">Kelp Forest Parallel</div>
- <div style="font-size:0.85rem;color:#a8d4c4;">Like a kelp forest — tiny changes ripple out everywhere. One researcher using AI effectively can open doors for their entire lab, just like one otter keeps the whole reef healthy.</div>
+ <div style="font-size:0.75rem;color:#6aabaA;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">The Ripple Effect</div>
+ <div style="font-size:0.85rem;color:#a8d4c4;">Tiny changes propagate. One researcher using AI effectively can unlock new possibilities for their entire lab and collaborators.</div>
  </div>
- <div style="font-size:3rem;">🦦</div>
  </div>
  </div>
  </div>
@@ -473,7 +467,7 @@
  <div class="bubble" style="width:14px;height:14px;bottom:25%;right:15%;animation-delay:0.5s;animation-duration:5.5s;"></div>
  <div class="bubble" style="width:8px;height:8px;bottom:45%;left:10%;animation-delay:2.5s;animation-duration:7s;"></div>
  <div class="content">
- <div class="reveal mb-2"><span class="otter-badge">🪨 The Otter's Philosophy</span></div>
+ <div class="reveal mb-2"><span class="otter-badge">🔬 AI as Tool</span></div>
  <h2 class="font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Tools Enable Specialization</h2>
  <div class="grid grid-cols-2 gap-5 reveal">
  <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:14px;padding:1.5rem;" class="card-hover">
@@ -520,7 +514,7 @@
  <div class="content text-center">
  <div class="text-[5rem] mb-3 animate-[float_3.5s_ease-in-out_infinite] reveal">📚</div>
  <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#2dd4bf,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part I: The Literature Hunt</h2>
- <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">Finding the abalone beneath the waves</p>
+ <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">AI tools for literature discovery</p>
  </div>
  </div>
 
@@ -534,7 +528,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🔍 Literature Discovery</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Your Foraging Toolkit</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Your Literature Toolkit</h2>
  <div class="grid grid-cols-3 gap-3 reveal">
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:1.1rem;" class="card-hover">
  <div style="font-size:1.5rem;margin-bottom:0.4rem;">🔬</div>
@@ -568,7 +562,7 @@
  </div>
  </div>
  <div class="reveal" style="margin-top:0.9rem;padding:0.8rem 1.2rem;background:rgba(45,212,191,0.04);border-radius:8px;font-size:0.82rem;color:#6aabaA;">
- 🦦 <em>Otter Tip: Combine NotebookLM (grounded synthesis) + Claude (gap framing) to cut lit review time by ~60–70% without sacrificing rigor.</em>
+ 💡 <em>Tip: Combine NotebookLM (grounded synthesis) + Claude (gap framing) to cut lit review time by ~60–70% without sacrificing rigor.</em>
  </div>
  </div>
  </div>
@@ -583,20 +577,20 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">📓 NotebookLM Masterclass</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">The Otter's Rock-Cracking Ritual</h2>
- <p class="reveal" style="color:#a8d4c4;font-size:0.9rem;margin-bottom:1rem;">A repeatable literature-to-gap workflow</p>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">A Repeatable Literature-to-Gap Workflow</h2>
+ <p class="reveal" style="color:#a8d4c4;font-size:0.9rem;margin-bottom:1rem;">Step by step: from corpus to research gap</p>
  <div class="reveal" style="display:flex;flex-direction:column;gap:0.7rem;">
  <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
  <div style="background:#2dd4bf;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">1</div>
  <div>
- <strong style="color:#e8f5f0;font-size:0.9rem;">Load the Kelp Bed:</strong>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Load Your Corpus:</strong>
  <span style="color:#a8d4c4;font-size:0.85rem;"> Upload 20–50 focused papers into one notebook (not split by subtopic)</span>
  </div>
  </div>
  <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
  <div style="background:#86efac;color:#041a1f;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;margin-top:2px;">2</div>
  <div>
- <strong style="color:#e8f5f0;font-size:0.9rem;">Dive for Themes:</strong>
+ <strong style="color:#e8f5f0;font-size:0.9rem;">Surface Key Themes:</strong>
  <span style="color:#a8d4c4;font-size:0.85rem;"> Ask: "What are the main research themes?" → "What evidence supports and challenges theme X?"</span>
  </div>
  </div>
@@ -662,7 +656,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">⚙️ Code & Analysis</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">Cracking the Technical Shell</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">Technical AI Tools</h2>
  <div class="grid grid-cols-2 gap-4 reveal">
  <div>
  <h3 style="color:#2dd4bf;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">For Data Analysis & Modeling</h3>
@@ -717,7 +711,7 @@
  <div class="bubble" style="width:9px;height:9px;bottom:35%;left:12%;animation-delay:1.2s;animation-duration:6s;"></div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">📖 Vocabulary Dive</span></div>
- <h2 class="font-display text-[clamp(1.5rem,3.2vw,2.2rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Knowing Your Rocks: Key Terms</h2>
+ <h2 class="font-display text-[clamp(1.5rem,3.2vw,2.2rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Key Terms</h2>
  <p class="reveal" style="color:#6aabaA;font-size:0.78rem;margin-bottom:0.8rem;font-style:italic;">Sources: Sapkota et al. 2025 (arXiv:2505.10468); Händler 2023 (SCITEPRESS); Guo et al. 2024 (IEEE Access); MIT Sloan, 2026</p>
  <div class="grid grid-cols-2 gap-3 reveal">
  <!-- LLM -->
@@ -726,7 +720,7 @@
  <div style="background:#2dd4bf;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">LLM</div>
  <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Large Language Model</span>
  </div>
- <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A neural network trained on massive text data that can read, write, reason, and generate. Think of it as the <em>otter's brain</em> — pattern recognition at scale. Examples: GPT-4, Claude, Gemini.</p>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A neural network trained on massive text data that can read, write, reason, and generate. Pattern recognition at scale — the system has processed more text than any human could. Examples: GPT-4, Claude, Gemini.</p>
  </div>
  <!-- AI Agent -->
  <div style="background:rgba(134,239,172,0.06);border:1px solid rgba(134,239,172,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
@@ -734,7 +728,7 @@
  <div style="background:#86efac;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">AI AGENT</div>
  <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Modular Task Executor</span>
  </div>
- <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A software system that uses an LLM to complete a <em>specific, bounded task</em> — searching the web, writing code, sending an email. Like <em>one otter with one rock</em> cracking one type of shell.</p>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;">A software system that uses an LLM to complete a <em>specific, bounded task</em> — searching the web, writing code, sending an email. Focused on one specific, bounded capability.</p>
  </div>
  <!-- Agentic AI -->
  <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
@@ -742,7 +736,7 @@
  <div style="background:#fbbf24;color:#041a1f;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">AGENTIC AI</div>
  <span style="color:#e8f5f0;font-weight:600;font-size:0.88rem;">Orchestrated Autonomy</span>
  </div>
- <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;"><em>"Multi-agent collaboration, dynamic task decomposition, persistent memory, and coordinated autonomy"</em> (Sapkota et al., 2025). The whole otter pod working together on a complex goal — planning, routing, adapting.</p>
+ <p style="color:#a8d4c4;font-size:0.82rem;line-height:1.5;margin:0;"><em>"Multi-agent collaboration, dynamic task decomposition, persistent memory, and coordinated autonomy"</em> (Sapkota et al., 2025). Multiple agents coordinating toward a complex goal — planning, routing, adapting.</p>
  </div>
  <!-- Multi-Agent System -->
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1rem 1.1rem;" class="card-hover">
@@ -787,8 +781,8 @@
  <div class="bubble" style="width:12px;height:12px;bottom:30%;left:12%;animation-delay:1s;animation-duration:6s;"></div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🪨 Prompt Engineering</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">Choosing the Right Rock</h2>
- <p class="reveal" style="color:#a8d4c4;font-size:0.88rem;margin-bottom:1rem;">The CORE Framework for Scientific Prompting</p>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-1 reveal" style="color:#2dd4bf;">The CORE Prompting Framework</h2>
+ <p class="reveal" style="color:#a8d4c4;font-size:0.88rem;margin-bottom:1rem;">A structured approach to scientific prompting</p>
  <div class="grid grid-cols-2 gap-3 reveal">
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;font-weight:900;color:#2dd4bf;font-family:'DM Sans',sans-serif;margin-bottom:0.3rem;">C</div>
@@ -812,7 +806,7 @@
  </div>
  </div>
  <div class="reveal" style="margin-top:0.9rem;background:rgba(45,212,191,0.04);border-radius:10px;padding:0.9rem;font-size:0.82rem;color:#6aabaA;">
- 🦦 <em>Lazy prompt: "Explain my results." → CORE prompt: "You are a computational neuroscientist. Interpret these regression coefficients [table] in the context of synaptic plasticity models. Output: 2 paragraphs, technical language, no introduction filler."</em>
+ 💡 <em>Lazy prompt: "Explain my results." → CORE prompt: "You are a computational neuroscientist. Interpret these regression coefficients [table] in the context of synaptic plasticity models. Output: 2 paragraphs, technical language, no introduction filler."</em>
  </div>
  </div>
  </div>
@@ -828,7 +822,7 @@
  <div class="kelp-strand" style="right:3%;height:180px;animation-delay:0.6s;"></div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🧩 Advanced Patterns</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Chaining Your Rocks</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Advanced Prompting Patterns</h2>
  <div class="reveal" style="display:flex;flex-direction:column;gap:0.8rem;">
  <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:1rem 1.2rem;" class="card-hover">
  <div style="font-size:1.5rem;">⛓️</div>
@@ -872,7 +866,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🌊 Full Research Pipeline</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Otter's Complete Foraging Run</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Your Full AI Research Pipeline</h2>
  <div class="reveal" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;align-items:start;">
  <!-- Stage 1 -->
  <div style="text-align:center;">
@@ -927,7 +921,7 @@
  </div>
  </div>
  <div class="reveal" style="margin-top:0.8rem;background:rgba(45,212,191,0.04);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:#6aabaA;text-align:center;">
- 🦦 <em>Each stage has a dedicated rock. The master otter knows which one to pick up — and when to put it down.</em>
+ 💡 <em>Each stage has a specialized tool. The key is knowing which to use — and when to step back.</em>
  </div>
  </div>
  </div>
@@ -942,7 +936,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🤖 The Frontier</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">When the Otter Learns to Fish on Its Own</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Evolving AI Frontier</h2>
  <div class="grid grid-cols-3 gap-4 reveal">
  <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:14px;padding:1.2rem;" class="card-hover">
  <div style="font-size:1.8rem;margin-bottom:0.5rem;">🧬</div>
@@ -966,8 +960,8 @@
  <div style="font-size:0.82rem;color:#a8d4c4;">Cited in <strong style="color:#e8f5f0;">35,000+ papers</strong>. Solved the 50-year protein-folding problem. Earned the 2024 Nobel Prize.</div>
  </div>
  <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:0.9rem;border-left:3px solid #fbbf24;">
- <div style="font-size:0.8rem;font-weight:600;color:#fbbf24;margin-bottom:0.3rem;">Otter Insight</div>
- <div style="font-size:0.82rem;color:#a8d4c4;">The best outcomes come from stacking tools: AlphaFold + knowledge graphs + general agents. Not one rock — a whole toolkit.</div>
+ <div style="font-size:0.8rem;font-weight:600;color:#fbbf24;margin-bottom:0.3rem;">Key Insight</div>
+ <div style="font-size:0.82rem;color:#a8d4c4;">The best outcomes come from stacking tools: AlphaFold + knowledge graphs + general agents — a coordinated toolkit, not a single solution.</div>
  </div>
  </div>
  </div>
@@ -987,7 +981,7 @@
  <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
  <div class="content text-center">
  <div class="text-[5rem] mb-3 animate-[float_3.5s_ease-in-out_infinite] reveal">⚖️</div>
- <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#fbbf24,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part III: The Balance of the Reef</h2>
+ <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal" style="background:linear-gradient(135deg,#fbbf24,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Part III: The Balance</h2>
  <p class="text-[clamp(0.9rem,1.6vw,1.2rem)] text-text-muted tracking-widest uppercase reveal">Ethics, integrity & the scientist's responsibility</p>
  </div>
  </div>
@@ -1002,7 +996,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">⚖️ Ethics & Integrity</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Urchin Problem: When Otters Overeat</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Defining the Line: Tool vs. Replacement</h2>
  <div class="grid grid-cols-2 gap-4 reveal">
  <div>
  <h3 style="color:#86efac;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">✅ Healthy Foraging (AI as Tool)</h3>
@@ -1039,7 +1033,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🌡️ Critical Perspective</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">When More Kelp Isn't Better</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#fbbf24;">The Quality Question</h2>
  <div class="reveal" style="background:rgba(251,191,36,0.06);border-left:4px solid #fbbf24;border-radius:0 12px 12px 0;padding:1rem 1.2rem;margin-bottom:1rem;">
  <p style="color:#e8f5f0;font-size:0.9rem;margin:0;">"We found an inverse relationship between writing sophistication and quality. If you're human, more complex writing = better paper. If you're a robot, the opposite." — UC Berkeley Haas / Cornell, <em>Science</em>, 2026</p>
  </div>
@@ -1058,7 +1052,7 @@
  </div>
  </div>
  <div class="reveal" style="margin-top:1rem;background:rgba(45,212,191,0.04);border-radius:10px;padding:0.9rem 1.1rem;font-size:0.85rem;color:#a8d4c4;">
- 🦦 <em>Like sea otters balancing urchin populations: the goal isn't zero urchins (AI-free research) or urchin barrens (AI does everything). The keystone species maintains equilibrium. You are the keystone.</em>
+ 💡 <em>The goal isn't to avoid AI entirely or let it do everything. Maintain equilibrium: use AI strategically while protecting your core scientific thinking. You are the keystone.</em>
  </div>
  </div>
  </div>
@@ -1074,7 +1068,7 @@
  <div class="bubble" style="width:10px;height:10px;bottom:35%;right:10%;animation-delay:1.5s;animation-duration:5s;"></div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🧬 What Only You Can Do</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">The Otter's Irreplaceable Role</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">What Only You Can Do</h2>
  <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
  <div>
  <div style="color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">What AI cannot generate</div>
@@ -1087,10 +1081,9 @@
  </ul>
  </div>
  <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:14px;padding:1.2rem;">
- <div style="color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">The Keystone Parallel</div>
- <p style="color:#a8d4c4;font-size:0.85rem;line-height:1.6;margin-bottom:0.7rem;">Sea otters keep urchin populations in check. Remove them and you get urchin barrens — no kelp, no ecosystem.</p>
- <p style="color:#a8d4c4;font-size:0.85rem;line-height:1.6;margin-bottom:0.7rem;">Without human researchers maintaining rigor, AI produces an "urchin barren" of polished-but-shallow papers.</p>
- <p style="color:#e8f5f0;font-size:0.85rem;line-height:1.6;font-style:italic;">You are the keystone species of your research ecosystem.</p>
+ <div style="color:#2dd4bf;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">The Keystone</div>
+ <p style="color:#a8d4c4;font-size:0.85rem;line-height:1.6;margin-bottom:0.7rem;">AI handles high-volume surface work — but without human rigor, output becomes polished-but-shallow.</p>
+ <p style="color:#e8f5f0;font-size:0.85rem;line-height:1.6;font-style:italic;">You are the keystone of your research ecosystem.</p>
  </div>
  </div>
  </div>
@@ -1107,7 +1100,7 @@
  <div class="kelp-strand" style="left:4%;height:180px;animation-delay:0.4s;"></div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">💬 Discussion Time</span></div>
- <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Bring Your Rocks to the Reef</h2>
+ <h2 class="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-bold mb-4 reveal" style="color:#2dd4bf;">Discussion Questions</h2>
  <div class="reveal" style="display:flex;flex-direction:column;gap:0.7rem;">
  <div style="display:flex;align-items:flex-start;gap:1rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);border-radius:10px;padding:0.9rem 1.1rem;" class="card-hover">
  <div style="font-size:1.3rem;flex-shrink:0;">🌊</div>
@@ -1139,7 +1132,7 @@
  </div>
  <div class="content">
  <div class="reveal mb-2"><span class="otter-badge">🗂️ Cheat Sheet</span></div>
- <h2 class="font-display text-[clamp(1.4rem,3vw,2rem)] font-bold mb-3 reveal" style="color:#2dd4bf;">The Otter's Field Guide — Keep This Slide</h2>
+ <h2 class="font-display text-[clamp(1.4rem,3vw,2rem)] font-bold mb-3 reveal" style="color:#2dd4bf;">Quick Reference — Keep This Slide</h2>
  <div class="grid grid-cols-3 gap-3 reveal">
  <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.9rem;">
  <div style="color:#2dd4bf;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">📚 Literature</div>
@@ -1208,7 +1201,7 @@
  <div class="bubble" style="width:6px;height:6px;bottom:40%;left:45%;animation-delay:1.5s;animation-duration:6s;"></div>
  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
  <div class="content text-center">
- <div class="text-[5.5rem] mb-2 animate-[float_3.5s_ease-in-out_infinite] reveal" style="line-height:1.1;">🦦🪨</div>
+ <div class="text-[3rem] mb-2 reveal" style="line-height:1.1;">🪨</div>
  <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold mb-3 reveal shimmer-text">The Otter That Uses a Rock</h2>
  <p class="text-[clamp(0.95rem,1.6vw,1.3rem)] text-text-secondary mb-4 reveal" style="max-width:680px;margin-left:auto;margin-right:auto;line-height:1.6;">
  Is not smarter than those who don't — it's more <em>resourceful</em>. It survives a changing ocean, raises healthier pups, and keeps the kelp forest alive for every species beneath it.
@@ -1312,7 +1305,7 @@
 
  <!-- Presenter's own work + GitHub -->
  <div class="reveal" style="margin-top:0.7rem;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:0.8rem 1rem;">
- <div style="color:#fbbf24;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.5rem;">🦦 Presenter's Research — Océane Boulais, Scripps Institution of Oceanography</div>
+ <div style="color:#fbbf24;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.5rem;">Presenter's Research — Océane Boulais, Scripps Institution of Oceanography</div>
  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;">
  <div style="font-size:0.73rem;color:#a8d4c4;line-height:1.4;"><strong style="color:#e8f5f0;">Katija, Boulais et al. (2022)</strong><br>"FathomNet: A global image database for enabling AI in the ocean." <em>Scientific Reports 12, 15914</em></div>
  <div style="font-size:0.73rem;color:#a8d4c4;line-height:1.4;"><strong style="color:#e8f5f0;">Boulais et al. (2021)</strong><br>"SeaMapD21: A large-scale reef fish dataset for fine-grained categorization." <em>FGVC8 Workshop, CVPR</em></div>
