@@ -118,6 +118,17 @@
       opacity: 0.9; transition: opacity 180ms ease;
     }
 
+    /* Floating otter animation (matches slides keyframe) */
+    @keyframes otter-float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+    .circle-thumb-float {
+      inset: -10px 0 -10px 0;
+      height: calc(100% + 20px);
+      animation: otter-float 3.5s ease-in-out infinite;
+    }
+
     /* Hover labels */
     .label, .name {
       position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
@@ -562,7 +573,7 @@
             <!-- Project: AI Empowered Research Curriculum (2026) -->
             <div class="project">
               <a class="project-circle" href="javascript:void(0)" data-url="projects/ai-4-researchers-kelpstyle-lecture/AI_Enabled_Research_OEB_05082026.html" data-title="AI Empowered Research Curriculum" data-protected="true" aria-label="AI Empowered Research Curriculum">
-                <img class="circle-thumb" src="project_imgs/otter_coder.svg" alt="otter coding on belly">
+                <img class="circle-thumb circle-thumb-float" src="project_imgs/otter_coder.svg" alt="otter coding on belly">
                 <span class="label">2026</span>
                 <span class="name">AI Empowered Research Curriculum</span>
               </a>
