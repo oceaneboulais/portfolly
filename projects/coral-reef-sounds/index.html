@@ -121,20 +121,21 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-    .wv-wrap {
+    .prog-track {
       flex: 1;
-      height: 44px;
+      height: 3px;
+      background: #e0e0e0;
+      border-radius: 2px;
       cursor: pointer;
-      user-select: none;
       position: relative;
-      border-radius: 2px;
-      overflow: hidden;
     }
-    .wv-wrap canvas {
-      display: block;
-      width: 100%;
-      height: 44px !important;
+    .prog-fill {
+      height: 100%;
+      background: var(--accent);
       border-radius: 2px;
+      width: 0%;
+      pointer-events: none;
+      transition: width .08s linear;
     }
     .time-txt {
       font-size: 10px;
@@ -200,6 +201,14 @@
       line-height: 1.8;
       margin: 0;
     }
+    .audio-fallback {
+      display: none;
+      font-size: 11px;
+      color: var(--muted);
+      margin: -12px 0 16px;
+      letter-spacing: 0.03em;
+    }
+    .audio-fallback a { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -232,15 +241,20 @@
 
     <div class="player">
       <button class="btn-play" id="btn1" onclick="togglePlay(1)" aria-label="play / pause">▶</button>
-      <div class="wv-wrap" id="pw1">
-        <canvas id="wv1"></canvas>
+      <div class="prog-track" id="pt1" onclick="seek(1, event)">
+        <div class="prog-fill" id="pf1"></div>
       </div>
       <span class="time-txt" id="tt1">–:––</span>
       <span class="loop-lbl" title="looping">∞</span>
     </div>
-    <audio id="audio1" loop preload="none">
+    <audio id="audio1" loop preload="auto">
       <source src="https://drive.usercontent.google.com/download?id=1-Eu_hlVYAkj4q5Dor_wq5JnloAnWGI28&export=download&confirm=t">
+      <source src="https://drive.google.com/uc?export=download&id=1-Eu_hlVYAkj4q5Dor_wq5JnloAnWGI28&confirm=t">
     </audio>
+    <p class="audio-fallback" id="aerr1">
+      audio unavailable in this browser —
+      <a href="https://drive.google.com/file/d/1-Eu_hlVYAkj4q5Dor_wq5JnloAnWGI28/view?usp=sharing" target="_blank" rel="noopener">open in google drive ↗</a>
+    </p>
 
     <div class="spec-wrap">
       <div class="spec-row">
@@ -281,14 +295,19 @@
 
     <div class="player">
       <button class="btn-play" id="btn2" onclick="togglePlay(2)" aria-label="play / pause">▶</button>
-      <div class="wv-wrap" id="pw2">
-        <canvas id="wv2"></canvas>
+      <div class="prog-track" id="pt2" onclick="seek(2, event)">
+        <div class="prog-fill" id="pf2"></div>
       </div>
       <span class="time-txt" id="tt2">–:––</span>
     </div>
-    <audio id="audio2" preload="none">
+    <audio id="audio2" preload="auto">
       <source src="https://drive.usercontent.google.com/download?id=1Icbj6G2ohrsWzBJfvGW6MXiMg315edvZ&export=download&confirm=t">
+      <source src="https://drive.google.com/uc?export=download&id=1Icbj6G2ohrsWzBJfvGW6MXiMg315edvZ&confirm=t">
     </audio>
+    <p class="audio-fallback" id="aerr2">
+      audio unavailable in this browser —
+      <a href="https://drive.google.com/file/d/1Icbj6G2ohrsWzBJfvGW6MXiMg315edvZ/view?usp=sharing" target="_blank" rel="noopener">open in google drive ↗</a>
+    </p>
 
     <div class="spec-wrap">
       <div class="spec-row">
@@ -329,14 +348,19 @@
 
     <div class="player">
       <button class="btn-play" id="btn3" onclick="togglePlay(3)" aria-label="play / pause">▶</button>
-      <div class="wv-wrap" id="pw3">
-        <canvas id="wv3"></canvas>
+      <div class="prog-track" id="pt3" onclick="seek(3, event)">
+        <div class="prog-fill" id="pf3"></div>
       </div>
       <span class="time-txt" id="tt3">–:––</span>
     </div>
-    <audio id="audio3" preload="none">
+    <audio id="audio3" preload="auto">
       <source src="https://drive.usercontent.google.com/download?id=1nBR4-F_lt9LsMykXtFMYdqSA3qnz21Wm&export=download&confirm=t">
+      <source src="https://drive.google.com/uc?export=download&id=1nBR4-F_lt9LsMykXtFMYdqSA3qnz21Wm&confirm=t">
     </audio>
+    <p class="audio-fallback" id="aerr3">
+      audio unavailable in this browser —
+      <a href="https://drive.google.com/file/d/1nBR4-F_lt9LsMykXtFMYdqSA3qnz21Wm/view?usp=sharing" target="_blank" rel="noopener">open in google drive ↗</a>
+    </p>
 
     <div class="spec-wrap">
       <div class="spec-row">
@@ -388,12 +412,16 @@ function fmt(s) {
   const a = AUDIO[id];
   a.addEventListener('timeupdate', () => {
     if (!isFinite(a.duration)) return;
+    document.getElementById('pf' + id).style.width = (a.currentTime / a.duration * 100) + '%';
     document.getElementById('tt' + id).textContent = fmt(a.currentTime);
   });
   a.addEventListener('play',  () => { const b = document.getElementById('btn' + id); b.textContent = '⏸'; b.classList.add('active'); });
   a.addEventListener('pause', () => { const b = document.getElementById('btn' + id); b.textContent = '▶'; b.classList.remove('active'); });
   a.addEventListener('ended', () => { const b = document.getElementById('btn' + id); b.textContent = '▶'; b.classList.remove('active'); });
-  a.addEventListener('error', () => { const b = document.getElementById('btn' + id); b.textContent = '▶'; b.classList.remove('active'); });
+  a.addEventListener('error', () => {
+    const b = document.getElementById('btn' + id); b.textContent = '▶'; b.classList.remove('active');
+    const el = document.getElementById('aerr' + id); if (el) el.style.display = 'block';
+  });
 });
 
 function togglePlay(id) {
@@ -413,10 +441,15 @@ function togglePlay(id) {
   }
 }
 
+function seek(id, e) {
+  const a = AUDIO[id];
+  if (!isFinite(a.duration)) return;
+  const tr = document.getElementById('pt' + id);
+  const r  = (e.clientX - tr.getBoundingClientRect().left) / tr.offsetWidth;
+  a.currentTime = Math.max(0, Math.min(1, r)) * a.duration;
+}
+
 // ─── OFFLINE FFT SPECTROGRAM ─────────────────────────────────────────────────
-// When audio starts, we CORS-fetch the file, decode it, and run a full FFT
-// so the spectrogram shows the actual signal.  If CORS is blocked (Google
-// Drive may not allow it), we fall back to a scientifically-tuned simulation.
 
 const PRECOMP  = {};   // id → precomputed spectrogram object
 const FETCHING = {};   // id → boolean guard
@@ -809,15 +842,11 @@ function initCanvas(cfg) {
 }
 
 SPECS.forEach(initCanvas);
-[1, 2, 3].forEach(id => { initWaveformCanvas(id); setupScrub(id); });
 
 let _rt;
 window.addEventListener('resize', () => {
   clearTimeout(_rt);
-  _rt = setTimeout(() => {
-    SPECS.forEach(initCanvas);
-    [1, 2, 3].forEach(initWaveformCanvas);
-  }, 220);
+  _rt = setTimeout(() => SPECS.forEach(initCanvas), 220);
 });
 
 let _prev = null;
@@ -853,9 +882,6 @@ function frame(ts) {
     }
     ctx.putImageData(img, W - 1, 0);
   }
-
-  // Redraw all three waveform previews every frame
-  [1, 2, 3].forEach(drawWaveform);
 
   requestAnimationFrame(frame);
 }
