@@ -13,17 +13,6 @@
   <title>⋆˚☼⋆𓇼｡𖦹˙༄°𓆝 𓆟 𓆞</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Google Analytics -->
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6QDK42L1G9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6QDK42L1G9');
-</script>
-
   <style>
     :root {
       --accent: #99cccc;
@@ -148,6 +137,7 @@
     .name { font-weight: 700; background: rgba(0,0,0,0.55); opacity: 0; }
     .project-circle:hover .label { opacity: 0; }
     .project-circle:hover .name  { opacity: 1; }
+    .reef-bubble::before { z-index: 1; }
 
     .caption { font-size: 14px; color:#333; text-align: center; }
 
@@ -581,7 +571,7 @@
             <!-- Project: AI Empowered Research Curriculum (2026) -->
             <div class="project">
               <a class="project-circle" href="javascript:void(0)" data-url="projects/ai-4-researchers-kelpstyle-lecture/AI_Enabled_Research_OEB_05082026.html" data-title="AI Empowered Research Curriculum" data-protected="true" aria-label="AI Empowered Research Curriculum">
-                <img class="circle-thumb circle-thumb-float" src="project_imgs/otter_coder.svg" alt="otter coding on belly">
+                <img class="circle-thumb circle-thumb-float" src="project_imgs/otter_minimal.svg" alt="minimal ink-drawn otter">
                 <span class="label">2026</span>
                 <span class="name">AI Empowered Research Curriculum</span>
               </a>
@@ -605,6 +595,15 @@
               </a>
               <div class="caption">Long-term autonomous underwater cameras use SLIPs to prevent biofouling.</div>
             </div>
+          <!-- Project: Shellfegio Synthesizer (2026) -->
+          <div class="project">
+            <a class="project-circle" href="projects/shellfegio-synthesizer/shellfeggio_synth_index.html" aria-label="Shellfegio Synthesizer">
+              <img class="circle-thumb" src="projects/shellfegio-synthesizer/imgs/nadir_top_kelp.png" alt="Shellfegio Synthesizer">
+              <span class="label">2026</span>
+              <span class="name">Shellfegio Synthesizer</span>
+            </a>
+            <div class="caption">Shellfegio Synthesizer</div>
+          </div>
           <!-- Project 1 -->
           <div class="project">
             <a class="project-circle" href="javascript:void(0)" data-url="projects/acoustic-enrichment/acoustic_enrichment_project.html" data-title="Acoustic Enrichment for Accelerated Reef Restoration Project Page" aria-label="Acoustic Enrichment">
@@ -622,6 +621,15 @@
               <span class="name">Explore clustered bowhead whale data</span>
             </a>
             <div class="caption">Unsupervised Clustering of Beaufort-Chukchi-Bering Bowhead Whale Data</div>
+          </div>
+          <!-- Project: Coral Reef Sounds (2024) -->
+          <div class="project">
+            <a class="project-circle reef-bubble" href="projects/coral-reef-sounds/" aria-label="Reef Sound Archive" style="background:#020e0e;">
+              <canvas id="reef-spec-bubble" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+              <span class="label">2024</span>
+              <span class="name">Reef Sound Archive</span>
+            </a>
+            <div class="caption">Coral Reef Acoustic Field Recordings</div>
           </div>
           <!-- Project 3 -->
           <div class="project">
@@ -688,15 +696,6 @@
             </a>
             <div class="caption"><a href="http://insituzine.org/">Scripps Institution of Oceanography's grassroot art collective made zine</a></div>
           </div>
-          <!-- Project: Shellfegio Synthesizer -->
-          <div class="project">
-            <a class="project-circle" href="projects/shellfegio-synthesizer/shellfeggio_synth_index.html" aria-label="Shellfegio Synthesizer">
-              <img class="circle-thumb" src="projects/shellfegio-synthesizer/imgs/nadir_top_kelp.png" alt="Shellfegio Synthesizer">
-              <span class="label">2026</span>
-              <span class="name">Shellfegio Synthesizer</span>
-            </a>
-            <div class="caption">Shellfegio Synthesizer</div>
-          </div>
           <!--
           Project 12: sirènité
           <div class="project">
@@ -724,6 +723,70 @@ document.addEventListener('DOMContentLoaded', function() {
     video.play().catch(function(){});
   });
 });
+
+// ── reef spectrogram bubble ──────────────────────────────────────────────────────────────────────────
+(function () {
+  var el = document.getElementById('reef-spec-bubble');
+  if (!el) return;
+  var ctx = el.getContext('2d');
+  var BINS = 72, phase = 0;
+  var snap = new Float32Array(BINS), dec = new Float32Array(BINS);
+  for (var i = 0; i < BINS; i++) dec[i] = 0.72 + Math.random() * 0.18;
+
+  function ampToRgb(v) {
+    v = Math.max(0, Math.min(1, v));
+    var r, g, b, t;
+    if (v < 0.35) {
+      t = v / 0.35;
+      r = Math.round(2  + t * 18); g = Math.round(14 + t * 52); b = Math.round(14 + t * 60);
+    } else if (v < 0.7) {
+      t = (v - 0.35) / 0.35;
+      r = Math.round(20 + t * 55); g = Math.round(66 + t * 87); b = Math.round(74 + t * 79);
+    } else {
+      t = (v - 0.7) / 0.3;
+      r = Math.round(75 + t * 155); g = Math.round(153 + t * 90); b = Math.round(153 + t * 90);
+    }
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function frame() {
+    var W = el.width, H = el.height;
+    if (W < 2) { requestAnimationFrame(frame); return; }
+    var img = ctx.getImageData(1, 0, W - 1, H);
+    ctx.putImageData(img, 0, 0);
+    var col = new Float32Array(BINS);
+    for (var i = 0; i < BINS; i++) col[i] = Math.random() * 0.05;
+    var hum = 0.28 + 0.10 * Math.sin(phase * 0.007) + 0.06 * Math.sin(phase * 0.012);
+    for (var i = 0; i < 10; i++) col[i] += hum * (1 - i / 12) + Math.random() * 0.03;
+    for (var i = 8; i < 28; i++) col[i] += 0.07 + 0.03 * Math.sin(phase * 0.018 + i * 0.4);
+    for (var i = 0; i < BINS; i++) { col[i] += snap[i]; snap[i] *= dec[i]; }
+    if (Math.random() < 0.12) {
+      var c = 22 + Math.floor(Math.random() * 42), bw = 2 + Math.floor(Math.random() * 7), a = 0.55 + Math.random() * 0.45;
+      for (var i = Math.max(0, c - bw); i < Math.min(BINS, c + bw); i++) {
+        var d = Math.abs(i - c) / bw; snap[i] = Math.max(snap[i], a * (1 - d * d));
+      }
+    }
+    if (Math.random() < 0.003) {
+      var fc = 40 + Math.floor(Math.random() * 25);
+      for (var i = Math.max(0, fc - 1); i < Math.min(BINS, fc + 2); i++) snap[i] = Math.max(snap[i], 0.75);
+    }
+    var bH = H / BINS;
+    for (var b = 0; b < BINS; b++) {
+      ctx.fillStyle = ampToRgb(col[b]);
+      ctx.fillRect(W - 1, Math.floor(H - (b + 1) * bH), 1, Math.ceil(bH) + 1);
+    }
+    phase++;
+    requestAnimationFrame(frame);
+  }
+
+  setTimeout(function () {
+    el.width  = el.offsetWidth  || 220;
+    el.height = el.offsetHeight || 220;
+    ctx.fillStyle = '#020e0e';
+    ctx.fillRect(0, 0, el.width, el.height);
+    requestAnimationFrame(frame);
+  }, 100);
+}());
 </script>
 
       
