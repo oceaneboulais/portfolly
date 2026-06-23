@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reef Sound Archive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --accent: #99cccc;
+      --bg:     #ffffff;
+      --fg:     #111111;
+      --muted:  #888888;
+      --div:    #e8e8e8;
+      --font:   'Courier New', Courier, monospace;
+    }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #555; }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 56px 28px 96px;
+    }
+
+    /* ── nav ─────────────────────────────── */
+    .back {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 56px;
+      letter-spacing: 0.04em;
+    }
+    .back:hover { color: var(--fg); }
+
+    /* ── page header ─────────────────────── */
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 5px;
+    }
+    .page-sub {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 0 0 32px;
+    }
+    .intro {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.9;
+      margin: 0 0 48px;
+    }
+
+    /* ── divider ─────────────────────────── */
+    .rule { height: 1px; background: var(--div); margin: 44px 0; }
+
+    /* ── sound block ─────────────────────── */
+    .sound-num {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 5px;
+    }
+    .sound-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 3px;
+      letter-spacing: -0.01em;
+    }
+    .sound-meta {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      margin: 0 0 18px;
+    }
+    .sound-desc {
+      font-size: 12.5px;
+      color: #555;
+      line-height: 1.9;
+      margin: 0 0 24px;
+      max-width: 560px;
+    }
+
+    /* ── player ──────────────────────────── */
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .btn-play {
+      width: 30px; height: 30px;
+      border: 1px solid #d0d0d0;
+      background: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 11px;
+      color: var(--fg);
+      border-radius: 2px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      transition: border-color .15s, color .15s;
+      padding: 0;
+    }
+    .btn-play:hover, .btn-play.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .prog-track {
+      flex: 1;
+      height: 3px;
+      background: #e4e4e4;
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+    .prog-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      pointer-events: none;
+      transition: width .08s linear;
+    }
+    .time-txt {
+      font-size: 10px;
+      color: var(--muted);
+      width: 34px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .loop-lbl {
+      font-size: 11px;
+      color: var(--accent);
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    /* ── spectrogram ─────────────────────── */
+    .spec-wrap { margin-bottom: 14px; }
+    .spec-row  { display: flex; align-items: stretch; }
+    .f-axis {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2px 9px 2px 0;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      text-align: right;
+      width: 44px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .spec-box { flex: 1; min-width: 0; }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 180px;
+      border-radius: 3px;
+    }
+    .t-axis {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      text-align: right;
+      margin: 5px 0 0 44px;
+      user-select: none;
+    }
+
+    /* ── download ────────────────────────── */
+    .dl {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--div);
+      padding-bottom: 1px;
+    }
+    .dl:hover { color: var(--fg); border-bottom-color: var(--fg); }
+
+    /* ── footer ──────────────────────────── */
+    .footnote {
+      font-size: 11px;
+      color: #c0c0c0;
+      line-height: 1.8;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="../../index.html" class="back">← back</a>
+
+  <h1 class="page-title">Reef Sound Archive</h1>
+  <p class="page-sub">coral reef acoustics · field recordings</p>
+
+  <p class="intro">
+    Coral reefs are among the most acoustically rich environments on Earth.
+    Sound travels five times faster underwater than through air, making
+    acoustics the primary sensory channel through which reef organisms
+    communicate, locate habitat, and navigate settlement.
+    These recordings capture three distinct signatures from the same reef ecosystem.
+  </p>
+
+  <!-- ══════════ 01 · Damselfish ══════════ -->
+  <section>
+    <div class="sound-num">01 ·</div>
+    <h2 class="sound-title">Damselfish Pulse Train</h2>
+    <p class="sound-meta">Stegastes spp. · territorial &amp; courtship call · looped</p>
+    <p class="sound-desc">
+      Damselfish produce rapid-burst pulse trains via sonic muscle contractions
+      adjacent to the swim bladder. The call carries a fundamental frequency
+      around 200 Hz with clear harmonics extending to ~1.4 kHz — visible in
+      the spectrogram as stacked horizontal bands repeating at roughly 2 Hz.
+    </p>
+
+    <div class="player">
+      <button class="btn-play" id="btn1" onclick="togglePlay(1)" aria-label="play / pause">▶</button>
+      <div class="prog-track" id="pt1" onclick="seek(1, event)">
+        <div class="prog-fill" id="pf1"></div>
+      </div>
+      <span class="time-txt" id="tt1">–:––</span>
+      <span class="loop-lbl" title="looping">∞</span>
+    </div>
+    <audio id="audio1" loop preload="none">
+      <source src="https://drive.google.com/uc?export=download&id=1-Eu_hlVYAkj4q5Dor_wq5JnloAnWGI28">
+    </audio>
+
+    <div class="spec-wrap">
+      <div class="spec-row">
+        <div class="f-axis">
+          <span>4 kHz</span>
+          <span>3 kHz</span>
+          <span>2 kHz</span>
+          <span>1 kHz</span>
+          <span>500</span>
+          <span>100</span>
+        </div>
+        <div class="spec-box">
+          <canvas id="spec1"></canvas>
+        </div>
+      </div>
+      <div class="t-axis">time →</div>
+    </div>
+
+    <a href="https://drive.google.com/file/d/1-Eu_hlVYAkj4q5Dor_wq5JnloAnWGI28/view?usp=sharing"
+       target="_blank" rel="noopener" class="dl">↓ download high quality</a>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- ══════════ 02 · Reef Ambient ══════════ -->
+  <section>
+    <div class="sound-num">02 ·</div>
+    <h2 class="sound-title">Reef Ambient · New Moon</h2>
+    <p class="sound-meta">Alpheidae snapping shrimp · fish pulse trains · peak acoustic activity</p>
+    <p class="sound-desc">
+      Reef soundscapes peak around the new moon, when reduced ambient light
+      synchronizes nocturnal spawning and foraging. The dominant texture is
+      the broadband crack of snapping shrimp (<em>Alpheidae</em>), whose
+      collective cavitation generates a near-continuous hiss across the
+      frequency spectrum. Beneath it, chorusing fish contribute periodic
+      low-frequency pulse trains in the 150–600 Hz range.
+    </p>
+
+    <div class="player">
+      <button class="btn-play" id="btn2" onclick="togglePlay(2)" aria-label="play / pause">▶</button>
+      <div class="prog-track" id="pt2" onclick="seek(2, event)">
+        <div class="prog-fill" id="pf2"></div>
+      </div>
+      <span class="time-txt" id="tt2">–:––</span>
+    </div>
+    <audio id="audio2" preload="none">
+      <source src="https://drive.google.com/uc?export=download&id=1Icbj6G2ohrsWzBJfvGW6MXiMg315edvZ">
+    </audio>
+
+    <div class="spec-wrap">
+      <div class="spec-row">
+        <div class="f-axis">
+          <span>4 kHz</span>
+          <span>3 kHz</span>
+          <span>2 kHz</span>
+          <span>1 kHz</span>
+          <span>500</span>
+          <span>100</span>
+        </div>
+        <div class="spec-box">
+          <canvas id="spec2"></canvas>
+        </div>
+      </div>
+      <div class="t-axis">time →</div>
+    </div>
+
+    <a href="https://drive.google.com/file/d/1Icbj6G2ohrsWzBJfvGW6MXiMg315edvZ/view?usp=sharing"
+       target="_blank" rel="noopener" class="dl">↓ download high quality</a>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- ══════════ 03 · Snapping Shrimp + Pulse Train · June 2024 ══════════ -->
+  <section>
+    <div class="sound-num">03 ·</div>
+    <h2 class="sound-title">Snapping Shrimp &amp; Pulse Train · June 2024</h2>
+    <p class="sound-meta">Alpheidae · fish pulse trains · June 2024 field recording</p>
+    <p class="sound-desc">
+      A second ambient recording captured in June 2024, revealing the layered
+      acoustic texture of the reef in finer detail. Alpheid snapping shrimp
+      dominate the high-frequency register with their characteristic broadband
+      cavitation clicks, while fish pulse trains mark the lower register with a
+      slower, more deliberate rhythm — a snapshot of the reef's living acoustic
+      signature.
+    </p>
+
+    <div class="player">
+      <button class="btn-play" id="btn3" onclick="togglePlay(3)" aria-label="play / pause">▶</button>
+      <div class="prog-track" id="pt3" onclick="seek(3, event)">
+        <div class="prog-fill" id="pf3"></div>
+      </div>
+      <span class="time-txt" id="tt3">–:––</span>
+    </div>
+    <audio id="audio3" preload="none">
+      <source src="https://drive.google.com/uc?export=download&id=1nBR4-F_lt9LsMykXtFMYdqSA3qnz21Wm">
+    </audio>
+
+    <div class="spec-wrap">
+      <div class="spec-row">
+        <div class="f-axis">
+          <span>4 kHz</span>
+          <span>3 kHz</span>
+          <span>2 kHz</span>
+          <span>1 kHz</span>
+          <span>500</span>
+          <span>100</span>
+        </div>
+        <div class="spec-box">
+          <canvas id="spec3"></canvas>
+        </div>
+      </div>
+      <div class="t-axis">time →</div>
+    </div>
+
+    <a href="https://drive.google.com/file/d/1nBR4-F_lt9LsMykXtFMYdqSA3qnz21Wm/view?usp=sharing"
+       target="_blank" rel="noopener" class="dl">↓ download high quality</a>
+  </section>
+
+  <div class="rule"></div>
+
+  <p class="footnote">
+    Spectrograms are animated simulations modeled on the characteristic acoustic
+    signatures of each sound type. Source audio © original field recordings.
+  </p>
+
+</div>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PLAYER + SPECTROGRAM
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+// ─── PLAYER ──────────────────────────────────────────────────────────────────
+
+const AUDIO = {
+  1: document.getElementById('audio1'),
+  2: document.getElementById('audio2'),
+  3: document.getElementById('audio3'),
+};
+
+function fmt(s) {
+  if (!isFinite(s) || s < 0) return '–:––';
+  return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+}
+
+function resetBtn(id) {
+  const b = document.getElementById('btn' + id);
+  b.textContent = '▶';
+  b.classList.remove('active');
+}
+
+[1, 2, 3].forEach(id => {
+  const a = AUDIO[id];
+  a.addEventListener('timeupdate', () => {
+    if (!isFinite(a.duration)) return;
+    const r = a.currentTime / a.duration;
+    document.getElementById('pf' + id).style.width = (r * 100) + '%';
+    document.getElementById('tt' + id).textContent  = fmt(a.currentTime);
+  });
+  a.addEventListener('play',  () => {
+    const b = document.getElementById('btn' + id);
+    b.textContent = '⏸';
+    b.classList.add('active');
+  });
+  a.addEventListener('pause', () => resetBtn(id));
+  a.addEventListener('ended', () => resetBtn(id));
+});
+
+function togglePlay(id) {
+  const a = AUDIO[id];
+  if (a.paused) {
+    // pause sibling
+    Object.keys(AUDIO).forEach(k => { if (+k !== id) AUDIO[k].pause(); });
+    a.play().catch(() => {});
+  } else {
+    a.pause();
+  }
+}
+
+function seek(id, e) {
+  const a = AUDIO[id];
+  if (!isFinite(a.duration)) return;
+  const track = document.getElementById('pt' + id);
+  const r = (e.clientX - track.getBoundingClientRect().left) / track.offsetWidth;
+  a.currentTime = Math.max(0, Math.min(1, r)) * a.duration;
+}
+
+// ─── SPECTROGRAM ─────────────────────────────────────────────────────────────
+
+const NYQUIST = 4000; // Hz — top of display range
+
+// Ocean color palette  energy [0,1] → rgb
+const PALETTE = [
+  [0.00, [8,  12,  18 ]],
+  [0.12, [10, 30,  55 ]],
+  [0.27, [4,  68,  98 ]],
+  [0.45, [0,  118, 128]],
+  [0.63, [0,  172, 155]],
+  [0.79, [60, 218, 192]],
+  [0.92, [185,248, 235]],
+  [1.00, [255,255, 255]],
+];
+
+function e2rgb(e) {
+  e = Math.max(0, Math.min(1, e));
+  for (let i = 0; i < PALETTE.length - 1; i++) {
+    const [e0, c0] = PALETTE[i], [e1, c1] = PALETTE[i + 1];
+    if (e <= e1) {
+      const t = (e - e0) / (e1 - e0);
+      return [
+        Math.round(c0[0] + t * (c1[0] - c0[0])),
+        Math.round(c0[1] + t * (c1[1] - c0[1])),
+        Math.round(c0[2] + t * (c1[2] - c0[2])),
+      ];
+    }
+  }
+  return PALETTE[PALETTE.length - 1][1];
+}
+
+// Gaussian energy band — add harmonic blob to column buffer
+function addBand(col, H, freqHz, sigFrac, amp) {
+  const yc   = H * (1 - freqHz / NYQUIST); // y=0 top (high freq)
+  const sig  = H * sigFrac;
+  const span = Math.ceil(sig * 3.5);
+  for (let dy = -span; dy <= span; dy++) {
+    const y = Math.round(yc + dy);
+    if (y >= 0 && y < H)
+      col[y] += Math.exp(-dy * dy / (2 * sig * sig)) * amp;
+  }
+}
+
+// ── Damselfish state & generator ─────────────────────────────────────────────
+const DS = { t: 0 };
+
+function damselCol(H) {
+  const col = new Float32Array(H);
+  // noise floor
+  for (let y = 0; y < H; y++) col[y] = Math.random() * 0.042;
+  // pulse train ~2.2 Hz (period 0.45 s)
+  const ph  = DS.t % 0.45;
+  const env = ph < 0.055 ? Math.exp(-ph / 0.016) * 2.8 : 0;
+  if (env > 0.015) {
+    // tonal harmonics 200 – 1400 Hz
+    [[200,1.00],[400,0.72],[600,0.52],[800,0.36],[1000,0.23],[1400,0.13]]
+      .forEach(([f, a]) => addBand(col, H, f, 0.011, a * env));
+  }
+  return col;
+}
+
+// ── Reef state & generator ────────────────────────────────────────────────────
+const RS  = { t: 0, nextClick: 0 };
+const RS2 = { t: 0, nextClick: 0 };
+
+function reefCol(H) {
+  const col = new Float32Array(H);
+  // broadband background — shaped louder at high freq (snapping shrimp)
+  for (let y = 0; y < H; y++) {
+    const fn = 1 - y / H; // 0 = low freq, 1 = high freq
+    col[y] = 0.10 + 0.06 * fn + Math.random() * 0.055;
+  }
+  // Poisson snapping shrimp clicks ~12 Hz
+  let guard = 60;
+  while (RS.t >= RS.nextClick && guard-- > 0) {
+    const ck = 0.50 + Math.random() * 0.50;
+    for (let y = 0; y < H; y++) col[y] += ck * (0.55 + Math.random() * 0.45);
+    // exponential inter-arrival: mean = 1/12 s
+    RS.nextClick += -Math.log(Math.random() + 1e-9) / 12;
+  }
+  // fish pulse train ~1.4 Hz (period 0.7 s)
+  const ph  = RS.t % 0.7;
+  const env = ph < 0.048 ? Math.exp(-ph / 0.015) * 1.9 : 0;
+  if (env > 0.015) {
+    [[150,1.00],[300,0.65],[450,0.42],[600,0.27]]
+      .forEach(([f, a]) => addBand(col, H, f, 0.016, a * env));
+  }
+  return col;
+}
+
+// ── June 2024: denser shrimp clicks, slower fish pulse train ─────────────────
+function reef2Col(H) {
+  const col = new Float32Array(H);
+  // slightly busier broadband floor
+  for (let y = 0; y < H; y++) {
+    const fn = 1 - y / H;
+    col[y] = 0.12 + 0.07 * fn + Math.random() * 0.06;
+  }
+  // denser snapping shrimp clicks ~16 Hz
+  let guard = 60;
+  while (RS2.t >= RS2.nextClick && guard-- > 0) {
+    const ck = 0.55 + Math.random() * 0.45;
+    for (let y = 0; y < H; y++) col[y] += ck * (0.6 + Math.random() * 0.4);
+    RS2.nextClick += -Math.log(Math.random() + 1e-9) / 16;
+  }
+  // slower fish pulse train ~1.1 Hz (period 0.9 s)
+  const ph  = RS2.t % 0.9;
+  const env = ph < 0.055 ? Math.exp(-ph / 0.017) * 1.7 : 0;
+  if (env > 0.015) {
+    [[130,1.00],[260,0.68],[390,0.45],[520,0.30],[650,0.18]]
+      .forEach(([f, a]) => addBand(col, H, f, 0.015, a * env));
+  }
+  return col;
+}
+
+// ── Canvas setup ──────────────────────────────────────────────────────────────
+const SPECS = [
+  { id: 'spec1', gen: damselCol, state: DS  },
+  { id: 'spec2', gen: reefCol,   state: RS  },
+  { id: 'spec3', gen: reef2Col,  state: RS2 },
+];
+const CTXS = {};
+
+function initCanvas(cfg) {
+  const canvas = document.getElementById(cfg.id);
+  const box    = canvas.parentElement;
+  const w      = Math.round(box.getBoundingClientRect().width) || box.clientWidth || 640;
+  canvas.width  = w;
+  canvas.height = 180;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = `rgb(${PALETTE[0][1].join(',')})`;
+  ctx.fillRect(0, 0, w, 180);
+  CTXS[cfg.id] = ctx;
+}
+
+SPECS.forEach(initCanvas);
+
+let _rtimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_rtimer);
+  _rtimer = setTimeout(() => SPECS.forEach(initCanvas), 220);
+});
+
+// ── Animation loop ────────────────────────────────────────────────────────────
+let _prev = null;
+
+function frame(ts) {
+  const dt = _prev ? Math.min((ts - _prev) / 1000, 0.05) : 1 / 60;
+  _prev = ts;
+
+  for (const cfg of SPECS) {
+    cfg.state.t += dt;
+    const ctx = CTXS[cfg.id];
+    const W   = ctx.canvas.width;
+    const H   = ctx.canvas.height;
+
+    // scroll canvas content 1 px to the left
+    ctx.drawImage(ctx.canvas, -1, 0);
+
+    // generate & write new rightmost column
+    const col = cfg.gen(H);
+    const img = ctx.createImageData(1, H);
+    const d   = img.data;
+    for (let y = 0; y < H; y++) {
+      const [r, g, b] = e2rgb(col[y]);
+      const i = y * 4;
+      d[i] = r; d[i+1] = g; d[i+2] = b; d[i+3] = 255;
+    }
+    ctx.putImageData(img, W - 1, 0);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
