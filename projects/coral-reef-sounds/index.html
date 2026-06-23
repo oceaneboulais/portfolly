@@ -121,21 +121,20 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-    .prog-track {
+    .wv-wrap {
       flex: 1;
-      height: 3px;
-      background: #e4e4e4;
-      border-radius: 2px;
+      height: 44px;
       cursor: pointer;
+      user-select: none;
       position: relative;
-    }
-    .prog-fill {
-      height: 100%;
-      background: var(--accent);
       border-radius: 2px;
-      width: 0%;
-      pointer-events: none;
-      transition: width .08s linear;
+      overflow: hidden;
+    }
+    .wv-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 44px !important;
+      border-radius: 2px;
     }
     .time-txt {
       font-size: 10px;
@@ -233,8 +232,8 @@
 
     <div class="player">
       <button class="btn-play" id="btn1" onclick="togglePlay(1)" aria-label="play / pause">▶</button>
-      <div class="prog-track" id="pt1" onclick="seek(1, event)">
-        <div class="prog-fill" id="pf1"></div>
+      <div class="wv-wrap" id="pw1">
+        <canvas id="wv1"></canvas>
       </div>
       <span class="time-txt" id="tt1">–:––</span>
       <span class="loop-lbl" title="looping">∞</span>
@@ -282,8 +281,8 @@
 
     <div class="player">
       <button class="btn-play" id="btn2" onclick="togglePlay(2)" aria-label="play / pause">▶</button>
-      <div class="prog-track" id="pt2" onclick="seek(2, event)">
-        <div class="prog-fill" id="pf2"></div>
+      <div class="wv-wrap" id="pw2">
+        <canvas id="wv2"></canvas>
       </div>
       <span class="time-txt" id="tt2">–:––</span>
     </div>
@@ -330,8 +329,8 @@
 
     <div class="player">
       <button class="btn-play" id="btn3" onclick="togglePlay(3)" aria-label="play / pause">▶</button>
-      <div class="prog-track" id="pt3" onclick="seek(3, event)">
-        <div class="prog-fill" id="pf3"></div>
+      <div class="wv-wrap" id="pw3">
+        <canvas id="wv3"></canvas>
       </div>
       <span class="time-txt" id="tt3">–:––</span>
     </div>
@@ -389,7 +388,6 @@ function fmt(s) {
   const a = AUDIO[id];
   a.addEventListener('timeupdate', () => {
     if (!isFinite(a.duration)) return;
-    document.getElementById('pf' + id).style.width = (a.currentTime / a.duration * 100) + '%';
     document.getElementById('tt' + id).textContent = fmt(a.currentTime);
   });
   a.addEventListener('play',  () => { const b = document.getElementById('btn' + id); b.textContent = '⏸'; b.classList.add('active'); });
@@ -413,14 +411,6 @@ function togglePlay(id) {
   } else {
     a.pause();
   }
-}
-
-function seek(id, e) {
-  const a = AUDIO[id];
-  if (!isFinite(a.duration)) return;
-  const tr = document.getElementById('pt' + id);
-  const r  = (e.clientX - tr.getBoundingClientRect().left) / tr.offsetWidth;
-  a.currentTime = Math.max(0, Math.min(1, r)) * a.duration;
 }
 
 // ─── OFFLINE FFT SPECTROGRAM ─────────────────────────────────────────────────
@@ -448,6 +438,8 @@ async function attemptAnalysis(id) {
     const buf = await ac.decodeAudioData(ab);
     ac.close();
     PRECOMP[id] = buildSpectrogram(buf);
+    WAVEFORMS[id] = buildWaveform(buf);
+    invalidateWvCache(id);
     console.info('Live spectrogram ready for track', id);
   } catch (e) {
     console.info('CORS unavailable for track', id, '— using simulation:', e.message);
@@ -545,7 +537,166 @@ function precompCol(id, H) {
   return col;
 }
 
-// ─── SPECTROGRAM SIMULATION (FALLBACK) ───────────────────────────────────────
+// ─── WAVEFORM PREVIEW ────────────────────────────────────────────────────────
+
+const WAVEFORMS = {};   // id → { rms, nChunks }  — real RMS from decoded audio
+const WV_CACHE  = {};   // id → { unplayed, played, W } offscreen canvases
+const SCRUB     = { 1: false, 2: false, 3: false };
+const HOVER_T   = { 1: null,  2: null,  3: null  };
+
+// Compute RMS amplitude per chunk from decoded AudioBuffer
+function buildWaveform(buf) {
+  const ch = buf.getChannelData(0), N = ch.length, nC = 800;
+  const sz = Math.max(1, Math.floor(N / nC));
+  const rms = new Float32Array(nC);
+  let peak = 0;
+  for (let i = 0; i < nC; i++) {
+    const s = i * sz, e = Math.min(s + sz, N);
+    let sum = 0;
+    for (let j = s; j < e; j++) sum += ch[j] * ch[j];
+    rms[i] = Math.sqrt(sum / (e - s));
+    if (rms[i] > peak) peak = rms[i];
+  }
+  if (peak > 0) for (let i = 0; i < nC; i++) rms[i] /= peak;
+  return { rms, nChunks: nC };
+}
+
+// Deterministic fake waveforms that match each sound's acoustic character
+function buildFakeWaveform(id) {
+  const n = 800;
+  const rms = new Float32Array(n);
+  if (id === 1) {
+    // Damselfish: sharp rhythmic bursts separated by silence (~22 pulses)
+    for (let i = 0; i < n; i++) {
+      const phase = ((i / n) * 22) % 1;
+      const env   = phase < 0.12 ? Math.exp(-phase * 35) : 0;
+      rms[i]      = Math.max(0.04, env * 0.92 + Math.abs(Math.sin(i * 1.91)) * 0.03);
+    }
+  } else if (id === 2) {
+    // Reef ambient: continuous high floor + random shrimp click spikes
+    for (let i = 0; i < n; i++) {
+      const p = Math.abs(Math.sin(i * 0.19 + 1.0) * Math.cos(i * 0.31));
+      rms[i]  = Math.max(0.2, Math.min(1, 0.48 + 0.18 * Math.sin(i * 0.09) + (p > 0.91 ? (p - 0.91) * 9 : 0)));
+    }
+  } else {
+    // June 2024: denser reef — busier floor, more frequent spikes
+    for (let i = 0; i < n; i++) {
+      const p = Math.abs(Math.sin(i * 0.23 + 2.0) * Math.cos(i * 0.41));
+      rms[i]  = Math.max(0.25, Math.min(1, 0.52 + 0.15 * Math.sin(i * 0.11) + (p > 0.87 ? (p - 0.87) * 11 : 0)));
+    }
+  }
+  return { rms, nChunks: n };
+}
+
+const FAKE_WV = { 1: buildFakeWaveform(1), 2: buildFakeWaveform(2), 3: buildFakeWaveform(3) };
+
+function invalidateWvCache(id) { delete WV_CACHE[id]; }
+
+// Pre-render unplayed + played versions of the waveform to offscreen canvases
+function ensureWvCache(id) {
+  const cv = document.getElementById('wv' + id);
+  const W  = cv.width, H = cv.height;
+  if (WV_CACHE[id] && WV_CACHE[id].W === W) return;
+
+  const wf = WAVEFORMS[id] || FAKE_WV[id];
+
+  function renderTo(color) {
+    const c   = document.createElement('canvas');
+    c.width   = W;  c.height = H;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#0b1318';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = color;
+    for (let x = 0; x < W; x++) {
+      const ci = Math.min(Math.floor(x / W * wf.nChunks), wf.nChunks - 1);
+      const bH = wf.rms[ci] * H * 0.86;
+      ctx.fillRect(x, (H - bH) / 2, 1, bH);
+    }
+    return c;
+  }
+
+  WV_CACHE[id] = { unplayed: renderTo('#1e3c44'), played: renderTo('#7fc0c0'), W };
+}
+
+function drawWaveform(id) {
+  ensureWvCache(id);
+  const cv    = document.getElementById('wv' + id);
+  const ctx   = cv.getContext('2d');
+  const W     = cv.width, H = cv.height;
+  const a     = AUDIO[id];
+  const frac  = isFinite(a.duration) ? a.currentTime / a.duration : 0;
+  const px    = Math.round(frac * W);
+  const cache = WV_CACHE[id];
+
+  // Base: full unplayed waveform
+  ctx.drawImage(cache.unplayed, 0, 0);
+
+  // Overlay played region in accent colour
+  if (px > 0) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, px, H);
+    ctx.clip();
+    ctx.drawImage(cache.played, 0, 0);
+    ctx.restore();
+  }
+
+  // Playhead — thin bright line at current position
+  if (px > 0 && px < W) {
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    ctx.fillRect(px, 0, 1, H);
+  }
+
+  // Hover ghost line
+  const ht = HOVER_T[id];
+  if (ht !== null && isFinite(a.duration)) {
+    const hx = Math.round(ht / a.duration * W);
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.fillRect(hx, 0, 1, H);
+  }
+}
+
+function initWaveformCanvas(id) {
+  const cv  = document.getElementById('wv' + id);
+  const w   = Math.round(cv.parentElement.getBoundingClientRect().width) || 400;
+  cv.width  = w;
+  cv.height = 44;
+  invalidateWvCache(id);
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#0b1318';
+  ctx.fillRect(0, 0, w, 44);
+}
+
+function setupScrub(id) {
+  const cv = document.getElementById('wv' + id);
+
+  function frac(e) {
+    const r   = cv.getBoundingClientRect();
+    const cx  = (e.touches ? e.touches[0].clientX : e.clientX);
+    return Math.max(0, Math.min(1, (cx - r.left) / r.width));
+  }
+  function doSeek(f) {
+    const a = AUDIO[id];
+    if (isFinite(a.duration)) a.currentTime = f * a.duration;
+  }
+
+  cv.addEventListener('mousedown',  e => { SCRUB[id] = true;  doSeek(frac(e)); e.preventDefault(); });
+  cv.addEventListener('mousemove',  e => {
+    const f = frac(e), a = AUDIO[id];
+    HOVER_T[id] = isFinite(a.duration) ? f * a.duration : null;
+    document.getElementById('tt' + id).textContent = isFinite(a.duration) ? fmt(f * a.duration) : '–:––';
+    if (SCRUB[id]) doSeek(f);
+  });
+  cv.addEventListener('mouseleave', () => {
+    HOVER_T[id] = null;
+    document.getElementById('tt' + id).textContent = fmt(AUDIO[id].currentTime);
+  });
+  window.addEventListener('mouseup', () => { SCRUB[id] = false; });
+
+  cv.addEventListener('touchstart', e => { SCRUB[id] = true;  doSeek(frac(e)); e.preventDefault(); }, { passive: false });
+  cv.addEventListener('touchmove',  e => { if (SCRUB[id]) doSeek(frac(e)); e.preventDefault(); }, { passive: false });
+  cv.addEventListener('touchend',   () => { SCRUB[id] = false; });
+}
 
 const DISP_NYQ = 4000; // Hz shown at canvas top
 
@@ -658,8 +809,16 @@ function initCanvas(cfg) {
 }
 
 SPECS.forEach(initCanvas);
+[1, 2, 3].forEach(id => { initWaveformCanvas(id); setupScrub(id); });
+
 let _rt;
-window.addEventListener('resize', () => { clearTimeout(_rt); _rt = setTimeout(() => SPECS.forEach(initCanvas), 220); });
+window.addEventListener('resize', () => {
+  clearTimeout(_rt);
+  _rt = setTimeout(() => {
+    SPECS.forEach(initCanvas);
+    [1, 2, 3].forEach(initWaveformCanvas);
+  }, 220);
+});
 
 let _prev = null;
 function frame(ts) {
@@ -694,6 +853,9 @@ function frame(ts) {
     }
     ctx.putImageData(img, W - 1, 0);
   }
+
+  // Redraw all three waveform previews every frame
+  [1, 2, 3].forEach(drawWaveform);
 
   requestAnimationFrame(frame);
 }
