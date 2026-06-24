@@ -613,11 +613,11 @@
             </a>
             <div class="caption">Unsupervised Clustering of Beaufort-Chukchi-Bering Bowhead Whale Data</div>
           </div>
-          <!-- Project: Coral Reef Sounds (2024) -->
+          <!-- Project: Coral Reef Sounds (2026) -->
           <div class="project">
             <a class="project-circle reef-bubble" href="projects/coral-reef-sounds/" aria-label="Reef Sound Archive" style="background:#020e0e;">
               <canvas id="reef-spec-bubble" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
-              <span class="label">2024</span>
+              <span class="label">2026</span>
               <span class="name">Reef Sound Archive</span>
             </a>
             <div class="caption">Coral Reef Acoustic Field Recordings</div>
@@ -724,58 +724,99 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ── reef spectrogram bubble ──────────────────────────────────────────────────────────────────────────
+// ── reef scene bubble ───────────────────────────────────────────────────────────────────────────────
 (function () {
   var el = document.getElementById('reef-spec-bubble');
   if (!el) return;
   var ctx = el.getContext('2d');
-  var BINS = 72, phase = 0;
-  var snap = new Float32Array(BINS), dec = new Float32Array(BINS);
-  for (var i = 0; i < BINS; i++) dec[i] = 0.72 + Math.random() * 0.18;
+  var t = 0;
 
-  function ampToRgb(v) {
-    v = Math.max(0, Math.min(1, v));
-    var r, g, b, t;
-    if (v < 0.35) {
-      t = v / 0.35;
-      r = Math.round(2  + t * 18); g = Math.round(14 + t * 52); b = Math.round(14 + t * 60);
-    } else if (v < 0.7) {
-      t = (v - 0.35) / 0.35;
-      r = Math.round(20 + t * 55); g = Math.round(66 + t * 87); b = Math.round(74 + t * 79);
-    } else {
-      t = (v - 0.7) / 0.3;
-      r = Math.round(75 + t * 155); g = Math.round(153 + t * 90); b = Math.round(153 + t * 90);
+  function drawCoral(cx, baseY, h, n, col) {
+    ctx.save();
+    ctx.strokeStyle = col;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx, baseY); ctx.lineTo(cx, baseY - h); ctx.stroke();
+    for (var i = 0; i < n; i++) {
+      var fy = baseY - h * (i + 1) / (n + 0.6);
+      var bl = h * 0.30 * (1 - i * 0.12);
+      ctx.lineWidth = Math.max(0.8, 1.6 - i * 0.25);
+      ctx.beginPath(); ctx.moveTo(cx, fy);
+      ctx.quadraticCurveTo(cx - bl * 0.5, fy - bl * 0.35, cx - bl, fy - bl * 0.75); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, fy);
+      ctx.quadraticCurveTo(cx + bl * 0.5, fy - bl * 0.35, cx + bl, fy - bl * 0.75); ctx.stroke();
     }
-    return 'rgb(' + r + ',' + g + ',' + b + ')';
+    ctx.restore();
   }
 
   function frame() {
     var W = el.width, H = el.height;
-    if (W < 2) { requestAnimationFrame(frame); return; }
-    var img = ctx.getImageData(1, 0, W - 1, H);
-    ctx.putImageData(img, 0, 0);
-    var col = new Float32Array(BINS);
-    for (var i = 0; i < BINS; i++) col[i] = Math.random() * 0.05;
-    var hum = 0.28 + 0.10 * Math.sin(phase * 0.007) + 0.06 * Math.sin(phase * 0.012);
-    for (var i = 0; i < 10; i++) col[i] += hum * (1 - i / 12) + Math.random() * 0.03;
-    for (var i = 8; i < 28; i++) col[i] += 0.07 + 0.03 * Math.sin(phase * 0.018 + i * 0.4);
-    for (var i = 0; i < BINS; i++) { col[i] += snap[i]; snap[i] *= dec[i]; }
-    if (Math.random() < 0.12) {
-      var c = 22 + Math.floor(Math.random() * 42), bw = 2 + Math.floor(Math.random() * 7), a = 0.55 + Math.random() * 0.45;
-      for (var i = Math.max(0, c - bw); i < Math.min(BINS, c + bw); i++) {
-        var d = Math.abs(i - c) / bw; snap[i] = Math.max(snap[i], a * (1 - d * d));
-      }
+
+    ctx.fillStyle = '#020e0e';
+    ctx.fillRect(0, 0, W, H);
+
+    // coral
+    drawCoral(W * 0.14, H * 0.97, H * 0.26, 3, 'rgba(28, 78, 78, 0.9)');
+    drawCoral(W * 0.83, H * 0.97, H * 0.32, 3, 'rgba(22, 72, 76, 0.9)');
+    drawCoral(W * 0.57, H * 0.97, H * 0.14, 2, 'rgba(20, 62, 65, 0.75)');
+
+    // wave parameters
+    var wy  = H * 0.50;
+    var amp = H * 0.09;
+    var frq = 0.042;
+    var spd = 0.028;
+
+    // second faint wave
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(50, 128, 128, 0.25)';
+    ctx.lineWidth = 1.2;
+    for (var x = 0; x <= W; x++) {
+      var y = wy + H * 0.08 + amp * 0.65 * Math.sin(x * 0.034 + t * 0.022 + 1.5);
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
-    if (Math.random() < 0.003) {
-      var fc = 40 + Math.floor(Math.random() * 25);
-      for (var i = Math.max(0, fc - 1); i < Math.min(BINS, fc + 2); i++) snap[i] = Math.max(snap[i], 0.75);
+    ctx.stroke();
+
+    // main wave
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(100, 200, 200, 0.60)';
+    ctx.lineWidth = 1.8;
+    for (var x = 0; x <= W; x++) {
+      var y = wy + amp * Math.sin(x * frq + t * spd);
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
-    var bH = H / BINS;
-    for (var b = 0; b < BINS; b++) {
-      ctx.fillStyle = ampToRgb(col[b]);
-      ctx.fillRect(W - 1, Math.floor(H - (b + 1) * bH), 1, Math.ceil(bH) + 1);
-    }
-    phase++;
+    ctx.stroke();
+
+    // fish
+    var fx = ((t * 0.55) % (W + 52)) - 26;
+    var fy = wy + amp * Math.sin(fx * frq + t * spd) - 13;
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(170, 228, 228, 0.90)';
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // body outline
+    ctx.beginPath();
+    ctx.moveTo(fx + 11, fy);
+    ctx.bezierCurveTo(fx + 7, fy - 5.5, fx - 4, fy - 5.5, fx - 10, fy);
+    ctx.bezierCurveTo(fx - 4, fy + 5.5, fx + 7, fy + 5.5, fx + 11, fy);
+    ctx.stroke();
+
+    // tail
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(fx - 10, fy); ctx.lineTo(fx - 16, fy - 5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(fx - 10, fy); ctx.lineTo(fx - 16, fy + 5); ctx.stroke();
+
+    // eye
+    ctx.fillStyle = '#020e0e';
+    ctx.beginPath(); ctx.arc(fx + 5, fy - 1, 1.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(200, 240, 240, 0.9)';
+    ctx.beginPath(); ctx.arc(fx + 5.5, fy - 1.5, 0.6, 0, Math.PI * 2); ctx.fill();
+
+    ctx.restore();
+
+    t++;
     requestAnimationFrame(frame);
   }
 
