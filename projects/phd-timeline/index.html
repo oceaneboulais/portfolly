@@ -144,6 +144,16 @@
       margin-bottom: 5px;
     }
     .stat-val.gold { color: var(--gold); }
+    .stat-editable {
+      cursor: pointer;
+      border-bottom: 1px dashed var(--muted);
+      transition: border-color 0.15s, color 0.15s;
+      outline: none;
+      min-width: 24px;
+      display: inline-block;
+    }
+    .stat-editable:hover  { border-color: var(--accent); color: #b8e8e8; }
+    .stat-editable:focus  { border-color: var(--accent); border-bottom-style: solid; }
     .stat-lbl {
       font-size: 10px;
       color: var(--muted);
@@ -295,12 +305,12 @@
   <!-- Stats -->
   <div class="stats">
     <div class="stat">
-      <div class="stat-val" id="stat-done">—</div>
-      <div class="stat-lbl">Quarters Done</div>
+      <div class="stat-val stat-editable" id="stat-published" title="click to edit">0</div>
+      <div class="stat-lbl">Manuscripts Published</div>
     </div>
     <div class="stat">
-      <div class="stat-val" id="stat-remaining">—</div>
-      <div class="stat-lbl">To Go</div>
+      <div class="stat-val stat-editable" id="stat-pipeline" title="click to edit">0</div>
+      <div class="stat-lbl">In the Pipeline</div>
     </div>
     <div class="stat">
       <div class="stat-val gold">Dec '26</div>
@@ -627,18 +637,44 @@ function buildOverlays() {
 
 /* ── Stats ──────────────────────────────────────────────────────────────────── */
 function buildStats() {
-  const done      = CUR_IDX;          // quarters completed before current
-  const remaining = MS.length - CUR_IDX - 1; // after current
-  const pct       = Math.round((CUR_IDX / (MS.length - 1)) * 100);
-  const now       = new Date();
-  const defense   = new Date(2026, 11, 1); // Dec 1 2026
-  const months    = Math.max(0, Math.round((defense - now) / (30.5 * 24 * 60 * 60 * 1000)));
+  const pct     = Math.round((CUR_IDX / (MS.length - 1)) * 100);
+  const now     = new Date();
+  const defense = new Date(2026, 11, 1);
+  const months  = Math.max(0, Math.round((defense - now) / (30.5 * 24 * 60 * 60 * 1000)));
 
-  document.getElementById('stat-done').textContent      = done;
-  document.getElementById('stat-remaining').textContent = remaining;
-  document.getElementById('stat-months').textContent    = months + ' mo';
-  document.getElementById('prog-fill').style.width      = pct + '%';
-  document.getElementById('prog-pct').textContent       = pct + '%';
+  document.getElementById('stat-months').textContent = months + ' mo';
+  document.getElementById('prog-fill').style.width   = pct + '%';
+  document.getElementById('prog-pct').textContent    = pct + '%';
+
+  /* Editable manuscript counts — persisted in localStorage */
+  const PUB_KEY  = 'phd_tl_published';
+  const PIPE_KEY = 'phd_tl_pipeline';
+
+  function initEditable(id, storageKey) {
+    const el = document.getElementById(id);
+    const stored = localStorage.getItem(storageKey);
+    if (stored !== null) el.textContent = stored;
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('spellcheck', 'false');
+
+    el.addEventListener('focus', () => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(range);
+    });
+    el.addEventListener('blur', () => {
+      const val = el.textContent.trim().replace(/\D/g, '') || '0';
+      el.textContent = val;
+      localStorage.setItem(storageKey, val);
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
+  }
+
+  initEditable('stat-published', PUB_KEY);
+  initEditable('stat-pipeline',  PIPE_KEY);
 }
 
 /* ── Init ───────────────────────────────────────────────────────────────────── */
