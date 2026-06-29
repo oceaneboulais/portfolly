@@ -273,6 +273,85 @@
       margin-top: 10px;
     }
 
+    /* ── Publications ────────────────────────────────────────────────── */
+    .pubs-section {
+      margin-top: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .pubs-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .pubs-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex: 1;
+    }
+    .pubs-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border-radius: 100px;
+      padding: 1px 8px;
+    }
+    .pubs-list {
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .pub-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .pub-item:last-child { border-bottom: none; }
+    .pub-item:hover { background: rgba(153,204,204,0.03); }
+    .pub-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .pub-journal {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+    .pub-year {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .pub-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3aadaa;
+      background: rgba(58,173,170,0.12);
+      border: 1px solid rgba(58,173,170,0.25);
+      border-radius: 4px;
+      padding: 1px 7px;
+    }
+    .pub-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.45;
+      font-style: italic;
+    }
+
     /* ── Animations ──────────────────────────────────────────────────── */
     @keyframes pulse-ring {
       0%   { r: 12; stroke-opacity: 0.7; }
@@ -305,7 +384,7 @@
   <!-- Stats -->
   <div class="stats">
     <div class="stat">
-      <div class="stat-val stat-editable" id="stat-published" title="click to edit">0</div>
+      <div class="stat-val stat-editable" id="stat-published" title="click to edit">1</div>
       <div class="stat-lbl">Manuscripts Published</div>
     </div>
     <div class="stat">
@@ -396,6 +475,24 @@
   </div>
   <div class="edit-hint">✦ click any milestone note to edit &nbsp;·&nbsp; changes auto-saved locally</div>
 
+  <!-- Publications -->
+  <section class="pubs-section">
+    <div class="pubs-header">
+      <span class="pubs-title">Publications</span>
+      <span class="pubs-count" id="pubs-count">1</span>
+    </div>
+    <ol class="pubs-list" id="pubs-list">
+      <li class="pub-item">
+        <div class="pub-meta">
+          <span class="pub-journal">Nature Scientific Reports</span>
+          <span class="pub-year">Jun 2026</span>
+          <span class="pub-badge">published</span>
+        </div>
+        <div class="pub-title">Autonomous cameras reveal larval reef fish responses to acoustic enrichment and lunar phase</div>
+      </li>
+    </ol>
+  </section>
+
 </div><!-- .page -->
 
 <script>
@@ -444,7 +541,7 @@ const DEFAULTS = {
   'q3-2025':  '',
   'q4-2025':  '',
   'q1-2026':  '',
-  'q2-2026':  'You are here ✦',
+  'q2-2026':  'Nature Sci Reports accepted ✦',
   'q3-2026':  '',
   'dec-2026': '🎓 PhD Defense',
 };
