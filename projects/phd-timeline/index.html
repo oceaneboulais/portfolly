@@ -195,7 +195,11 @@
       font-family: 'Space Mono', monospace;
     }
     .stat-pct:hover { border-color: var(--accent); }
-    .stat-pct:focus { border-color: var(--accent); border-bottom-style: solid; }
+    .stat-paper-item--mentorship {
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid var(--border);
+    }
     .stat-lbl {
       font-size: 10px;
       color: var(--muted);
@@ -455,12 +459,32 @@
       </ul>
     </div>
     <div class="stat">
-      <div class="stat-val gold">Dec '26</div>
-      <div class="stat-lbl">Defense Target</div>
+      <div class="stat-val gold">$10k</div>
+      <div class="stat-lbl">Fellowship Award</div>
+      <ul class="stat-papers">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">Center for Marine Biodiversity and Conservation</span>
+          <span class="stat-paper-venue">Scripps Institution of Oceanography &middot; 2026</span>
+        </li>
+      </ul>
     </div>
     <div class="stat">
-      <div class="stat-val" id="stat-months">—</div>
-      <div class="stat-lbl">Months Left</div>
+      <div class="stat-val">2</div>
+      <div class="stat-lbl">Teaching Roles</div>
+      <ul class="stat-papers">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">Teaching Assistant, Marine ArcGIS (SIOB 296)</span>
+          <span class="stat-paper-venue">Scripps IOC &middot; 2024 Winter</span>
+        </li>
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">AI Pioneers Instructor, Inspirit AI</span>
+          <span class="stat-paper-venue">Summer 2026</span>
+        </li>
+        <li class="stat-paper-item stat-paper-item--mentorship">
+          <span class="stat-paper-venue" style="color:var(--accent); margin-bottom:2px;">Mentorship</span>
+          <span class="stat-paper-title">4 undergraduates &middot; 2 master’s students</span>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -818,7 +842,6 @@ function buildStats() {
   const defense = new Date(2026, 11, 1);
   const months  = Math.max(0, Math.round((defense - now) / (30.5 * 24 * 60 * 60 * 1000)));
 
-  document.getElementById('stat-months').textContent = months + ' mo';
   document.getElementById('prog-fill').style.width   = pct + '%';
   document.getElementById('prog-pct').textContent    = pct + '%';
 
