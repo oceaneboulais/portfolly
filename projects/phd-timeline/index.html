@@ -121,7 +121,7 @@
     /* ── Stats row ───────────────────────────────────────────────────── */
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
@@ -129,6 +129,7 @@
       overflow: hidden;
       margin-bottom: 36px;
     }
+    @media (max-width: 700px) { .stats { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 500px) { .stats { grid-template-columns: repeat(2, 1fr); } }
     .stat {
       background: var(--surface);
@@ -420,7 +421,8 @@
   <!-- Header -->
   <header class="header">
     <div class="header-eyebrow">Scripps Institution of Oceanography · UC San Diego</div>
-    <h1 class="header-title">PhD Journey</h1>
+    <h1 class="header-title">Oc's PhD Journey</h1>
+
     <p class="header-sub">Ocean Bioacoustics &amp; Machine Learning · Aug 2022 – Dec 2026</p>
     <div class="progress-pill">
       <span class="progress-bar-label">Start</span>
@@ -483,6 +485,16 @@
         <li class="stat-paper-item stat-paper-item--mentorship">
           <span class="stat-paper-venue" style="color:var(--accent); margin-bottom:2px;">Mentorship</span>
           <span class="stat-paper-title">4 undergraduates &middot; 2 master’s students</span>
+        </li>
+      </ul>
+    </div>
+    <div class="stat">
+      <div class="stat-val">2</div>
+      <div class="stat-lbl">SciArt Exhibits</div>
+      <ul class="stat-papers">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">Birch Aquarium: Seas of Change</span>
+          <span class="stat-paper-venue">Scripps Institution of Oceanography</span>
         </li>
       </ul>
     </div>
