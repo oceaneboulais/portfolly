@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhD Journey · Oceane Boulais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:              #06080f;
+      --surface:         #0c1422;
+      --border:          #162336;
+      --accent:          #99cccc;
+      --accent-dim:      rgba(153,204,204,0.18);
+      --gold:            #f0c060;
+      --gold-dim:        rgba(240,192,96,0.22);
+      --text:            #c8d8e4;
+      --muted:           #4e6070;
+      --done-fill:       #3aadaa;
+      --done-stroke:     #246868;
+      --current-fill:    #f0c060;
+      --future-fill:     #111e2e;
+      --future-stroke:   #1c3050;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--bg); scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 100% 35% at 50% -5%, rgba(153,204,204,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 55% at 8% 95%, rgba(15,40,80,0.45) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 92% 80%, rgba(20,50,100,0.25) 0%, transparent 55%);
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 28px 80px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    .header {
+      padding: 44px 0 28px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .header-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .header-title {
+      font-size: clamp(22px, 4.5vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #e4eef8;
+      margin-bottom: 5px;
+      line-height: 1.1;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 22px;
+      font-style: italic;
+    }
+    .progress-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 7px 18px;
+    }
+    .progress-bar-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .progress-bar {
+      width: 150px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--done-fill), var(--gold));
+      border-radius: 2px;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+    }
+    .progress-pct {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      min-width: 30px;
+      text-align: left;
+    }
+
+    /* ── Stats row ───────────────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 500px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--surface);
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .stat-val.gold { color: var(--gold); }
+    .stat-lbl {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Timeline ────────────────────────────────────────────────────── */
+    .timeline-outer {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .timeline-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 580px;
+    }
+    #timeline-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    #ms-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .ms-label {
+      position: absolute;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .ms-label.align-left  { align-items: flex-start; }
+    .ms-label.align-right { align-items: flex-end; }
+
+    .ms-qtag {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .ms-done    .ms-qtag { color: var(--done-fill); }
+    .ms-current .ms-qtag { color: var(--gold); }
+    .ms-future  .ms-qtag { color: var(--muted); }
+
+    .ms-note {
+      font-size: 10.5px;
+      line-height: 1.3;
+      text-align: center;
+      max-width: 108px;
+      word-break: break-word;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .ms-label.align-left  .ms-note { text-align: left; }
+    .ms-label.align-right .ms-note { text-align: right; }
+
+    .ms-note:hover  { background: var(--accent-dim); }
+    .ms-note.ph     { font-style: italic; opacity: 0.3; }
+    .ms-done    .ms-note { color: #7aafb0; }
+    .ms-current .ms-note { color: var(--text); font-weight: 500; }
+    .ms-future  .ms-note { color: var(--muted); }
+
+    .ms-input {
+      font-size: 10.5px;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      padding: 3px 6px;
+      color: var(--text);
+      width: 108px;
+      text-align: center;
+      outline: none;
+      display: none;
+      pointer-events: auto;
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    /* ── Legend + hint ───────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      gap: 22px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 22px 0 6px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .edit-hint {
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.55;
+      margin-top: 10px;
+    }
+
+    /* ── Animations ──────────────────────────────────────────────────── */
+    @keyframes pulse-ring {
+      0%   { r: 12; stroke-opacity: 0.7; }
+      100% { r: 24; stroke-opacity: 0; }
+    }
+    @keyframes path-shimmer {
+      0%, 100% { stroke-opacity: 0.85; }
+      50%       { stroke-opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-eyebrow">Scripps Institution of Oceanography · UC San Diego</div>
+    <h1 class="header-title">PhD Journey</h1>
+    <p class="header-sub">Ocean Bioacoustics &amp; Machine Learning · Aug 2022 – Dec 2026</p>
+    <div class="progress-pill">
+      <span class="progress-bar-label">Start</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+      <span class="progress-bar-label">Defense</span>
+      <span class="progress-pct" id="prog-pct">—</span>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="stat-done">—</div>
+      <div class="stat-lbl">Quarters Done</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="stat-remaining">—</div>
+      <div class="stat-lbl">To Go</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val gold">Dec '26</div>
+      <div class="stat-lbl">Defense Target</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="stat-months">—</div>
+      <div class="stat-lbl">Months Left</div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-outer">
+    <div class="timeline-wrap" id="timeline-wrap">
+      <svg id="timeline-svg" viewBox="0 0 900 780" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="f-teal" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="f-gold" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="rg-done" cx="50%" cy="35%" r="65%">
+            <stop offset="0%"   stop-color="#62e0dc"/>
+            <stop offset="100%" stop-color="#1e8a88"/>
+          </radialGradient>
+          <radialGradient id="rg-current" cx="50%" cy="35%" r="65%">
+            <stop offset="0%"   stop-color="#ffe388"/>
+            <stop offset="100%" stop-color="#d4940a"/>
+          </radialGradient>
+          <radialGradient id="rg-grad" cx="50%" cy="35%" r="65%">
+            <stop offset="0%"   stop-color="#fff9c4"/>
+            <stop offset="100%" stop-color="#f0c060"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Base path (full route, dim) -->
+        <path id="path-bg" fill="none" stroke="#0e1e2e" stroke-width="5.5" stroke-linecap="round"
+          d="M 70 140
+             L 225 140 L 380 140 L 535 140 L 690 140
+             L 840 140 Q 878 140 878 220 Q 878 300 840 300
+             L 685 300 L 530 300 L 375 300 L 220 300
+             L 70 300 Q 32 300 32 390 Q 32 480 70 480
+             L 255 480 L 440 480 L 625 480
+             L 840 480 Q 878 480 878 565 Q 878 650 840 650
+             L 655 650 L 470 650 L 285 650"/>
+
+        <!-- Done path glow (behind done path) -->
+        <path id="path-glow" fill="none"
+          stroke="rgba(153,204,204,0.15)" stroke-width="12"
+          stroke-linecap="round" filter="url(#f-teal)" d=""/>
+
+        <!-- Done path (colored) -->
+        <path id="path-done" fill="none"
+          stroke="#2a9090" stroke-width="5.5" stroke-linecap="round"
+          style="animation: path-shimmer 3s ease-in-out infinite" d=""/>
+
+        <!-- SVG dot elements added by JS -->
+        <g id="dots-layer"></g>
+      </svg>
+
+      <!-- HTML label overlays -->
+      <div id="ms-overlay"></div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#3aadaa;"></div>completed
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#f0c060; box-shadow:0 0 5px #f0c060;"></div>current
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#111e2e; border:1px solid #1c3050;"></div>upcoming
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#f0c060; width:11px;height:11px; box-shadow:0 0 8px #f0c060;"></div>graduation
+    </div>
+  </div>
+  <div class="edit-hint">✦ click any milestone note to edit &nbsp;·&nbsp; changes auto-saved locally</div>
+
+</div><!-- .page -->
+
+<script>
+/* ── Data ──────────────────────────────────────────────────────────────────── */
+const STORE = 'phd_tl_v1';
+
+/* viewBox: 0 0 900 780
+   Row 1 (L→R, y=140): milestones 0–4
+   Row 2 (R→L, y=300): milestones 5–9
+   Row 3 (L→R, y=480): milestones 10–13
+   Row 4 (R→L, y=650): milestones 14–17              */
+const MS = [
+  { id:'q3-2022',  q:'Q3 2022',  x:70,  y:140, start:true },
+  { id:'q4-2022',  q:'Q4 2022',  x:225, y:140 },
+  { id:'q1-2023',  q:'Q1 2023',  x:380, y:140 },
+  { id:'q2-2023',  q:'Q2 2023',  x:535, y:140 },
+  { id:'q3-2023',  q:'Q3 2023',  x:690, y:140 },
+  { id:'q4-2023',  q:'Q4 2023',  x:840, y:300 },
+  { id:'q1-2024',  q:'Q1 2024',  x:685, y:300 },
+  { id:'q2-2024',  q:'Q2 2024',  x:530, y:300 },
+  { id:'q3-2024',  q:'Q3 2024',  x:375, y:300 },
+  { id:'q4-2024',  q:'Q4 2024',  x:220, y:300 },
+  { id:'q1-2025',  q:'Q1 2025',  x:70,  y:480 },
+  { id:'q2-2025',  q:'Q2 2025',  x:255, y:480 },
+  { id:'q3-2025',  q:'Q3 2025',  x:440, y:480 },
+  { id:'q4-2025',  q:'Q4 2025',  x:625, y:480 },
+  { id:'q1-2026',  q:'Q1 2026',  x:840, y:650 },
+  { id:'q2-2026',  q:'Q2 2026',  x:655, y:650, current:true },
+  { id:'q3-2026',  q:'Q3 2026',  x:470, y:650 },
+  { id:'dec-2026', q:'Dec 2026', x:285, y:650, end:true },
+];
+
+const DEFAULTS = {
+  'q3-2022':  'PhD program begins',
+  'q4-2022':  '',
+  'q1-2023':  '',
+  'q2-2023':  '',
+  'q3-2023':  '',
+  'q4-2023':  '',
+  'q1-2024':  '',
+  'q2-2024':  '',
+  'q3-2024':  '',
+  'q4-2024':  '',
+  'q1-2025':  '',
+  'q2-2025':  '',
+  'q3-2025':  '',
+  'q4-2025':  '',
+  'q1-2026':  '',
+  'q2-2026':  'You are here ✦',
+  'q3-2026':  '',
+  'dec-2026': '🎓 PhD Defense',
+};
+
+/* Segment = SVG path string from MS[i] → MS[i+1] */
+const SEGS = [
+  'L 225 140',                                                    // 0→1
+  'L 380 140',                                                    // 1→2
+  'L 535 140',                                                    // 2→3
+  'L 690 140',                                                    // 3→4
+  'L 840 140 Q 878 140 878 220 Q 878 300 840 300',               // 4→5 (U-turn R)
+  'L 685 300',                                                    // 5→6
+  'L 530 300',                                                    // 6→7
+  'L 375 300',                                                    // 7→8
+  'L 220 300',                                                    // 8→9
+  'L 70 300 Q 32 300 32 390 Q 32 480 70 480',                    // 9→10 (U-turn L)
+  'L 255 480',                                                    // 10→11
+  'L 440 480',                                                    // 11→12
+  'L 625 480',                                                    // 12→13
+  'L 840 480 Q 878 480 878 565 Q 878 650 840 650',               // 13→14 (U-turn R)
+  'L 655 650',                                                    // 14→15
+  'L 470 650',                                                    // 15→16
+  'L 285 650',                                                    // 16→17
+];
+
+/* ── State ─────────────────────────────────────────────────────────────────── */
+const CUR_IDX = MS.findIndex(m => m.current); // 15
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e) {}
+
+function getNote(id)      { return saved[id] !== undefined ? saved[id] : (DEFAULTS[id] || ''); }
+function saveNote(id, v)  { saved[id] = v; try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch(e) {} }
+
+/* ── Build SVG dots & paths ────────────────────────────────────────────────── */
+function buildSVG() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const g  = document.getElementById('dots-layer');
+
+  /* Done path */
+  let dp = `M ${MS[0].x} ${MS[0].y}`;
+  for (let i = 0; i < CUR_IDX; i++) dp += ' ' + SEGS[i];
+  document.getElementById('path-done').setAttribute('d', dp);
+  document.getElementById('path-glow').setAttribute('d', dp);
+
+  /* Dots */
+  MS.forEach((ms, i) => {
+    const isDone    = i < CUR_IDX;
+    const isCurrent = i === CUR_IDX;
+    const r         = ms.end ? 17 : 10;
+
+    /* Pulse ring for current */
+    if (isCurrent) {
+      const ring = document.createElementNS(ns, 'circle');
+      ring.setAttribute('cx', ms.x); ring.setAttribute('cy', ms.y);
+      ring.setAttribute('r', '10');
+      ring.setAttribute('fill', 'none');
+      ring.setAttribute('stroke', '#f0c060');
+      ring.setAttribute('stroke-width', '2');
+      ring.setAttribute('stroke-opacity', '0');
+      ring.style.animation = 'pulse-ring 2s ease-out infinite';
+      g.appendChild(ring);
+    }
+
+    /* Main circle */
+    const c = document.createElementNS(ns, 'circle');
+    c.setAttribute('cx', ms.x); c.setAttribute('cy', ms.y); c.setAttribute('r', r);
+    if (ms.end) {
+      c.setAttribute('fill', 'url(#rg-grad)');
+      c.setAttribute('stroke', 'rgba(255,255,200,0.5)'); c.setAttribute('stroke-width', '2');
+      c.setAttribute('filter', 'url(#f-gold)');
+    } else if (isCurrent) {
+      c.setAttribute('fill', 'url(#rg-current)');
+      c.setAttribute('stroke', 'rgba(255,220,120,0.5)'); c.setAttribute('stroke-width', '1.5');
+      c.setAttribute('filter', 'url(#f-gold)');
+    } else if (isDone) {
+      c.setAttribute('fill', 'url(#rg-done)');
+      c.setAttribute('stroke', '#1e7070'); c.setAttribute('stroke-width', '1.5');
+    } else {
+      c.setAttribute('fill', '#111e2e');
+      c.setAttribute('stroke', '#1c3050'); c.setAttribute('stroke-width', '1.5');
+    }
+    g.appendChild(c);
+
+    /* Inner icon */
+    if (ms.end || isDone || isCurrent) {
+      const t = document.createElementNS(ns, 'text');
+      t.setAttribute('x', ms.x); t.setAttribute('y', ms.y);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('dominant-baseline', 'central');
+      t.setAttribute('font-size', ms.end ? '13' : '8');
+      t.setAttribute('fill', ms.end ? '#3a2000' : '#052020');
+      t.textContent = ms.end ? '★' : (isDone ? '✓' : '◆');
+      g.appendChild(t);
+    }
+  });
+}
+
+/* ── Build HTML label overlays ─────────────────────────────────────────────── */
+function buildOverlays() {
+  const svgEl  = document.getElementById('timeline-svg');
+  const rect   = svgEl.getBoundingClientRect();
+  if (rect.width === 0) { setTimeout(buildOverlays, 80); return; }
+
+  const overlay = document.getElementById('ms-overlay');
+  overlay.innerHTML = '';
+
+  const sx = rect.width  / 900;
+  const sy = rect.height / 780;
+
+  MS.forEach((ms, i) => {
+    const isDone    = i < CUR_IDX;
+    const isCurrent = i === CUR_IDX;
+    const isFuture  = i > CUR_IDX;
+    const note      = getNote(ms.id);
+
+    const px   = ms.x * sx;
+    const py   = ms.y * sy;
+    const dotR = (ms.end ? 17 : 10) * Math.min(sx, sy);
+
+    /* Labels are ABOVE for rows y=140 & y=480, BELOW for y=300 & y=650 */
+    const isAbove = (ms.y === 140 || ms.y === 480);
+
+    /* Horizontal alignment: edges get flush alignment */
+    let halign = 'center';
+    if (ms.x <= 80)  halign = 'left';
+    if (ms.x >= 820) halign = 'right';
+
+    const div = document.createElement('div');
+    div.className = 'ms-label'
+      + (isDone ? ' ms-done' : isCurrent ? ' ms-current' : ' ms-future')
+      + (halign === 'left' ? ' align-left' : halign === 'right' ? ' align-right' : '');
+    div.style.left = px + 'px';
+
+    let tx = '-50%', ty;
+    if (halign === 'left')  { tx = '0%'; }
+    if (halign === 'right') { tx = '-100%'; }
+
+    if (isAbove) {
+      div.style.top = py + 'px';
+      ty = `calc(-100% - ${dotR + 5}px)`;
+    } else {
+      div.style.top = (py + dotR + 5) + 'px';
+      ty = '0%';
+    }
+    div.style.transform = `translateX(${tx}) translateY(${ty})`;
+
+    /* Quarter tag */
+    const qEl = document.createElement('div');
+    qEl.className = 'ms-qtag';
+    qEl.textContent = ms.q;
+    div.appendChild(qEl);
+
+    /* Note text */
+    const noteEl = document.createElement('div');
+    noteEl.className = 'ms-note' + (!note ? ' ph' : '');
+    noteEl.textContent = note || '+ add note';
+
+    /* Note input */
+    const inputEl = document.createElement('input');
+    inputEl.className = 'ms-input';
+    inputEl.type = 'text';
+    inputEl.value = note;
+    inputEl.maxLength = 60;
+    inputEl.placeholder = 'add a note…';
+    if (halign === 'left')  inputEl.style.textAlign = 'left';
+    if (halign === 'right') inputEl.style.textAlign = 'right';
+
+    noteEl.addEventListener('click', () => {
+      noteEl.style.display  = 'none';
+      inputEl.style.display = 'block';
+      inputEl.focus(); inputEl.select();
+    });
+
+    function commit() {
+      const val = inputEl.value.trim();
+      noteEl.textContent = val || '+ add note';
+      noteEl.className   = 'ms-note' + (!val ? ' ph' : '');
+      inputEl.style.display = 'none';
+      noteEl.style.display  = '';
+      saveNote(ms.id, val);
+    }
+    inputEl.addEventListener('blur', commit);
+    inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') { commit(); inputEl.blur(); } });
+
+    div.appendChild(noteEl);
+    div.appendChild(inputEl);
+    overlay.appendChild(div);
+  });
+}
+
+/* ── Stats ──────────────────────────────────────────────────────────────────── */
+function buildStats() {
+  const done      = CUR_IDX;          // quarters completed before current
+  const remaining = MS.length - CUR_IDX - 1; // after current
+  const pct       = Math.round((CUR_IDX / (MS.length - 1)) * 100);
+  const now       = new Date();
+  const defense   = new Date(2026, 11, 1); // Dec 1 2026
+  const months    = Math.max(0, Math.round((defense - now) / (30.5 * 24 * 60 * 60 * 1000)));
+
+  document.getElementById('stat-done').textContent      = done;
+  document.getElementById('stat-remaining').textContent = remaining;
+  document.getElementById('stat-months').textContent    = months + ' mo';
+  document.getElementById('prog-fill').style.width      = pct + '%';
+  document.getElementById('prog-pct').textContent       = pct + '%';
+}
+
+/* ── Init ───────────────────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  buildSVG();
+  buildStats();
+  requestAnimationFrame(() => requestAnimationFrame(buildOverlays));
+
+  let rTimer;
+  window.addEventListener('resize', () => { clearTimeout(rTimer); rTimer = setTimeout(buildOverlays, 160); });
+
+  /* Also re-build when iframe is resized (parent modal resize) */
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(() => { clearTimeout(rTimer); rTimer = setTimeout(buildOverlays, 80); })
+      .observe(document.getElementById('timeline-wrap'));
+  }
+});
+</script>
+</body>
+</html>

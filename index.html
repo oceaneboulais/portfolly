@@ -705,6 +705,20 @@
             </a>
             <div class="caption">AI Empowered Research Curriculum — A PhD Student's Perspective on AI-Enabled Ocean Science</div>
           </div>
+          <!-- Project: PhD Journey Timeline (2022–2026) -->
+          <div class="project">
+            <a class="project-circle" href="javascript:void(0)"
+               data-url="projects/phd-timeline/index.html"
+               data-title="PhD Journey to Graduation"
+               data-protected="true"
+               data-password="dococ"
+               aria-label="PhD Journey Timeline"
+               style="background: radial-gradient(ellipse 80% 60% at 50% 30%, #1a3a52 0%, #06090f 70%);">
+              <span class="label" style="font-size:1.9rem; background:transparent; box-shadow:none; color:#99cccc; line-height:1;">🎓</span>
+              <span class="name">PhD Journey · Aug 2022 – Dec 2026</span>
+            </a>
+            <div class="caption">Winding road to graduation — interactive quarterly milestone timeline</div>
+          </div>
           <!--
           Project 12: sirènité
           <div class="project">
@@ -1009,8 +1023,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function attemptUnlock() {
-      if (pwInput.value === 'ottersloveai') {
-        const trigger = pendingProtectedTrigger;
+      const trigger  = pendingProtectedTrigger;
+      const expected = (trigger && trigger.getAttribute('data-password')) || 'ottersloveai';
+      if (pwInput.value === expected) {
         closePwModal();
         lastTrigger = trigger;
         openSiteModal(trigger);
