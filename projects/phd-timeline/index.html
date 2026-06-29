@@ -121,7 +121,7 @@
     /* ── Stats row ───────────────────────────────────────────────────── */
     .stats {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
@@ -590,6 +590,15 @@
         </li>
       </ul>
     </div>
+    <div class="stat">
+      <div class="stat-val stat-editable" id="stat-talks" title="click to edit">0</div>
+      <div class="stat-lbl">Conference Talks</div>
+      <ul class="stat-papers" id="conf-list">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title" style="opacity:0.35; font-style:italic;">+ add conference</span>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!-- Timeline -->
@@ -771,7 +780,7 @@
             </div>
             <div class="chapter-item">
               <span class="chapter-num">Bonus Ch. 4</span>
-              <div class="chapter-body">Introduces a <strong>multimodal, information-theoretic prototype</strong> using 360&deg; camera and directional acoustic data to quantitatively compare artificial and natural reefs over time. &mdash; <a href="https://aiconsultansea.com/" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; border-bottom:1px dashed var(--accent);">StartBlue Accelerator applicant</a></div>
+              <div class="chapter-body">Introduces a <strong>multimodal, ambient acoustic monitoring prototype</strong> using 360&deg; camera and directional acoustic data to quantitatively compare artificial and natural reefs over time. &mdash; <a href="https://aiconsultansea.com/" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; border-bottom:1px dashed var(--accent);">StartBlue Accelerator applicant</a></div>
             </div>
           </div>
         </div>
@@ -1059,6 +1068,7 @@ function buildStats() {
 
   initEditable('stat-published', PUB_KEY);
   initEditable('stat-pipeline',  PIPE_KEY);
+  initEditable('stat-talks',     'phd_tl_talks');
 
   /* Editable completion percentages for pipeline papers */
   document.querySelectorAll('.stat-pct').forEach(el => {
