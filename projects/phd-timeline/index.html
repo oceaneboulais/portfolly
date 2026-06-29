@@ -404,6 +404,100 @@
       font-style: italic;
     }
 
+    /* ── Slide Deck ───────────────────────────────────────────────────── */
+    .deck-section { margin-top: 44px; }
+    .deck-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+    }
+    .deck-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .deck-nav { display: flex; align-items: center; gap: 10px; }
+    .deck-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      border-radius: 6px; padding: 3px 11px;
+      font-family: 'Space Mono', monospace; font-size: 13px;
+      transition: border-color .15s, color .15s;
+    }
+    .deck-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .deck-btn:disabled { opacity: 0.25; cursor: default; }
+    .deck-counter {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: var(--muted); min-width: 36px; text-align: center;
+    }
+    .deck-viewport {
+      border: 1px solid var(--border);
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+    }
+    .deck-track {
+      display: flex;
+      transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide {
+      min-width: 100%;
+      padding: 44px 52px;
+      background: var(--surface);
+      display: flex; flex-direction: column; justify-content: center;
+      min-height: 360px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) { .slide { padding: 28px 24px; min-height: 280px; } }
+    .slide-cover { align-items: center; text-align: center; }
+    .slide-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .slide-title {
+      font-size: clamp(17px, 2.8vw, 26px);
+      font-weight: 600; letter-spacing: -0.02em;
+      color: #e4eef8; line-height: 1.25;
+      margin-bottom: 18px; max-width: 680px;
+    }
+    .slide-cover .slide-title { max-width: 760px; font-size: clamp(20px, 3.5vw, 32px); }
+    .slide-rule {
+      width: 44px; height: 2px;
+      background: var(--accent); border-radius: 1px;
+      margin-bottom: 20px; flex-shrink: 0;
+    }
+    .slide-cover .slide-rule { margin: 0 auto 20px; }
+    .slide-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; color: var(--muted);
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .slide-cover .slide-meta { justify-content: center; }
+    .slide-chapters { display: flex; flex-direction: column; gap: 18px; }
+    .chapter-item { display: flex; gap: 14px; align-items: flex-start; }
+    .chapter-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+      white-space: nowrap; padding-top: 2px; min-width: 64px;
+    }
+    .chapter-body { font-size: 12.5px; color: var(--text); line-height: 1.55; }
+    .chapter-body strong { color: #c8dde8; font-weight: 600; }
+    .deck-dots {
+      display: flex; justify-content: center; gap: 7px; padding: 11px 0 0;
+    }
+    .deck-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border); border: none; cursor: pointer;
+      transition: background .2s, transform .2s; padding: 0;
+    }
+    .deck-dot.active { background: var(--accent); transform: scale(1.35); }
+
     /* ── Animations ──────────────────────────────────────────────────── */
     @keyframes pulse-ring {
       0%   { r: 12; stroke-opacity: 0.7; }
@@ -604,6 +698,61 @@
         <div class="pub-title">From detection to classification: bowhead whale call typing with a convolutional autoencoder pipeline</div>
       </li>
     </ol>
+  </section>
+
+  <!-- Slide Deck -->
+  <section class="deck-section">
+    <div class="deck-header">
+      <span class="deck-label">Thesis</span>
+      <div class="deck-nav">
+        <button class="deck-btn" id="deck-prev" aria-label="Previous">&#8592;</button>
+        <span class="deck-counter"><span id="deck-cur">1</span>&thinsp;/&thinsp;<span id="deck-tot">2</span></span>
+        <button class="deck-btn" id="deck-next" aria-label="Next">&#8594;</button>
+      </div>
+    </div>
+    <div class="deck-viewport">
+      <div class="deck-track" id="deck-track">
+
+        <!-- Slide 1: Cover -->
+        <div class="slide slide-cover">
+          <div class="slide-eyebrow">Proposed Thesis &middot; Scripps Institution of Oceanography, UC San Diego</div>
+          <div class="slide-title">Applying Deep Learning to Underwater Cameras and Directional Acoustics for Ecosystem Monitoring</div>
+          <div class="slide-rule"></div>
+          <div class="slide-meta">
+            <span>Oceane Boulais</span>
+            <span>Advisor: TBD</span>
+            <span>Expected Defense &mdash; December 2026</span>
+          </div>
+        </div>
+
+        <!-- Slide 2: Previously Proposed Thesis Overview -->
+        <div class="slide">
+          <div class="slide-eyebrow">Previously Proposed Thesis Overview</div>
+          <div class="slide-title">Chapter Breakdown</div>
+          <div class="slide-rule"></div>
+          <div class="slide-chapters">
+            <div class="chapter-item">
+              <span class="chapter-num">Chapter 1</span>
+              <div class="chapter-body">Validates acoustic playback as a restoration tool by demonstrating how it <strong>increases fish larval presence</strong> on artificial coral reef structures near new-moon phases, while establishing autonomous cameras for evaluating ecological restoration tools in situ.</div>
+            </div>
+            <div class="chapter-item">
+              <span class="chapter-num">Chapter 2</span>
+              <div class="chapter-body">Develops a novel automated pipeline combining <strong>particle tracking velocimetry (PTV) with particle image velocimetry (PIV)</strong> to distinguish actively swimming larvae from drifting particles, enabling reproducible abundance estimates in challenging field conditions.</div>
+            </div>
+            <div class="chapter-item">
+              <span class="chapter-num">Chapter 3</span>
+              <div class="chapter-body">Applies deep learning to <strong>seven years of passive acoustic data</strong> to detect and characterize bowhead whale call types, revealing how calling behavior varies with environmental factors like seismic airgun noise.</div>
+            </div>
+            <div class="chapter-item">
+              <span class="chapter-num">Chapter 4</span>
+              <div class="chapter-body">Introduces a <strong>multimodal, information-theoretic framework</strong> using directional acoustic data to quantitatively compare artificial and natural reefs over time.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="deck-dots" id="deck-dots"></div>
   </section>
 
 </div><!-- .page -->
@@ -928,6 +1077,59 @@ window.addEventListener('DOMContentLoaded', () => {
       .observe(document.getElementById('timeline-wrap'));
   }
 });
+
+/* ── Slide deck carousel ────────────────────────────────────────────────────── */
+(function () {
+  const track   = document.getElementById('deck-track');
+  const prevBtn = document.getElementById('deck-prev');
+  const nextBtn = document.getElementById('deck-next');
+  const curEl   = document.getElementById('deck-cur');
+  const totEl   = document.getElementById('deck-tot');
+  const dotsEl  = document.getElementById('deck-dots');
+  const slides  = track.querySelectorAll('.slide');
+  const total   = slides.length;
+  let cur = 0;
+
+  totEl.textContent = total;
+
+  /* Build dots */
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'deck-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    cur = (n + total) % total;
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+    curEl.textContent = cur + 1;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === total - 1;
+    dotsEl.querySelectorAll('.deck-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  prevBtn.addEventListener('click', () => goTo(cur - 1));
+  nextBtn.addEventListener('click', () => goTo(cur + 1));
+  goTo(0); /* init disabled states */
+
+  /* Keyboard */
+  document.addEventListener('keydown', e => {
+    if (document.activeElement && document.activeElement.closest('.deck-section')) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(cur + 1); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur - 1); }
+    }
+  });
+
+  /* Touch swipe */
+  let tx = 0;
+  track.parentElement.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  track.parentElement.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 44) goTo(cur + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+})();
 </script>
 </body>
 </html>
