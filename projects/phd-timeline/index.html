@@ -154,6 +154,48 @@
     }
     .stat-editable:hover  { border-color: var(--accent); color: #b8e8e8; }
     .stat-editable:focus  { border-color: var(--accent); border-bottom-style: solid; }
+
+    .stat-papers {
+      list-style: none;
+      margin: 10px 0 0;
+      padding: 9px 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      text-align: left;
+    }
+    .stat-paper-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .stat-paper-title {
+      font-size: 10.5px;
+      color: var(--text);
+      line-height: 1.4;
+      font-style: italic;
+    }
+    .stat-paper-venue {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .stat-pct {
+      color: var(--accent);
+      cursor: pointer;
+      border-bottom: 1px dashed var(--muted);
+      outline: none;
+      min-width: 14px;
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+    }
+    .stat-pct:hover { border-color: var(--accent); }
+    .stat-pct:focus { border-color: var(--accent); border-bottom-style: solid; }
     .stat-lbl {
       font-size: 10px;
       color: var(--muted);
@@ -391,10 +433,26 @@
     <div class="stat">
       <div class="stat-val stat-editable" id="stat-published" title="click to edit">1</div>
       <div class="stat-lbl">Manuscripts Published</div>
+      <ul class="stat-papers">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">Autonomous cameras reveal larval reef fish responses to acoustic enrichment and lunar phase</span>
+          <span class="stat-paper-venue">Nature Scientific Reports &middot; Jun 2026</span>
+        </li>
+      </ul>
     </div>
     <div class="stat">
       <div class="stat-val stat-editable" id="stat-pipeline" title="click to edit">2</div>
       <div class="stat-lbl">In the Pipeline</div>
+      <ul class="stat-papers">
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">Enhancing bowhead whale detection using convolutional autoencoders</span>
+          <span class="stat-paper-venue">Journal of the Acoustical Society of America &middot; <span class="stat-pct" id="pct-jasa" title="click to edit">&#8212;</span>% complete</span>
+        </li>
+        <li class="stat-paper-item">
+          <span class="stat-paper-title">From detection to classification: bowhead whale call typing with a convolutional autoencoder pipeline</span>
+          <span class="stat-paper-venue"><span class="stat-pct" id="pct-cae" title="click to edit">&#8212;</span>% complete</span>
+        </li>
+      </ul>
     </div>
     <div class="stat">
       <div class="stat-val gold">Dec '26</div>
@@ -793,6 +851,33 @@ function buildStats() {
 
   initEditable('stat-published', PUB_KEY);
   initEditable('stat-pipeline',  PIPE_KEY);
+
+  /* Editable completion percentages for pipeline papers */
+  document.querySelectorAll('.stat-pct').forEach(el => {
+    const key    = 'phd_pct_' + el.id;
+    const stored = localStorage.getItem(key);
+    if (stored !== null) el.textContent = stored;
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('spellcheck', 'false');
+    el.addEventListener('focus', () => {
+      const r = document.createRange();
+      r.selectNodeContents(el);
+      const s = window.getSelection();
+      s.removeAllRanges(); s.addRange(r);
+    });
+    el.addEventListener('blur', () => {
+      const val = el.textContent.trim().replace(/[^0-9]/g, '');
+      el.textContent = val ? Math.min(100, parseInt(val)) : '\u2014';
+      localStorage.setItem(key, el.textContent);
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      if (!e.ctrlKey && !e.metaKey && !/^[0-9]$/.test(e.key) &&
+          !['Backspace','Delete','Tab','ArrowLeft','ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+  });
 }
 
 /* ── Init ───────────────────────────────────────────────────────────────────── */
