@@ -1,55 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <!-- warm paper background -->
-  <rect width="200" height="200" fill="#f6f3ee"/>
-
-  <g fill="none" stroke="#1a1410" stroke-linecap="round" stroke-linejoin="round">
-
-    <!-- body – hand-drawn organic oval -->
-    <path stroke-width="6"
-      d="M 45 138
-         C 45 112 70 100 100 100
-         C 130 100 155 112 155 138
-         C 155 164 130 176 100 176
-         C 70 176 45 164 45 138 Z"/>
-
-    <!-- neck – smooth bridge from head to body -->
-    <path stroke-width="5"
-      d="M 79 88 C 77 98 85 104 100 104 C 115 104 123 98 121 88"/>
-
-    <!-- head – slightly organic near-circle -->
-    <path stroke-width="5.5"
-      d="M 100 34
-         C 117 34 129 44 129 60
-         C 129 76 117 88 100 88
-         C 83 88 71 76 71 60
-         C 71 44 83 34 100 34 Z"/>
-
-    <!-- left ear -->
-    <path stroke-width="4.5" d="M 75 43 C 66 30 76 22 86 33"/>
-    <!-- right ear -->
-    <path stroke-width="4.5" d="M 125 43 C 134 30 124 22 114 33"/>
-
-    <!-- left paw -->
-    <path stroke-width="6.5" d="M 48 116 C 35 111 29 124 38 134"/>
-    <!-- right paw -->
-    <path stroke-width="6.5" d="M 152 116 C 165 111 171 124 162 134"/>
-
-    <!-- whiskers left -->
-    <line x1="36" y1="62" x2="67" y2="64" stroke-width="2.5"/>
-    <line x1="35" y1="69" x2="66" y2="68" stroke-width="2.5"/>
-    <!-- whiskers right -->
-    <line x1="133" y1="64" x2="164" y2="62" stroke-width="2.5"/>
-    <line x1="134" y1="68" x2="165" y2="69" stroke-width="2.5"/>
-
-    <!-- nose -->
-    <path stroke-width="3.5" d="M 92 74 C 100 79 108 74"/>
-
-  </g>
-
-  <!-- eyes -->
-  <circle cx="87" cy="58" r="4.5" fill="#1a1410"/>
-  <circle cx="113" cy="58" r="4.5" fill="#1a1410"/>
-  <!-- eye shine -->
-  <circle cx="85" cy="56" r="2" fill="#f6f3ee"/>
-  <circle cx="111" cy="56" r="2" fill="#f6f3ee"/>
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="waterBg" cx="50%" cy="60%" r="75%">
+      <stop offset="0%" stop-color="#0e3a4d"/>
+      <stop offset="100%" stop-color="#040e15"/>
+    </radialGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#waterBg)"/>
+  <circle cx="18" cy="22" r="1.1" fill="rgba(255,255,255,0.28)"/>
+  <circle cx="182" cy="17" r="0.9" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="100" cy="10" r="1.2" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="55" cy="38" r="0.7" fill="rgba(255,255,255,0.18)"/>
+  <circle cx="162" cy="33" r="0.8" fill="rgba(255,255,255,0.16)"/>
+  <circle cx="30" cy="50" r="0.6" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="175" cy="55" r="0.7" fill="rgba(255,255,255,0.14)"/>
+  <path d="M0 120 Q40 116 80 120 Q120 124 160 120 Q185 118 200 120" fill="none" stroke="rgba(45,212,191,0.22)" stroke-width="1.5"/>
+  <path d="M0 132 Q50 128 100 132 Q150 136 200 132" fill="none" stroke="rgba(45,212,191,0.11)" stroke-width="1"/>
+  <!-- RIGHT OTTER (friend) -->
+  <ellipse cx="157" cy="160" rx="13" ry="5.5" fill="#2b1503" transform="rotate(8,157,160)"/>
+  <ellipse cx="148" cy="140" rx="38" ry="18" fill="#3e200a"/>
+  <ellipse cx="148" cy="137" rx="26" ry="12" fill="#b07525"/>
+  <ellipse cx="120" cy="151" rx="12" ry="6" fill="#2b1503" transform="rotate(-14,120,151)"/>
+  <ellipse cx="176" cy="151" rx="12" ry="6" fill="#2b1503" transform="rotate(14,176,151)"/>
+  <ellipse cx="130" cy="131" rx="10" ry="5" fill="#2b1503" transform="rotate(-25,130,131)"/>
+  <ellipse cx="166" cy="131" rx="10" ry="5" fill="#2b1503" transform="rotate(25,166,131)"/>
+  <ellipse cx="148" cy="117" rx="12" ry="8" fill="#3e200a"/>
+  <ellipse cx="148" cy="94" rx="20" ry="19.5" fill="#3e200a"/>
+  <ellipse cx="148" cy="103" rx="12" ry="9.5" fill="#c08c2e"/>
+  <path d="M143 99 Q148 96 153 99 Q151 102 148 102 Q145 102 143 99Z" fill="#0e0805"/>
+  <ellipse cx="145.5" cy="98.5" rx="1.4" ry="0.9" fill="rgba(255,255,255,0.28)"/>
+  <ellipse cx="131" cy="78" rx="7" ry="6" fill="#2b1503"/>
+  <ellipse cx="131" cy="78" rx="3.8" ry="3.2" fill="#6a3d12"/>
+  <ellipse cx="165" cy="78" rx="7" ry="6" fill="#2b1503"/>
+  <ellipse cx="165" cy="78" rx="3.8" ry="3.2" fill="#6a3d12"/>
+  <ellipse cx="140" cy="90" rx="5" ry="5.5" fill="#0e0805"/>
+  <ellipse cx="156" cy="90" rx="5" ry="5.5" fill="#0e0805"/>
+  <circle cx="141.8" cy="88.2" r="1.9" fill="white"/>
+  <circle cx="157.8" cy="88.2" r="1.9" fill="white"/>
+  <circle cx="141" cy="91" r="0.9" fill="rgba(255,255,255,0.32)"/>
+  <circle cx="157" cy="91" r="0.9" fill="rgba(255,255,255,0.32)"/>
+  <path d="M142 109 Q148 114 154 109" fill="none" stroke="#2b1503" stroke-width="1.7" stroke-linecap="round"/>
+  <line x1="132" y1="101" x2="117" y2="98" stroke="#c08c2e" stroke-width="0.75" opacity="0.78"/>
+  <line x1="132" y1="104" x2="116" y2="104" stroke="#c08c2e" stroke-width="0.75" opacity="0.78"/>
+  <line x1="164" y1="101" x2="179" y2="98" stroke="#c08c2e" stroke-width="0.75" opacity="0.78"/>
+  <line x1="164" y1="104" x2="180" y2="104" stroke="#c08c2e" stroke-width="0.75" opacity="0.78"/>
+  <ellipse cx="134" cy="107" rx="6" ry="3.5" fill="rgba(200,110,70,0.2)"/>
+  <ellipse cx="162" cy="107" rx="6" ry="3.5" fill="rgba(200,110,70,0.2)"/>
+  <!-- LEFT OTTER (main coder) -->
+  <ellipse cx="45" cy="161" rx="15" ry="6" fill="#2b1503" transform="rotate(-7,45,161)"/>
+  <ellipse cx="62" cy="139" rx="50" ry="22" fill="#5c3214"/>
+  <ellipse cx="62" cy="135" rx="35" ry="15" fill="#c4964e"/>
+  <ellipse cx="22" cy="153" rx="14" ry="7" fill="#2b1503" transform="rotate(-13,22,153)"/>
+  <ellipse cx="102" cy="153" rx="14" ry="7" fill="#2b1503" transform="rotate(13,102,153)"/>
+  <ellipse cx="33" cy="128" rx="12" ry="6" fill="#2b1503" transform="rotate(-30,33,128)"/>
+  <ellipse cx="91" cy="128" rx="12" ry="6" fill="#2b1503" transform="rotate(30,91,128)"/>
+  <rect x="38" y="114" width="48" height="28" rx="3.5" fill="#0f172a"/>
+  <rect x="40" y="116" width="44" height="18" rx="2" fill="#0b1b2b"/>
+  <text x="43" y="123" font-family="monospace" font-size="3.6" fill="#2dd4bf">import ocean</text>
+  <text x="43" y="129" font-family="monospace" font-size="3.6" fill="#86efac">ai.explore()</text>
+  <text x="43" y="133" font-family="monospace" font-size="4.5" fill="#fbbf24">&#9612;</text>
+  <rect x="38" y="136" width="48" height="6" rx="1.5" fill="#1c2d40"/>
+  <rect x="42" y="138" width="5" height="2.5" rx="0.8" fill="#2d4460" opacity="0.9"/>
+  <rect x="49" y="138" width="5" height="2.5" rx="0.8" fill="#2d4460" opacity="0.9"/>
+  <rect x="56" y="138" width="5" height="2.5" rx="0.8" fill="#2d4460" opacity="0.9"/>
+  <rect x="63" y="138" width="5" height="2.5" rx="0.8" fill="#2d4460" opacity="0.9"/>
+  <rect x="70" y="138" width="5" height="2.5" rx="0.8" fill="#2d4460" opacity="0.9"/>
+  <ellipse cx="62" cy="113" rx="16" ry="9.5" fill="#5c3214"/>
+  <ellipse cx="62" cy="85" rx="29" ry="28" fill="#5c3214"/>
+  <ellipse cx="56" cy="76" rx="18" ry="14" fill="#6e3e1a" opacity="0.35"/>
+  <ellipse cx="62" cy="97" rx="18" ry="13" fill="#c4964e"/>
+  <path d="M55 91 Q62 87 69 91 Q66 95.5 62 95.5 Q58 95.5 55 91Z" fill="#0e0805"/>
+  <ellipse cx="59" cy="90.5" rx="2" ry="1.3" fill="rgba(255,255,255,0.32)"/>
+  <ellipse cx="37" cy="63" rx="9.5" ry="8.5" fill="#2b1503"/>
+  <ellipse cx="37" cy="63" rx="5.5" ry="5" fill="#6e3e1a"/>
+  <ellipse cx="87" cy="63" rx="9.5" ry="8.5" fill="#2b1503"/>
+  <ellipse cx="87" cy="63" rx="5.5" ry="5" fill="#6e3e1a"/>
+  <ellipse cx="50" cy="81" rx="7.5" ry="8" fill="#0e0805"/>
+  <ellipse cx="74" cy="81" rx="7.5" ry="8" fill="#0e0805"/>
+  <circle cx="52.5" cy="78.5" r="2.8" fill="white"/>
+  <circle cx="49" cy="83.5" r="1.3" fill="rgba(255,255,255,0.38)"/>
+  <circle cx="76.5" cy="78.5" r="2.8" fill="white"/>
+  <circle cx="73" cy="83.5" r="1.3" fill="rgba(255,255,255,0.38)"/>
+  <path d="M44 75 Q50 71.5 56 75" fill="none" stroke="#2b1503" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M68 75 Q74 71.5 80 75" fill="none" stroke="#2b1503" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M50 106 Q62 115 74 106" fill="none" stroke="#2b1503" stroke-width="2.2" stroke-linecap="round"/>
+  <ellipse cx="41" cy="100" rx="7.5" ry="4.5" fill="rgba(210,120,75,0.28)"/>
+  <ellipse cx="83" cy="100" rx="7.5" ry="4.5" fill="rgba(210,120,75,0.28)"/>
+  <line x1="40" y1="94" x2="20" y2="90" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <line x1="40" y1="98" x2="19" y2="98" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <line x1="40" y1="102" x2="20" y2="106" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <line x1="84" y1="94" x2="104" y2="90" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <line x1="84" y1="98" x2="105" y2="98" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <line x1="84" y1="102" x2="104" y2="106" stroke="#c4964e" stroke-width="1" opacity="0.85"/>
+  <!-- Paws touching -->
+  <ellipse cx="110" cy="136" rx="9" ry="5.5" fill="#2b1503" transform="rotate(5,110,136)"/>
+  <!-- Heart between them -->
+  <path d="M102 72 C102 69.2 98.5 67.5 98.5 70.5 C98.5 72 100 73.8 102 75.5 C104 73.8 105.5 72 105.5 70.5 C105.5 67.5 102 69.2 102 72Z" fill="rgba(255,155,155,0.48)"/>
+  <!-- Water effects -->
+  <ellipse cx="75" cy="152" rx="68" ry="7" fill="none" stroke="rgba(45,212,191,0.08)" stroke-width="1.5"/>
+  <circle cx="12" cy="160" r="2.8" fill="none" stroke="rgba(45,212,191,0.3)" stroke-width="0.9"/>
+  <circle cx="17" cy="173" r="1.6" fill="none" stroke="rgba(45,212,191,0.22)" stroke-width="0.7"/>
+  <circle cx="186" cy="162" r="3" fill="none" stroke="rgba(45,212,191,0.3)" stroke-width="0.9"/>
+  <circle cx="181" cy="177" r="1.8" fill="none" stroke="rgba(45,212,191,0.22)" stroke-width="0.7"/>
 </svg>
