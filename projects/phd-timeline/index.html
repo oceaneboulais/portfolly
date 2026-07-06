@@ -498,6 +498,28 @@
     }
     .deck-dot.active { background: var(--accent); transform: scale(1.35); }
 
+    /* ── Collapsible talks list ──────────────────────────────────────── */
+    .stat-toggle {
+      display: flex; align-items: center; justify-content: center;
+      gap: 5px; cursor: pointer; user-select: none;
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      background: none; border: none; padding: 0; width: 100%;
+      transition: color 0.15s;
+    }
+    .stat-toggle:hover { color: var(--accent); }
+    .stat-toggle-chevron {
+      font-size: 8px; display: inline-block;
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+    }
+    .stat-toggle.open .stat-toggle-chevron { transform: rotate(180deg); }
+    .conf-list-wrap {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .conf-list-wrap.open { max-height: 1400px; }
+
     /* ── Animations ──────────────────────────────────────────────────── */
     @keyframes pulse-ring {
       0%   { r: 12; stroke-opacity: 0.7; }
@@ -592,7 +614,10 @@
     </div>
     <div class="stat">
       <div class="stat-val stat-editable" id="stat-talks" title="click to edit">9</div>
-      <div class="stat-lbl">Conference Talks</div>
+      <button class="stat-toggle" id="talks-toggle" aria-expanded="false" aria-controls="conf-list-wrap">
+        Conference Talks <span class="stat-toggle-chevron">&#9660;</span>
+      </button>
+      <div class="conf-list-wrap" id="conf-list-wrap">
       <ul class="stat-papers" id="conf-list">
         <li class="stat-paper-item">
           <span class="stat-paper-title">A demonstration of acoustic enrichment in Hawai&#x02BB;i using autonomous cameras for reef fish larval detection</span>
@@ -636,6 +661,7 @@
           <span class="stat-paper-venue">Int&#x2019;l Coral Reef Symposium &middot; 2024</span>
         </li>
       </ul>
+      </div>
     </div>
   </div>
 
@@ -1151,6 +1177,18 @@ window.addEventListener('DOMContentLoaded', () => {
       .observe(document.getElementById('timeline-wrap'));
   }
 });
+
+/* ── Collapsible talks toggle ──────────────────────────────────────────────────── */
+(function () {
+  const tgl  = document.getElementById('talks-toggle');
+  const wrap = document.getElementById('conf-list-wrap');
+  if (!tgl || !wrap) return;
+  tgl.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    tgl.classList.toggle('open', open);
+    tgl.setAttribute('aria-expanded', open);
+  });
+})();
 
 /* ── Slide deck carousel ────────────────────────────────────────────────────── */
 (function () {
