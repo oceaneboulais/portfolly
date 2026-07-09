@@ -1,0 +1,130 @@
+[
+  {
+    "id": 0,
+    "name": "Abstractions",
+    "picture": "images/art.jpg",
+    "price (ETH)": 3,
+    "breed": "Scottish Terrier",
+    "location": "Lisco, Alabama"
+  },
+  {
+    "id": 1,
+    "name": "flowing afar",
+    "picture": "images/art1.jpg",
+    "price (ETH)": 3,
+    "breed": "Scottish Terrier",
+    "location": "Tooleville, West Virginia"
+  },
+  {
+    "id": 2,
+    "name": "Lear Gaukur 06",
+    "picture": "images/Lear.jpg",
+    "price (ETH)": 2,
+    "breed": "French Bulldog",
+    "location": "Freeburn, Idaho"
+  },
+  {
+    "id": 3,
+    "name": "Melissa",
+    "picture": "images/Pall.jpg",
+    "price (ETH)": 2,
+    "breed": "Boxer",
+    "location": "Camas, Pennsylvania"
+  },
+  {
+    "id": 4,
+    "name": "Jeanine",
+    "picture": "imprice (ETH)s/french-bulldog.jpeg",
+    "price (ETH)": 2,
+    "breed": "French Bulldog",
+    "location": "Gerber, South Dakota"
+  },
+  {
+    "id": 5,
+    "name": "Elvia",
+    "picture": "imprice (ETH)s/french-bulldog.jpeg",
+    "price (ETH)": 3,
+    "breed": "French Bulldog",
+    "location": "Innsbrook, Illinois"
+  },
+  {
+    "id": 6,
+    "name": "Latisha",
+    "picture": "imprice (ETH)s/golden-retriever.jpeg",
+    "price (ETH)": 3,
+    "breed": "Golden Retriever",
+    "location": "Soudan, Louisiana"
+  },
+  {
+    "id": 7,
+    "name": "Coleman",
+    "picture": "imprice (ETH)s/golden-retriever.jpeg",
+    "price (ETH)": 3,
+    "breed": "Golden Retriever",
+    "location": "Jacksonwald, Palau"
+  },
+  {
+    "id": 8,
+    "name": "Nichole",
+    "picture": "imprice (ETH)s/french-bulldog.jpeg",
+    "price (ETH)": 2,
+    "breed": "French Bulldog",
+    "location": "Honolulu, Hawaii"
+  },
+  {
+    "id": 9,
+    "name": "Fran",
+    "picture": "imprice (ETH)s/boxer.jpeg",
+    "price (ETH)": 3,
+    "breed": "Boxer",
+    "location": "Matheny, Utah"
+  },
+  {
+    "id": 10,
+    "name": "Leonor",
+    "picture": "imprice (ETH)s/boxer.jpeg",
+    "price (ETH)": 2,
+    "breed": "Boxer",
+    "location": "Tyhee, Indiana"
+  },
+  {
+    "id": 11,
+    "name": "Dean",
+    "picture": "imprice (ETH)s/scottish-terrier.jpeg",
+    "price (ETH)": 3,
+    "breed": "Scottish Terrier",
+    "location": "Windsor, Montana"
+  },
+  {
+    "id": 12,
+    "name": "Stevenson",
+    "picture": "imprice (ETH)s/french-bulldog.jpeg",
+    "price (ETH)": 3,
+    "breed": "French Bulldog",
+    "location": "Kingstowne, Nevada"
+  },
+  {
+    "id": 13,
+    "name": "Kristina",
+    "picture": "imprice (ETH)s/golden-retriever.jpeg",
+    "price (ETH)": 4,
+    "breed": "Golden Retriever",
+    "location": "Sultana, Massachusetts"
+  },
+  {
+    "id": 14,
+    "name": "Ethel",
+    "picture": "imprice (ETH)s/golden-retriever.jpeg",
+    "price (ETH)": 2,
+    "breed": "Golden Retriever",
+    "location": "Broadlands, Oregon"
+  },
+  {
+    "id": 15,
+    "name": "Terry",
+    "picture": "imprice (ETH)s/golden-retriever.jpeg",
+    "price (ETH)": 2,
+    "breed": "Golden Retriever",
+    "location": "Dawn, Wisconsin"
+  }
+]
