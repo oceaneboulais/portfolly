@@ -31,6 +31,32 @@
     a { color: var(--accent); text-decoration: none; }
     a:hover { color: grey; }
 
+    .accessibility-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 10px 18px;
+      background: var(--accent);
+      color: #111;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 6px;
+      text-decoration: none;
+      border: 2px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .accessibility-btn:hover {
+      background: #fff;
+      border-color: var(--accent);
+      color: #111;
+    }
+    .accessibility-btn:focus-visible {
+      outline: 3px solid #000;
+      outline-offset: 3px;
+    }
+
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -104,6 +130,10 @@
 <body>
   <div class="container">
     <a href="../../index.html" class="back-link">&larr; Back to Portfolio</a>
+    <br>
+    <a href="makey-makey-soundboard-11-keys.html" class="accessibility-btn" role="button" aria-label="Open the interactive Shellfegio Soundboard">
+      &#9835; Play the Shellfegio Soundboard
+    </a>
 
     <header class="project-header">
       <h1 class="project-title">Shellfegio Synthesizer</h1>
