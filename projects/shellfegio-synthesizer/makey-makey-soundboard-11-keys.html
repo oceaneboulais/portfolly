@@ -114,6 +114,21 @@
       f: 'F'
     };
 
+    // Default sounds mapped to each key slot in KEY_LAYOUT order
+    const DEFAULT_SOUNDS = [
+      { src: 'sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav',         label: 'Pop Pop' },
+      { src: 'sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',   label: 'Pulse Train' },
+      { src: 'sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',           label: 'Purrr' },
+      { src: 'sounds/Woop_fish /soundsampDA23A0T20230717T000000.gsi_20230717T000046_1.0x.wav',      label: 'Woop Fish' },
+      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu1_nų3d_23fev2015.wav',                   label: 'Bu1 – Balistapus undulatus' },
+      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu7_1.wav',                                label: 'Bu7 – Balistapus undulatus' },
+      { src: 'sounds/Sounds_zenodo/Rhinecanthus aculeatus/1)B1derr_moorea_28fev.wav',              label: 'RA B1derr – R. aculeatus' },
+      { src: 'sounds/Sounds_zenodo/Rhinecanthus aculeatus/6)bassine2_rhinecanthus_aculeatus_moorea_23fev2015.wav', label: 'RA Bassine2 – R. aculeatus' },
+      { src: 'sounds/Sounds_zenodo/Rhinecanthus rectangulus/Rr1_14mars2015.wav',                   label: 'Rr1 – R. rectangulus' },
+      { src: 'sounds/Sounds_zenodo/Rhinecanthus rectangulus/Rr3_14mars2015.wav',                   label: 'Rr3 – R. rectangulus' },
+      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu7_2.wav',                                label: 'Bu7-2 – Balistapus undulatus' },
+    ];
+
     const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map() };
     const els = {
       slots: document.getElementById('slots'),
@@ -170,19 +185,28 @@
           <div class="slot-top">
             <div>
               <div class="slot-name">${slot.name}</div>
-              <div class="meta">Hold input to loop continuously</div>
+              <div class="meta" data-role="filename">${slot.fileName}</div>
             </div>
             <div class="key-badge">${KEY_LABELS[slot.key] || slot.key}</div>
           </div>
-          <div class="meta">${slot.fileName}</div>
+          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:.82rem;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);min-height:36px;">
+            &#128193; Change file
+            <input type="file" accept=".wav,audio/wav" style="display:none">
+          </label>
           <label class="small">Volume
             <input class="input" type="range" min="0" max="1.5" step="0.01" value="1">
           </label>
           <div class="small">Status: <span>Idle</span></div>
         `;
-        const fileEl = article.querySelector('.meta');
-        const gainEl = article.querySelector('input');
+        const fileEl = article.querySelector('[data-role="filename"]');
+        const gainEl = article.querySelector('input[type="range"]');
+        const slotFileInput = article.querySelector('input[type="file"]');
         const statusEl = article.querySelector('span');
+        slotFileInput.addEventListener('change', async event => {
+          const file = event.target.files?.[0];
+          if (file) await loadSlotFile(slot, file);
+          event.target.value = '';
+        });
         gainEl.addEventListener('input', () => {
           slot.volume = Number(gainEl.value);
           const voice = state.voices.get(slot.key);
@@ -201,6 +225,47 @@
       const ctx = ensureAudioContext();
       const arrayBuffer = await file.arrayBuffer();
       return await ctx.decodeAudioData(arrayBuffer.slice(0));
+    }
+
+    async function loadSlotFile(slot, file) {
+      slot.statusEl.textContent = 'Loading\u2026';
+      slot.fileEl.textContent = file.name;
+      try {
+        slot.buffer = await decodeFile(file);
+        slot.fileName = file.name;
+        slot.statusEl.textContent = 'Ready';
+        slot.fileEl.textContent = file.name;
+      } catch {
+        slot.buffer = null;
+        slot.fileName = `${file.name} (failed)`;
+        slot.statusEl.textContent = 'Could not decode';
+        slot.fileEl.textContent = slot.fileName;
+      }
+      updateLoadedCount();
+    }
+
+    async function loadDefaultSounds() {
+      await Promise.all(DEFAULT_SOUNDS.map(async (def, i) => {
+        const slot = state.slots[i];
+        if (!slot || !def) return;
+        slot.statusEl.textContent = 'Loading default\u2026';
+        slot.fileEl.textContent = def.label;
+        try {
+          const encodedSrc = def.src.split('/').map(s => encodeURIComponent(s)).join('/');
+          const response = await fetch(encodedSrc);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const arrayBuffer = await response.arrayBuffer();
+          const ctx = ensureAudioContext();
+          slot.buffer = await ctx.decodeAudioData(arrayBuffer);
+          slot.fileName = def.label;
+          slot.fileEl.textContent = def.label;
+          slot.statusEl.textContent = 'Ready';
+        } catch {
+          slot.statusEl.textContent = 'Default unavailable';
+          slot.fileEl.textContent = def.label + ' (not loaded)';
+        }
+        updateLoadedCount();
+      }));
     }
 
     async function loadFiles(files) {
@@ -348,6 +413,7 @@
       state.slots = KEY_LAYOUT.map(makeSlot);
       renderSlots();
       bindEvents();
+      loadDefaultSounds();
     }
 
     init();
