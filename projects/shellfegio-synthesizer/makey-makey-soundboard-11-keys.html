@@ -303,7 +303,8 @@
       const gain = ctx.createGain();
       source.buffer = slot.buffer;
       source.loop = true;
-      gain.gain.setValueAtTime(slot.volume, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(slot.volume, ctx.currentTime + 0.015);
       source.connect(gain).connect(ctx.destination);
       source.start();
       state.voices.set(slot.key, { source, gain, slot });
