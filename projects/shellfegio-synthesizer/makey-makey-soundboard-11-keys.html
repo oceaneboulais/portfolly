@@ -57,6 +57,14 @@
     .pad { min-height: 100px; border: 2px dashed var(--line); border-radius: 16px; display: grid; place-items: center; text-align: center; padding: 16px; background: var(--surface-2); }
     .pad.active { border-color: var(--primary); background: rgba(1,105,111,.08); }
     code { background: var(--surface-2); padding: 2px 6px; border-radius: 8px; }
+    .pitch-details summary { cursor: pointer; font-size: .88rem; font-weight: 600; color: var(--primary); padding: 4px 0; user-select: none; -webkit-user-select: none; list-style: none; }
+    .pitch-details summary::-webkit-details-marker { display: none; }
+    .pitch-details summary::marker { display: none; }
+    .pitch-details summary::before { content: '▶\00a0'; font-size: .7em; }
+    .pitch-details[open] summary::before { content: '▼\00a0'; }
+    .pitch-panel { display: grid; gap: 8px; padding-top: 8px; }
+    .pitch-label { display: flex; align-items: center; justify-content: space-between; font-size: .82rem; }
+    .waveform-canvas { width: 100%; height: 64px; border-radius: 8px; border: 1px solid var(--line); cursor: crosshair; background: var(--surface-2); touch-action: none; display: block; }
     @media (max-width: 640px) { body { padding: 12px; } .panel { padding: 14px; } }
   </style>
 </head>
@@ -143,7 +151,7 @@
     };
 
     function makeSlot(key, index) {
-      return { key, index, name: `Slot ${index + 1}`, fileName: 'No file loaded', buffer: null, element: null, statusEl: null, fileEl: null, gainEl: null, volume: 1 };
+      return { key, index, name: `Slot ${index + 1}`, fileName: 'No file loaded', buffer: null, element: null, statusEl: null, fileEl: null, gainEl: null, canvasEl: null, pitchDisplayEl: null, volume: 1, playbackRate: 1 };
     }
 
     function ensureAudioContext() {
@@ -196,12 +204,25 @@
           <label class="small">Volume
             <input class="input" type="range" min="0" max="1.5" step="0.01" value="1">
           </label>
+          <details class="pitch-details">
+            <summary>&#127929; Pitch / Waveform</summary>
+            <div class="pitch-panel">
+              <div class="pitch-label">
+                <span data-role="pitch-display">1.00&times; (0.0 st)</span>
+                <button data-role="pitch-reset" type="button" style="font-size:.75rem;padding:3px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-family:var(--font);">Reset</button>
+              </div>
+              <canvas data-role="waveform" class="waveform-canvas" height="64"></canvas>
+              <div style="text-align:center;font-size:.75rem;color:var(--muted);">&#8592; lower pitch &nbsp;&middot;&nbsp; drag to set pitch &nbsp;&middot;&nbsp; higher pitch &#8594;</div>
+            </div>
+          </details>
           <div class="small">Status: <span>Idle</span></div>
         `;
         const fileEl = article.querySelector('[data-role="filename"]');
         const gainEl = article.querySelector('input[type="range"]');
         const slotFileInput = article.querySelector('input[type="file"]');
         const statusEl = article.querySelector('span');
+        const canvas = article.querySelector('[data-role="waveform"]');
+        const pitchDisplayEl = article.querySelector('[data-role="pitch-display"]');
         slotFileInput.addEventListener('change', async event => {
           const file = event.target.files?.[0];
           if (file) await loadSlotFile(slot, file);
@@ -212,10 +233,25 @@
           const voice = state.voices.get(slot.key);
           if (voice) voice.gain.gain.setTargetAtTime(slot.volume, ensureAudioContext().currentTime, 0.02);
         });
+        article.querySelector('[data-role="pitch-reset"]').addEventListener('click', () => setPitch(slot, 1));
+        article.querySelector('.pitch-details').addEventListener('toggle', () => drawWaveform(slot));
+        let pitchDragging = false;
+        const onPitchInput = ev => {
+          const rect = canvas.getBoundingClientRect();
+          const x = (ev.clientX ?? ev.touches?.[0]?.clientX ?? 0) - rect.left;
+          setPitch(slot, Math.pow(2, 4 * (Math.max(0, Math.min(1, x / rect.width)) - 0.5)));
+        };
+        canvas.addEventListener('pointerdown', ev => { pitchDragging = true; canvas.setPointerCapture(ev.pointerId); onPitchInput(ev); });
+        canvas.addEventListener('pointermove', ev => { if (pitchDragging) onPitchInput(ev); });
+        canvas.addEventListener('pointerup', () => { pitchDragging = false; });
+        canvas.addEventListener('pointercancel', () => { pitchDragging = false; });
+        new ResizeObserver(() => drawWaveform(slot)).observe(canvas);
         slot.element = article;
         slot.fileEl = fileEl;
         slot.gainEl = gainEl;
         slot.statusEl = statusEl;
+        slot.canvasEl = canvas;
+        slot.pitchDisplayEl = pitchDisplayEl;
         els.slots.appendChild(article);
       });
       updateLoadedCount();
@@ -242,6 +278,7 @@
         slot.fileEl.textContent = slot.fileName;
       }
       updateLoadedCount();
+      drawWaveform(slot);
     }
 
     async function loadDefaultSounds() {
@@ -265,7 +302,73 @@
           slot.fileEl.textContent = def.label + ' (not loaded)';
         }
         updateLoadedCount();
+        drawWaveform(slot);
       }));
+    }
+
+    function drawWaveform(slot) {
+      const canvas = slot.canvasEl;
+      if (!canvas) return;
+      const w = canvas.clientWidth;
+      if (!w) return;
+      const dpr = window.devicePixelRatio || 1;
+      const h = 64;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      const c = canvas.getContext('2d');
+      c.scale(dpr, dpr);
+      c.fillStyle = '#f1efe8';
+      c.fillRect(0, 0, w, h);
+      if (slot.buffer) {
+        const data = slot.buffer.getChannelData(0);
+        const step = Math.max(1, Math.floor(data.length / w));
+        const mid = h / 2;
+        c.beginPath();
+        c.strokeStyle = '#01696f';
+        c.lineWidth = 1.5;
+        for (let x = 0; x < w; x++) {
+          let mn = 1, mx = -1;
+          for (let j = 0; j < step; j++) {
+            const v = data[x * step + j] ?? 0;
+            if (v < mn) mn = v;
+            if (v > mx) mx = v;
+          }
+          c.moveTo(x + 0.5, mid + mn * mid * 0.9);
+          c.lineTo(x + 0.5, mid + mx * mid * 0.9);
+        }
+        c.stroke();
+      } else {
+        c.fillStyle = '#999';
+        c.font = '12px monospace';
+        c.textAlign = 'center';
+        c.fillText('No audio loaded', w / 2, h / 2 + 5);
+      }
+      // dashed center line (1× reference)
+      c.beginPath();
+      c.strokeStyle = 'rgba(0,0,0,0.18)';
+      c.lineWidth = 1;
+      c.setLineDash([4, 4]);
+      c.moveTo(w / 2, 0);
+      c.lineTo(w / 2, h);
+      c.stroke();
+      c.setLineDash([]);
+      // pitch marker
+      const markerX = (Math.log2(slot.playbackRate) / 4 + 0.5) * w;
+      c.beginPath();
+      c.strokeStyle = '#a13544';
+      c.lineWidth = 2;
+      c.moveTo(markerX, 0);
+      c.lineTo(markerX, h);
+      c.stroke();
+    }
+
+    function setPitch(slot, rate) {
+      slot.playbackRate = Math.max(0.25, Math.min(4, rate));
+      const st = Math.log2(slot.playbackRate) * 12;
+      slot.pitchDisplayEl.textContent = `${slot.playbackRate.toFixed(2)}\u00d7 (${st >= 0 ? '+' : ''}${st.toFixed(1)} st)`;
+      const voice = state.voices.get(slot.key);
+      if (voice) voice.source.playbackRate.setTargetAtTime(slot.playbackRate, ensureAudioContext().currentTime, 0.02);
+      drawWaveform(slot);
     }
 
     async function loadFiles(files) {
@@ -303,6 +406,7 @@
       const gain = ctx.createGain();
       source.buffer = slot.buffer;
       source.loop = true;
+      source.playbackRate.value = slot.playbackRate;
       gain.gain.setValueAtTime(0, ctx.currentTime);
       gain.gain.linearRampToValueAtTime(slot.volume, ctx.currentTime + 0.015);
       source.connect(gain).connect(ctx.destination);
