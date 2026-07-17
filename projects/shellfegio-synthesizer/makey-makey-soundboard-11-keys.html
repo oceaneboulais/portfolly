@@ -181,6 +181,25 @@
       els.audioState.className = 'good';
     }
 
+    // Synchronous unlock — MUST be called directly inside a user-gesture handler
+    // (never after an await). iOS Safari discards the gesture context the moment
+    // async code runs, so ctx.resume() would be silently rejected otherwise.
+    function unlockAudioSync() {
+      if (state.unlocked) return;
+      try {
+        const ctx = ensureAudioContext();
+        ctx.resume(); // intentionally not awaited
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        state.unlocked = true;
+        els.audioState.textContent = 'Ready';
+        els.audioState.className = 'good';
+      } catch {}
+    }
+
     function updateLoadedCount() {
       const loaded = state.slots.filter(slot => slot.buffer).length;
       els.loadedCount.textContent = `${loaded} / ${state.slots.length}`;
@@ -207,6 +226,7 @@
             &#128193; Change file
             <input type="file" accept=".wav,audio/wav" style="display:none">
           </label>
+          <button data-role="test-btn" type="button" style="font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--primary);background:rgba(1,105,111,.08);color:var(--primary);cursor:pointer;font-family:var(--font);min-height:36px;touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9654; Hold to test</button>
           <label class="small">Volume
             <input class="input" type="range" min="0" max="1.5" step="0.01" value="1">
           </label>
@@ -241,6 +261,10 @@
         });
         article.querySelector('[data-role="pitch-reset"]').addEventListener('click', () => setPitch(slot, 1));
         article.querySelector('.pitch-details').addEventListener('toggle', () => drawWaveform(slot));
+        const testBtn = article.querySelector('[data-role="test-btn"]');
+        testBtn.addEventListener('pointerdown', ev => { ev.preventDefault(); unlockAudioSync(); playSlot(slot); }, { passive: false });
+        testBtn.addEventListener('touchstart', ev => { ev.preventDefault(); unlockAudioSync(); playSlot(slot); }, { passive: false });
+        ['pointerup','pointercancel','touchend','touchcancel'].forEach(t => testBtn.addEventListener(t, () => stopSlotByKey(slot.key)));
         let pitchDragging = false;
         const onPitchInput = ev => {
           const rect = canvas.getBoundingClientRect();
@@ -448,14 +472,13 @@
       els.clickPad.classList.remove('active');
     }
 
-    async function handlePress(key) {
+    function handlePress(key) {
+      // Unlock synchronously — must happen before any await (iOS Safari requirement)
+      unlockAudioSync();
       const normalized = key === 'Spacebar' ? ' ' : (key.length === 1 ? key.toLowerCase() : key);
       if (!KEY_LAYOUT.includes(normalized) || state.activeKeys.has(normalized)) return;
       state.activeKeys.add(normalized);
       updateHeldKeys();
-      if (!state.unlocked) {
-        try { await unlockAudio(); } catch { els.audioState.textContent = 'Tap Enable audio first'; els.audioState.className = 'warn'; }
-      }
       const slot = state.slots.find(item => item.key === normalized);
       playSlot(slot);
     }
@@ -470,19 +493,15 @@
 
     function bindEvents() {
       ['click', 'touchend', 'mouseup', 'keydown'].forEach(type => {
-        window.addEventListener(type, async () => {
-          if (!state.unlocked) {
-            try { await unlockAudio(); } catch {}
-          }
-        }, { passive: true, once: true });
+        window.addEventListener(type, () => { unlockAudioSync(); }, { passive: true, once: true });
       });
 
-      window.addEventListener('keydown', async event => {
+      window.addEventListener('keydown', event => {
         if (event.repeat) return;
         if (event.target && ['INPUT','TEXTAREA'].includes(event.target.tagName)) return;
         const key = event.key === 'Spacebar' ? ' ' : event.key;
         if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(key)) event.preventDefault();
-        await handlePress(key);
+        handlePress(key);
       });
 
       window.addEventListener('keyup', event => {
@@ -492,15 +511,15 @@
         handleRelease(key);
       });
 
-      const pressClick = async () => { await handlePress('click'); };
+      const pressClick = () => { handlePress('click'); };
       const releaseClick = () => { handleRelease('click'); };
       ['pointerdown','mousedown','touchstart'].forEach(type => els.clickPad.addEventListener(type, pressClick));
       ['pointerup','pointercancel','mouseup','mouseleave','touchend','touchcancel','blur'].forEach(type => els.clickPad.addEventListener(type, releaseClick));
-      els.clickPad.addEventListener('keydown', async event => {
+      els.clickPad.addEventListener('keydown', event => {
         if (event.repeat) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          await handlePress('click');
+          handlePress('click');
         }
       });
       els.clickPad.addEventListener('keyup', event => {
