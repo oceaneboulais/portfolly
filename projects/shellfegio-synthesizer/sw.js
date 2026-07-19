@@ -2,16 +2,32 @@
 // Stale-while-revalidate: serve from cache instantly, refresh in background.
 // First visit (online) caches everything fetched; subsequent visits work offline.
 
-const CACHE = 'shellfeggio-v2';
+const CACHE = 'shellfeggio-v3';
 
-// ── Install: pre-cache the shell HTML so it loads offline immediately ─────────
+// WAV assets — pre-cached on install so they are available offline on iPhone.
+// Each entry is fetched independently so one missing file never blocks install.
+const WAV_ASSETS = [
+  './sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav',
+  './sounds/Good_Purrs/soundsampDA23A1T20230819T000000.gsi_20230819T181145_1.0x.wav',
+  './sounds/Louderboat_fish/soundsampDA23A1T20230819T000000.gsi_20230819T163355_1.0x.wav',
+  './sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav',
+  './sounds/Pulse_Pulse_boat/soundsampDA23A0T20230717T000000.gsi_20230717T080005_1.0x.wav',
+  './sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',
+  './sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',
+  './sounds/Shrimp_fish/soundsampAnalogData-06JUN2024-1456_VS-209sensor.wav_20240606T145828_1.0x.wav',
+  './sounds/Woop_fish%20/soundsampDA23A0T20230717T000000.gsi_20230717T000046_1.0x.wav',
+  './sounds/poppinh_pulse/soundsampDA23A1T20230817T000000.gsi_20230817T052109_1.0x.wav',
+];
+
+// ── Install: pre-cache the shell HTML + all WAV files ────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE).then(c =>
-      c.addAll([
-        './makey-makey-soundboard-11-keys.html',
-      ])
-    )
+    caches.open(CACHE).then(async c => {
+      // Shell HTML is critical — fail install if this fails
+      await c.addAll(['./makey-makey-soundboard-11-keys.html']);
+      // WAV files are best-effort — a missing file must not block install
+      await Promise.all(WAV_ASSETS.map(url => c.add(url).catch(() => {})));
+    })
   );
   self.skipWaiting();
 });

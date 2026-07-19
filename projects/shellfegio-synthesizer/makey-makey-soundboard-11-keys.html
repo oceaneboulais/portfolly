@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Makey Makey Soundboard 11 Keys</title>
+  <title>Makey Makey Soundboard 12 Keys</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#01696f">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -77,23 +77,23 @@
 <body>
   <main class="app">
     <section class="panel">
-      <h1>Makey Makey 11-key soundboard</h1>
-      <p class="lede">This version uses 11 mapped controls: Left, Right, Up, Down, Space, Click, W, A, S, D, and F. Each loaded WAV loops while its trigger is held.</p>
+      <h1>Makey Makey 12-key soundboard</h1>
+      <p class="lede">This version uses 12 mapped controls: Left, Right, Up, Down, Space, Click, W, A, S, D, F, and G. Each loaded WAV loops while its trigger is held.</p>
     </section>
 
     <section class="panel">
       <div class="toolbar">
         <button class="button primary" id="unlockBtn" type="button">Enable audio</button>
-        <label class="button" for="folderInput">Load up to 11 WAV files<input id="folderInput" type="file" accept=".wav,audio/wav" multiple></label>
+        <label class="button" for="folderInput">Load up to 12 WAV files<input id="folderInput" type="file" accept=".wav,audio/wav" multiple></label>
         <button class="button danger" id="stopAllBtn" type="button">Stop all</button>
       </div>
-      <p class="lede">Load files in this order: Left, Right, Up, Down, Space, Click, W, A, S, D, F.</p>
+      <p class="lede">Load files in this order: Left, Right, Up, Down, Space, Click, W, A, S, D, F, G.</p>
     </section>
 
     <section class="panel status">
-      <div class="pill"><strong>Input mode</strong><span id="inputMode">Arrows, space, click, and W A S D F</span></div>
+      <div class="pill"><strong>Input mode</strong><span id="inputMode">Arrows, space, click, and W A S D F G</span></div>
       <div class="pill"><strong>Audio</strong><span id="audioState">Locked until first tap</span></div>
-      <div class="pill"><strong>Loaded slots</strong><span id="loadedCount">0 / 11</span></div>
+      <div class="pill"><strong>Loaded slots</strong><span id="loadedCount">0 / 12</span></div>
       <div class="pill"><strong>Held inputs</strong><span id="heldKeys">None</span></div>
     </section>
 
@@ -108,12 +108,12 @@
       <div class="pad" id="clickPad" tabindex="0" role="button" aria-label="Hold to trigger click sound">
         Press and hold here to trigger the Click slot.<br>Release to stop.
       </div>
-      <p class="hint" style="margin-top:10px;">Keyboard mappings use standard browser key values such as <code>ArrowLeft</code> and printable keys like <code>w</code>, <code>a</code>, <code>s</code>, <code>d</code>, and <code>f</code>.</p>
+      <p class="hint" style="margin-top:10px;">Keyboard mappings use standard browser key values such as <code>ArrowLeft</code> and printable keys like <code>w</code>, <code>a</code>, <code>s</code>, <code>d</code>, <code>f</code>, and <code>g</code>.</p>
     </section>
   </main>
 
   <script>
-    const KEY_LAYOUT = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','click','w','a','s','d','f'];
+    const KEY_LAYOUT = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','click','w','a','s','d','f','g'];
     const KEY_LABELS = {
       ArrowLeft: 'Left',
       ArrowRight: 'Right',
@@ -125,22 +125,22 @@
       a: 'A',
       s: 'S',
       d: 'D',
-      f: 'F'
+      f: 'F',
+      g: 'G'
     };
 
     // Default sounds mapped to each key slot in KEY_LAYOUT order
     const DEFAULT_SOUNDS = [
-      { src: 'sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav',         label: 'Pop Pop' },
-      { src: 'sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',   label: 'Pulse Train' },
-      { src: 'sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',           label: 'Purrr' },
-      { src: 'sounds/Woop_fish /soundsampDA23A0T20230717T000000.gsi_20230717T000046_1.0x.wav',      label: 'Woop Fish' },
-      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu1_nų3d_23fev2015.wav',                   label: 'Bu1 – Balistapus undulatus' },
-      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu7_1.wav',                                label: 'Bu7 – Balistapus undulatus' },
-      { src: 'sounds/Sounds_zenodo/Rhinecanthus aculeatus/1)B1derr_moorea_28fev.wav',              label: 'RA B1derr – R. aculeatus' },
-      { src: 'sounds/Sounds_zenodo/Rhinecanthus aculeatus/6)bassine2_rhinecanthus_aculeatus_moorea_23fev2015.wav', label: 'RA Bassine2 – R. aculeatus' },
-      { src: 'sounds/Sounds_zenodo/Rhinecanthus rectangulus/Rr1_14mars2015.wav',                   label: 'Rr1 – R. rectangulus' },
-      { src: 'sounds/Sounds_zenodo/Rhinecanthus rectangulus/Rr3_14mars2015.wav',                   label: 'Rr3 – R. rectangulus' },
-      { src: 'sounds/Sounds_zenodo/Balistapus undulatus/Bu7_2.wav',                                label: 'Bu7-2 – Balistapus undulatus' },
+      { src: 'sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav',   label: 'Duck Call' },
+      { src: 'sounds/Good_Purrs/soundsampDA23A1T20230819T000000.gsi_20230819T181145_1.0x.wav',                      label: 'Good Purrs' },
+      { src: 'sounds/Louderboat_fish/soundsampDA23A1T20230819T000000.gsi_20230819T163355_1.0x.wav',                 label: 'Louderboat Fish' },
+      { src: 'sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav',                         label: 'Pop Pop' },
+      { src: 'sounds/Pulse_Pulse_boat/soundsampDA23A0T20230717T000000.gsi_20230717T080005_1.0x.wav',                label: 'Pulse Pulse Boat' },
+      { src: 'sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',                    label: 'Pulse Train' },
+      { src: 'sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',                           label: 'Purrr' },
+      { src: 'sounds/Shrimp_fish/soundsampAnalogData-06JUN2024-1456_VS-209sensor.wav_20240606T145828_1.0x.wav',     label: 'Shrimp Fish' },
+      { src: 'sounds/Woop_fish /soundsampDA23A0T20230717T000000.gsi_20230717T000046_1.0x.wav',                      label: 'Woop Fish' },
+      { src: 'sounds/poppinh_pulse/soundsampDA23A1T20230817T000000.gsi_20230817T052109_1.0x.wav',                   label: 'Poppinh Pulse' },
     ];
 
     const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map() };

@@ -1,7 +1,7 @@
 {
   "name": "Shellfegio Synthesizer",
   "short_name": "Shellfegio",
-  "description": "11-key soundboard using fish and ocean sounds. Hold a key to loop.",
+  "description": "12-key soundboard using fish and ocean sounds. Hold a key to loop.",
   "start_url": "./makey-makey-soundboard-11-keys.html",
   "scope": "./",
   "display": "standalone",

@@ -1,1 +1,0 @@
-Only aduls specimens from Moorea Island.
