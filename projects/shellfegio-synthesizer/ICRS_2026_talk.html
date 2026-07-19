@@ -93,14 +93,11 @@
       <div class="grid grid-cols-2 gap-10 grid-2 items-center">
         <div>
           <div class="pill mb-4 reveal">Context</div>
-          <h2 class="font-display text-[clamp(2rem,4vw,3rem)] leading-tight mb-5 reveal">It started with experimental field trials off O'ahu, Hawai’i that demonstrated enhanced coral and reef fish larvae settlement using acoustic enrichment, artificial reef structures, and nanoengineered biofilms</h2>
-          <p class="text-lg text-text-secondary mb-4 reveal">Polyp Pod is the spatial inspiration: a coral larvae inspired form for somatic understanding from a coral perspective.</p>
-          <p class="text-lg text-text-secondary reveal">Inspired by our acoustic enrichment studies off the windward reefs of O&#39;ahu, Hawai&#39;i</p>
+          <p class="text-lg text-text-secondary mb-4 reveal">Inspired by our acoustic enrichment studies off the windward reefs of O&#39;ahu, Hawai&#39;i ~ we demonstrated enhanced coral recruitment and survival using acoustic enrichment, artificial reef structures, and nanoengineered biofilms.</p>
+          <p class="text-lg text-text-secondary reveal">Polyp pod was born from these studies, serving as a spatial and interactive installation to convey the acoustic environment of coral reefs from the "larvae perspective"</p>
         </div>
         <div class="reveal">
-          <video id="slide2video" playsinline loop preload="auto" style="width:100%;border-radius:16px;display:block;max-height:45vh;object-fit:cover;">
-            <source src="polyp_pod_shorty_video.mp4" type="video/mp4">
-          </video>
+          <img src="polyp_pod.gif" alt="Polyp Pod field footage" style="width:100%;border-radius:16px;display:block;max-height:45vh;object-fit:cover;">
         </div>
       </div>
     </div>
@@ -217,7 +214,7 @@ const total = document.querySelectorAll('.slide').length;
 const dotsContainer = document.getElementById('dots');
 const counter = document.getElementById('counter');
 for (let i = 1; i <= total; i++) { const dot = document.createElement('div'); dot.className = 'dot' + (i === 1 ? ' active' : ''); dot.onclick = () => goToSlide(i); dotsContainer.appendChild(dot); }
-function goToSlide(n) { const prev = document.querySelector('.slide.active'); const next = document.querySelector(`.slide[data-slide="${n}"]`); if (prev) prev.classList.remove('active'); if (next) { next.classList.add('active'); animateSlide(next); } current = n; updateNav(); const vid = document.getElementById('slide2video'); if (vid) { if (n === 2) { vid.currentTime = 0; vid.play().catch(() => {}); } else { vid.pause(); vid.currentTime = 0; } } }
+function goToSlide(n) { const prev = document.querySelector('.slide.active'); const next = document.querySelector(`.slide[data-slide="${n}"]`); if (prev) prev.classList.remove('active'); if (next) { next.classList.add('active'); animateSlide(next); } current = n; updateNav(); }
 function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
 function updateNav() { document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current)); counter.textContent = current + ' / ' + total; }
 document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
