@@ -2,7 +2,7 @@
 // Stale-while-revalidate: serve from cache instantly, refresh in background.
 // First visit (online) caches everything fetched; subsequent visits work offline.
 
-const CACHE = 'shellfeggio-v4';
+const CACHE = 'shellfeggio-v5';
 
 // WAV assets — pre-cached on install so they are available offline on iPhone.
 // Each entry is fetched independently so one missing file never blocks install.
@@ -10,7 +10,7 @@ const WAV_ASSETS = [
   './sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav',
   './sounds/Good_Purrs/soundsampDA23A1T20230819T000000.gsi_20230819T181145_1.0x.wav',
   './sounds/Louderboat_fish/soundsampDA23A1T20230819T000000.gsi_20230819T163355_1.0x.wav',
-  './sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav',
+  './sounds/low_tone/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T092759_1.0x.wav',
   './sounds/Pulse_Pulse_boat/soundsampDA23A0T20230717T000000.gsi_20230717T080005_1.0x.wav',
   './sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',
   './sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',
