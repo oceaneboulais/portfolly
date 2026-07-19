@@ -101,21 +101,22 @@
         </div>
       </div>
     </div>
-    <!-- M. capitata / UHM circle — upper-right corner, z-index above deco but won't overlap text column -->
+    <!-- M. capitata / UHM circle — upper-right corner, label to the LEFT of the circle -->
     <div style="position:absolute;top:clamp(.8rem,2.2vw,1.8rem);right:clamp(.8rem,2.2vw,1.8rem);
-                z-index:3;pointer-events:none;text-align:center;width:clamp(120px,14vw,200px);">
+                z-index:3;pointer-events:none;display:flex;flex-direction:row;align-items:center;gap:10px;">
+      <p style="margin:0;flex-shrink:1;min-width:0;
+                font-size:clamp(.58rem,.65vw,.72rem);line-height:1.4;
+                color:rgba(199,220,218,.82);text-shadow:0 1px 6px rgba(0,0,0,.95);
+                font-family:var(--font-body);text-align:right;white-space:nowrap;">
+        <em>Montipora capitata</em><br>
+        <span style="font-style:normal;font-weight:400;">Rice Coral</span>
+      </p>
       <img src="mcap_uhm.jpeg" alt="M. capitata reef, UHM"
-        style="display:block;margin:0 auto;
+        style="flex-shrink:0;
                width:clamp(72px,8vw,120px);height:clamp(72px,8vw,120px);
                border-radius:50%;object-fit:cover;object-position:center;
                border:2px solid rgba(102,224,210,.45);
                box-shadow:0 4px 28px rgba(0,0,0,.45);">
-      <p style="margin:5px 0 0;font-size:clamp(.58rem,.65vw,.72rem);line-height:1.35;
-                color:rgba(199,220,218,.82);text-shadow:0 1px 6px rgba(0,0,0,.95);
-                font-family:var(--font-body);">
-        <em>Montipora capitata</em><br>
-        <span style="font-style:normal;font-weight:400;">Rice Coral</span>
-      </p>
     </div>
   </div>
 
