@@ -149,21 +149,40 @@
 
   <div class="slide slide-4" data-slide="4">
     <div class="gradient-mesh">
-      <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:var(--color-accent-3);opacity:.08"></div>
-      <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:var(--color-accent-1);opacity:.07"></div>
+      <div class="blob" style="width:420px;height:420px;top:-100px;left:-80px;background:var(--color-accent-1);opacity:.09"></div>
+      <div class="blob" style="width:300px;height:300px;bottom:-70px;right:-50px;background:var(--color-accent-2);opacity:.07"></div>
     </div>
     <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1"></canvas>
     <div class="content">
-      <div class="grid grid-cols-2 gap-8 grid-2">
-        <div class="card p-8 reveal">
-          <div class="text-sm uppercase tracking-[0.2em] text-text-muted mb-3">Source</div>
-          <h3 class="font-display text-4xl mb-3 text-glow">Kāneʻohe Bay, Oʻahu</h3>
-          <p class="text-text-secondary">Authentic reef recordings from an acoustic-enrichment field site.</p>
+      <div class="grid grid-cols-2 gap-10 grid-2 items-center">
+        <!-- Left: intro text -->
+        <div>
+          <div class="pill mb-4 reveal">Meet the instrument</div>
+          <h2 class="font-display text-[clamp(2rem,4vw,3rem)] leading-tight mb-5 reveal">Shellfegio Synthesizer</h2>
+          <p class="text-lg text-text-secondary mb-4 reveal">A modular, playful interface for interacting with, creating and sharing acoustic data — built so anyone can hold, trigger and layer real reef sounds.</p>
+          <div class="grid grid-cols-1 gap-3 reveal">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="color:var(--color-accent-1);font-size:1.1rem;flex-shrink:0;">◈</span>
+              <p class="text-text-secondary mini"><strong>Interact</strong> — touch-triggered WAV playback via Makey Makey or direct tap, loops while held</p>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="color:var(--color-accent-2);font-size:1.1rem;flex-shrink:0;">◈</span>
+              <p class="text-text-secondary mini"><strong>Create</strong> — per-slot pitch / waveform control; load any WAV to remap the soundscape in real time</p>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="color:var(--color-accent-3);font-size:1.1rem;flex-shrink:0;">◈</span>
+              <p class="text-text-secondary mini"><strong>Share</strong> — PWA with offline cache; runs on iPhone, tablet or desktop with no install required</p>
+            </div>
+          </div>
         </div>
-        <div class="card p-8 reveal">
-          <div class="text-sm uppercase tracking-[0.2em] text-text-muted mb-3">Evidence</div>
-          <h3 class="font-display text-4xl mb-3 text-glow">3 weeks nightly</h3>
-          <p class="text-text-secondary">July 2024 playback aligned with spawning and strongest settlement occurred nearest the speaker.</p>
+        <!-- Right: two photos stacked -->
+        <div style="display:grid;grid-template-rows:1fr 1fr;gap:10px;height:clamp(300px,52vh,520px);">
+          <img src="main_front_web.jpg" alt="Shellfegio Synthesizer — front view"
+            style="width:100%;height:100%;object-fit:cover;border-radius:18px;
+                   box-shadow:0 8px 32px rgba(0,0,0,.5);display:block;" class="reveal">
+          <img src="nadir_top_kelp_web.jpg" alt="Nadir top view — kelp"
+            style="width:100%;height:100%;object-fit:cover;border-radius:18px;
+                   box-shadow:0 8px 32px rgba(0,0,0,.5);display:block;" class="reveal">
         </div>
       </div>
     </div>
