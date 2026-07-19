@@ -24,7 +24,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE).then(async c => {
       // Shell HTML is critical — fail install if this fails
-      await c.addAll(['./makey-makey-soundboard-11-keys.html']);
+      await c.addAll(['./makey-makey-soundboard-12-keys.html']);
       // WAV files are best-effort — a missing file must not block install
       await Promise.all(WAV_ASSETS.map(url => c.add(url).catch(() => {})));
     })
