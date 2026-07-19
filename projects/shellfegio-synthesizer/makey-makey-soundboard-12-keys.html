@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Makey Makey Soundboard 12 Keys</title>
+  <title>Shellfegio Synthesizer 12 Keys</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#01696f">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -72,12 +72,14 @@
     .pitch-label { display: flex; align-items: center; justify-content: space-between; font-size: .82rem; }
     .waveform-canvas { width: 100%; height: 64px; border-radius: 8px; border: 1px solid var(--line); cursor: crosshair; background: var(--surface-2); touch-action: none; display: block; }
     @media (max-width: 640px) { body { padding: 12px; } .panel { padding: 14px; } }
+    @keyframes pulse-unlock { 0%,100%{box-shadow:0 0 0 0 rgba(1,105,111,.7)} 60%{box-shadow:0 0 0 14px rgba(1,105,111,0)} }
+    .pulse-unlock { animation: pulse-unlock 0.55s ease 4; }
   </style>
 </head>
 <body>
   <main class="app">
     <section class="panel">
-      <h1>Makey Makey 12-key soundboard</h1>
+      <h1>Shellfegio Synthesizer 12-key soundboard</h1>
       <p class="lede">This version uses 12 mapped controls: Left, Right, Up, Down, Space, Click, W, A, S, D, F, and G. Each loaded WAV loops while its trigger is held.</p>
     </section>
 
@@ -179,11 +181,19 @@
       state.unlocked = true;
       els.audioState.textContent = 'Ready';
       els.audioState.className = 'good';
+      // Replay any keys already held by Makey Makey — critical for iPhone + external HID workflow
+      state.activeKeys.forEach(key => {
+        const slot = state.slots.find(s => s.key === key);
+        if (slot && !state.voices.has(key)) playSlot(slot);
+      });
     }
 
     // Synchronous unlock — MUST be called directly inside a user-gesture handler
     // (never after an await). iOS Safari discards the gesture context the moment
     // async code runs, so ctx.resume() would be silently rejected otherwise.
+    // NOTE: on iOS, keydown events from external HID devices (Makey Makey) are NOT
+    // trusted gestures — ctx.resume() will be silently rejected. The user must tap
+    // "Enable audio" with their finger first; unlockAudio() will then replay held keys.
     function unlockAudioSync() {
       if (state.unlocked) return;
       try {
@@ -197,6 +207,13 @@
         state.unlocked = true;
         els.audioState.textContent = 'Ready';
         els.audioState.className = 'good';
+        // On desktop/Android the context is running synchronously — replay held keys
+        if (ctx.state === 'running') {
+          state.activeKeys.forEach(key => {
+            const slot = state.slots.find(s => s.key === key);
+            if (slot && !state.voices.has(key)) playSlot(slot);
+          });
+        }
       } catch {}
     }
 
@@ -430,8 +447,24 @@
     }
 
     function playSlot(slot) {
-      if (!state.unlocked || !slot?.buffer || state.voices.has(slot.key)) return;
+      // No buffer yet — give feedback so the user knows the file is still loading
+      if (!slot?.buffer) {
+        if (slot) slot.statusEl.textContent = slot.fileName === 'No file loaded' ? 'No file' : 'Still loading…';
+        return;
+      }
+      if (state.voices.has(slot.key)) return;
       const ctx = ensureAudioContext();
+      // On iOS, external keyboard events (Makey Makey) cannot unlock the AudioContext.
+      // If the context is still suspended, pulse the Enable audio button so the user
+      // knows to tap it with their finger first — unlockAudio() will replay held keys.
+      if (ctx.state !== 'running') {
+        els.audioState.textContent = 'Tap “Enable audio” ↑';
+        els.audioState.className = 'warn';
+        els.unlockBtn.classList.remove('pulse-unlock');
+        void els.unlockBtn.offsetWidth; // force reflow so animation restarts
+        els.unlockBtn.classList.add('pulse-unlock');
+        return;
+      }
       const source = ctx.createBufferSource();
       const gain = ctx.createGain();
       source.buffer = slot.buffer;
