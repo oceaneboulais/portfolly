@@ -2,7 +2,7 @@
 // Stale-while-revalidate: serve from cache instantly, refresh in background.
 // First visit (online) caches everything fetched; subsequent visits work offline.
 
-const CACHE = 'shellfeggio-v5';
+const CACHE = 'shellfeggio-v7';
 
 // WAV assets — pre-cached on install so they are available offline on iPhone.
 // Each entry is fetched independently so one missing file never blocks install.
@@ -25,10 +25,15 @@ const WAV_ASSETS = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE).then(async c => {
-      // Shell HTML is critical — fail install if this fails
-      await c.addAll(['./makey-makey-soundboard-12-keys.html']);
-      // WAV files are best-effort — a missing file must not block install
-      await Promise.all(WAV_ASSETS.map(url => c.add(url).catch(() => {})));
+      // Shell HTML is critical — always fetch fresh (bypass HTTP cache)
+      await c.put('./makey-makey-soundboard-12-keys.html',
+        await fetch('./makey-makey-soundboard-12-keys.html', { cache: 'reload' }));
+      // WAV files are best-effort — fetch fresh to avoid stale browser-HTTP-cache hits
+      await Promise.all(WAV_ASSETS.map(url =>
+        fetch(new Request(url, { cache: 'reload' }))
+          .then(r => { if (r.ok) c.put(url, r); })
+          .catch(() => {})
+      ));
     })
   );
   self.skipWaiting();
@@ -49,6 +54,20 @@ self.addEventListener('fetch', event => {
   // Only intercept same-origin GET requests
   if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith(self.location.origin)) return;
+
+  // Pass 'reload' requests straight to the network so callers can bypass stale SW cache.
+  // The fresh response is still stored back into the SW cache for future use.
+  if (event.request.cache === 'reload') {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        if (response && response.status === 200) {
+          caches.open(CACHE).then(c => c.put(event.request.url, response.clone()));
+        }
+        return response;
+      })
+    );
+    return;
+  }
 
   event.respondWith(
     caches.open(CACHE).then(cache =>
