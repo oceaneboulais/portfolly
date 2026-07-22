@@ -147,7 +147,7 @@
       { src: 'sounds/flutey/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093041_1.0x.wav',        label: 'Humpback Whale – Flutey' },
     ];
 
-    const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map() };
+    const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map(), _voicesAtBlur: null };
     const els = {
       slots: document.getElementById('slots'),
       folderInput: document.getElementById('folderInput'),
@@ -281,8 +281,29 @@
         article.querySelector('[data-role="pitch-reset"]').addEventListener('click', () => setPitch(slot, 1));
         article.querySelector('.pitch-details').addEventListener('toggle', () => drawWaveform(slot));
         const testBtn = article.querySelector('[data-role="test-btn"]');
-        testBtn.addEventListener('pointerdown', ev => { ev.preventDefault(); unlockAudioSync(); playSlot(slot); }, { passive: false });
-        testBtn.addEventListener('touchstart', ev => { ev.preventDefault(); unlockAudioSync(); playSlot(slot); }, { passive: false });
+        // touchstart fires ~1 ms before pointerdown on iOS — kick the resume
+        // process early so the context has maximum time to reach 'running'.
+        testBtn.addEventListener('touchstart', ev => {
+          ev.preventDefault();
+          ensureAudioContext().resume().catch(() => {});
+        }, { passive: false });
+        // pointerdown fires for both mouse and touch on all modern browsers.
+        // ctx.resume() is called synchronously here — that satisfies Safari's
+        // "trusted user gesture" requirement for AudioContext unlock. Actual
+        // playback is deferred to the .then() so it only runs once the context
+        // is genuinely running, which fixes Safari's async-resume race condition.
+        testBtn.addEventListener('pointerdown', ev => {
+          ev.preventDefault();
+          const ctx = ensureAudioContext();
+          ctx.resume()
+            .then(() => {
+              state.unlocked = true;
+              els.audioState.textContent = 'Ready';
+              els.audioState.className = 'good';
+              playSlot(slot);
+            })
+            .catch(() => {});
+        }, { passive: false });
         ['pointerup','pointercancel','touchend','touchcancel'].forEach(t => testBtn.addEventListener(t, () => stopSlotByKey(slot.key)));
         let pitchDragging = false;
         const onPitchInput = ev => {
@@ -577,7 +598,23 @@
         handleRelease('click');
       });
 
-      window.addEventListener('blur', stopAll);
+      // On blur: sounds keep looping so a performance isn't interrupted when focus briefly
+      // moves to another window. activeKeys is cleared so the guard in handlePress resets.
+      // On focus return: stop any voices that were still playing from before the blur —
+      // their keyup events were missed while the window was unfocused (OS never delivers
+      // keyup to an unfocused window), so they would loop forever without this cleanup.
+      window.addEventListener('blur', () => {
+        state._voicesAtBlur = new Set(state.voices.keys());
+        state.activeKeys.clear();
+        updateHeldKeys();
+        els.clickPad.classList.remove('active');
+      });
+      window.addEventListener('focus', () => {
+        if (state._voicesAtBlur) {
+          state._voicesAtBlur.forEach(key => stopSlotByKey(key));
+          state._voicesAtBlur = null;
+        }
+      });
       document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(); });
       els.folderInput.addEventListener('change', async event => { if (event.target.files?.length) await loadFiles(event.target.files); });
       els.unlockBtn.addEventListener('click', async () => {
