@@ -80,7 +80,7 @@
   <main class="app">
     <section class="panel">
       <h1>Shellfegio Synthesizer 12-key soundboard</h1>
-      <p class="lede">This version uses 12 mapped controls: Left, Right, Up, Down, Space, Click, W, A, S, D, F, and G. Each loaded WAV loops while its trigger is held.</p>
+      <p class="lede">This version uses 12 mapped controls: the Left key toggles looper mode, then Right, Up, Down, Space, Click, W, A, S, D, F, and G can be latched into looping playback until Left is pressed again.</p>
     </section>
 
     <section class="panel">
@@ -89,7 +89,7 @@
         <label class="button" for="folderInput">Load up to 12 WAV files<input id="folderInput" type="file" accept=".wav,audio/wav" multiple></label>
         <button class="button danger" id="stopAllBtn" type="button">Stop all</button>
       </div>
-      <p class="lede">Load files in this order: Left, Right, Up, Down, Space, Click, W, A, S, D, F, G.</p>
+      <p class="lede">Load files in this order: looper control, Right, Up, Down, Space, Click, W, A, S, D, F, G.</p>
     </section>
 
     <section class="panel status">
@@ -101,7 +101,7 @@
 
     <section class="panel">
       <h2>Mapped sound slots</h2>
-      <p class="lede">Arrow keys, space, and letter keys respond from keyboard events. Click responds from the hold pad below.</p>
+      <p class="lede">Arrow keys, space, and letter keys respond from keyboard events. The Left arrow toggles loop-latch mode. Click responds from the hold pad below.</p>
       <div class="grid" id="slots"></div>
     </section>
 
@@ -117,7 +117,7 @@
   <script>
     const KEY_LAYOUT = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','click','w','a','s','d','f','g'];
     const KEY_LABELS = {
-      ArrowLeft: 'Left',
+      ArrowLeft: 'Looper',
       ArrowRight: 'Right',
       ArrowUp: 'Up',
       ArrowDown: 'Down',
@@ -133,7 +133,7 @@
 
     // Default sounds mapped to each key slot in KEY_LAYOUT order
     const DEFAULT_SOUNDS = [
-      { src: 'sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav',   label: 'Calibration (Human origin sound) – Duck Call' },
+      { src: 'sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav',   label: 'Looper control' },
       { src: 'sounds/Good_Purrs/soundsampDA23A1T20230819T000000.gsi_20230819T181145_1.0x.wav',                      label: 'Reef Fish – Good Purrs' },
       { src: 'sounds/Louderboat_fish/soundsampDA23A1T20230819T000000.gsi_20230819T163355_1.0x.wav',                 label: 'Reef Fish – Louderboat Fish' },
       { src: 'sounds/low_tone/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T092759_1.0x.wav',     label: 'Humpback Whale – Low Tone' },
@@ -147,7 +147,7 @@
       { src: 'sounds/flutey/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093041_1.0x.wav',        label: 'Humpback Whale – Flutey' },
     ];
 
-    const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map(), _voicesAtBlur: null };
+    const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map(), looperMode: false, _voicesAtBlur: null };
     const els = {
       slots: document.getElementById('slots'),
       folderInput: document.getElementById('folderInput'),
@@ -162,6 +162,32 @@
 
     function makeSlot(key, index) {
       return { key, index, name: `Slot ${index + 1}`, fileName: 'No file loaded', buffer: null, element: null, statusEl: null, fileEl: null, gainEl: null, canvasEl: null, pitchDisplayEl: null, volume: 1, playbackRate: 1 };
+    }
+
+    function getLooperSlot() {
+      return state.slots.find(slot => slot.key === 'ArrowLeft');
+    }
+
+    function refreshLooperUi() {
+      const slot = getLooperSlot();
+      if (!slot || !slot.element) return;
+      slot.element.classList.toggle('active', state.looperMode);
+      if (slot.statusEl) slot.statusEl.textContent = state.looperMode ? 'Looper armed' : 'Looper off';
+      if (slot.fileEl) slot.fileEl.textContent = 'Looper control';
+      els.inputMode.textContent = state.looperMode ? 'Looper armed: press Left again to stop latched loops' : 'Left toggles loop-latch mode; other keys can be held normally';
+    }
+
+    function stopLatchedVoices() {
+      [...state.voices.keys()].forEach(key => {
+        const voice = state.voices.get(key);
+        if (voice?.latched) stopSlotByKey(key, true);
+      });
+    }
+
+    function setLooperMode(enabled) {
+      state.looperMode = Boolean(enabled);
+      if (!state.looperMode) stopLatchedVoices();
+      refreshLooperUi();
     }
 
     function ensureAudioContext() {
@@ -231,13 +257,14 @@
     function renderSlots() {
       els.slots.innerHTML = '';
       state.slots.forEach(slot => {
+        const isLooper = slot.key === 'ArrowLeft';
         const article = document.createElement('article');
         article.className = 'slot';
         article.innerHTML = `
           <div class="slot-top">
             <div>
-              <div class="slot-name">${slot.name}</div>
-              <div class="meta" data-role="filename">${slot.fileName}</div>
+              <div class="slot-name">${isLooper ? 'Looper control' : slot.name}</div>
+              <div class="meta" data-role="filename">${isLooper ? 'Toggle loop-latch mode for the other keys' : slot.fileName}</div>
             </div>
             <div class="key-badge">${KEY_LABELS[slot.key] || slot.key}</div>
           </div>
@@ -245,7 +272,7 @@
             &#128193; Change file
             <input type="file" accept=".wav,audio/wav" style="display:none">
           </label>
-          <button data-role="test-btn" type="button" style="font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--primary);background:rgba(0,205,210,.12);color:var(--primary);cursor:pointer;font-family:var(--font);min-height:36px;touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9654; Hold to test</button>
+          <button data-role="test-btn" type="button" style="font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--primary);background:rgba(0,205,210,.12);color:var(--primary);cursor:pointer;font-family:var(--font);min-height:36px;touch-action:manipulation;user-select:none;-webkit-user-select:none;">${isLooper ? 'Toggle looper' : '&#9654; Hold to test'}</button>
           <label class="small">Volume
             <input class="input" type="range" min="0" max="1.5" step="0.01" value="1">
           </label>
@@ -260,7 +287,7 @@
               <div style="text-align:center;font-size:.75rem;color:var(--muted);">&#8592; lower pitch &nbsp;&middot;&nbsp; drag to set pitch &nbsp;&middot;&nbsp; higher pitch &#8594;</div>
             </div>
           </details>
-          <div class="small">Status: <span>Idle</span></div>
+          <div class="small">Status: <span>${isLooper ? 'Looper off' : 'Idle'}</span></div>
         `;
         const fileEl = article.querySelector('[data-role="filename"]');
         const gainEl = article.querySelector('input[type="range"]');
@@ -281,30 +308,38 @@
         article.querySelector('[data-role="pitch-reset"]').addEventListener('click', () => setPitch(slot, 1));
         article.querySelector('.pitch-details').addEventListener('toggle', () => drawWaveform(slot));
         const testBtn = article.querySelector('[data-role="test-btn"]');
-        // touchstart fires ~1 ms before pointerdown on iOS — kick the resume
-        // process early so the context has maximum time to reach 'running'.
-        testBtn.addEventListener('touchstart', ev => {
-          ev.preventDefault();
-          ensureAudioContext().resume().catch(() => {});
-        }, { passive: false });
-        // pointerdown fires for both mouse and touch on all modern browsers.
-        // ctx.resume() is called synchronously here — that satisfies Safari's
-        // "trusted user gesture" requirement for AudioContext unlock. Actual
-        // playback is deferred to the .then() so it only runs once the context
-        // is genuinely running, which fixes Safari's async-resume race condition.
-        testBtn.addEventListener('pointerdown', ev => {
-          ev.preventDefault();
-          const ctx = ensureAudioContext();
-          ctx.resume()
-            .then(() => {
-              state.unlocked = true;
-              els.audioState.textContent = 'Ready';
-              els.audioState.className = 'good';
-              playSlot(slot);
-            })
-            .catch(() => {});
-        }, { passive: false });
-        ['pointerup','pointercancel','touchend','touchcancel'].forEach(t => testBtn.addEventListener(t, () => stopSlotByKey(slot.key)));
+        if (isLooper) {
+          testBtn.addEventListener('pointerdown', ev => {
+            ev.preventDefault();
+            unlockAudioSync();
+            setLooperMode(!state.looperMode);
+          }, { passive: false });
+        } else {
+          // touchstart fires ~1 ms before pointerdown on iOS — kick the resume
+          // process early so the context has maximum time to reach 'running'.
+          testBtn.addEventListener('touchstart', ev => {
+            ev.preventDefault();
+            ensureAudioContext().resume().catch(() => {});
+          }, { passive: false });
+          // pointerdown fires for both mouse and touch on all modern browsers.
+          // ctx.resume() is called synchronously here — that satisfies Safari's
+          // "trusted user gesture" requirement for AudioContext unlock. Actual
+          // playback is deferred to the .then() so it only runs once the context
+          // is genuinely running, which fixes Safari's async-resume race condition.
+          testBtn.addEventListener('pointerdown', ev => {
+            ev.preventDefault();
+            const ctx = ensureAudioContext();
+            ctx.resume()
+              .then(() => {
+                state.unlocked = true;
+                els.audioState.textContent = 'Ready';
+                els.audioState.className = 'good';
+                playSlot(slot);
+              })
+              .catch(() => {});
+          }, { passive: false });
+          ['pointerup','pointercancel','touchend','touchcancel'].forEach(t => testBtn.addEventListener(t, () => stopSlotByKey(slot.key)));
+        }
         let pitchDragging = false;
         const onPitchInput = ev => {
           const rect = canvas.getBoundingClientRect();
@@ -355,8 +390,8 @@
       await Promise.all(DEFAULT_SOUNDS.map(async (def, i) => {
         const slot = state.slots[i];
         if (!slot || !def) return;
-        slot.statusEl.textContent = 'Loading default\u2026';
-        slot.fileEl.textContent = def.label;
+        slot.statusEl.textContent = slot.key === 'ArrowLeft' ? 'Loading looper control\u2026' : 'Loading default\u2026';
+        slot.fileEl.textContent = slot.key === 'ArrowLeft' ? 'Looper control' : def.label;
         try {
           const encodedSrc = def.src.split('/').map(s => encodeURIComponent(s)).join('/');
           const response = await fetch(encodedSrc, { cache: 'reload' });
@@ -364,13 +399,14 @@
           const arrayBuffer = await response.arrayBuffer();
           const ctx = ensureAudioContext();
           slot.buffer = await ctx.decodeAudioData(arrayBuffer);
-          slot.fileName = def.label;
-          slot.fileEl.textContent = def.label;
-          slot.statusEl.textContent = 'Ready';
+          slot.fileName = slot.key === 'ArrowLeft' ? 'Looper control' : def.label;
+          slot.fileEl.textContent = slot.fileName;
+          slot.statusEl.textContent = slot.key === 'ArrowLeft' ? (state.looperMode ? 'Looper armed' : 'Looper off') : 'Ready';
         } catch {
-          slot.statusEl.textContent = 'Default unavailable';
-          slot.fileEl.textContent = def.label + ' (not loaded)';
+          slot.statusEl.textContent = slot.key === 'ArrowLeft' ? 'Looper unavailable' : 'Default unavailable';
+          slot.fileEl.textContent = slot.key === 'ArrowLeft' ? 'Looper control (not loaded)' : def.label + ' (not loaded)';
         }
+        if (slot.key === 'ArrowLeft') refreshLooperUi();
         updateLoadedCount();
         drawWaveform(slot);
       }));
@@ -475,6 +511,7 @@
         if (slot) slot.statusEl.textContent = slot.fileName === 'No file loaded' ? 'No file' : 'Still loading…';
         return;
       }
+      if (slot.key === 'ArrowLeft') return;
       if (state.voices.has(slot.key)) return;
       const ctx = ensureAudioContext();
       // On iOS, external keyboard events (Makey Makey) cannot unlock the AudioContext.
@@ -497,15 +534,16 @@
       gain.gain.linearRampToValueAtTime(slot.volume, ctx.currentTime + 0.015);
       source.connect(gain).connect(ctx.destination);
       source.start();
-      state.voices.set(slot.key, { source, gain, slot });
+      state.voices.set(slot.key, { source, gain, slot, latched: state.looperMode });
       slot.element.classList.add('active');
       slot.statusEl.textContent = 'Playing';
       if (slot.key === 'click') els.clickPad.classList.add('active');
     }
 
-    function stopSlotByKey(key) {
+    function stopSlotByKey(key, force = false) {
       const voice = state.voices.get(key);
       if (!voice) return;
+      if (voice.latched && state.looperMode && !force) return;
       const { source, gain, slot } = voice;
       const ctx = ensureAudioContext();
       const now = ctx.currentTime;
@@ -522,7 +560,8 @@
     }
 
     function stopAll() {
-      [...state.voices.keys()].forEach(stopSlotByKey);
+      setLooperMode(false);
+      [...state.voices.keys()].forEach(key => stopSlotByKey(key, true));
       state.activeKeys.clear();
       updateHeldKeys();
       els.clickPad.classList.remove('active');
@@ -535,6 +574,10 @@
       if (!KEY_LAYOUT.includes(normalized) || state.activeKeys.has(normalized)) return;
       state.activeKeys.add(normalized);
       updateHeldKeys();
+      if (normalized === 'ArrowLeft') {
+        setLooperMode(!state.looperMode);
+        return;
+      }
       const slot = state.slots.find(item => item.key === normalized);
       playSlot(slot);
     }
@@ -544,6 +587,7 @@
       if (!state.activeKeys.has(normalized)) return;
       state.activeKeys.delete(normalized);
       updateHeldKeys();
+      if (normalized === 'ArrowLeft') return;
       stopSlotByKey(normalized);
     }
 
