@@ -57,6 +57,17 @@
       outline-offset: 3px;
     }
 
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .button-row .accessibility-btn {
+      margin-bottom: 0;
+    }
+
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -131,9 +142,14 @@
   <div class="container">
     <a href="../../index.html" class="back-link">&larr; Back to Portfolio</a>
     <br>
-    <a href="makey-makey-soundboard-12-keys.html" class="accessibility-btn" role="button" aria-label="Open the interactive Shellfegio Soundboard">
-      &#9835; Play the Shellfegio Soundboard
-    </a>
+    <div class="button-row">
+      <a href="makey-makey-soundboard-12-keys.html" class="accessibility-btn" role="button" aria-label="Open the interactive Shellfegio Soundboard">
+        &#9835; Play the Shellfegio Soundboard
+      </a>
+      <a href="https://forms.gle/C5mKUy9MpJPJpFzi9" class="accessibility-btn" role="button" aria-label="Open the product newsletter and survey form" target="_blank" rel="noopener noreferrer">
+        Interested in having your own reef fish DJ set? Let us know
+      </a>
+    </div>
 
     <header class="project-header">
       <h1 class="project-title">Shellfegio Synthesizer</h1>
