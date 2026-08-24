@@ -121,7 +121,8 @@
 
     /* ── MIDDLE ROW ── */
     .panel-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); }
-    .panel-waveform, .panel-umap { aspect-ratio:1/1; }
+    .panel-waveform { aspect-ratio:16/5; }
+    .panel-umap { aspect-ratio:1/1; }
     #waveform-canvas, #umap-canvas {
       position:absolute; inset:0; width:100%; height:100%; display:block;
     }
@@ -236,7 +237,7 @@
 <body>
 
 <header class="page-header">
-  <a href="shellfeggio_synth_index.html" class="back-link">← shellfegio synth</a>
+  <a href="shellfeggio_synth_index.html" class="back-link">← shellfeggio synth</a>
   <div class="source-toggle" id="source-toggle" role="group" aria-label="Audio input source">
     <button class="src-btn active" id="btn-video" disabled aria-pressed="true">video</button>
     <button class="src-btn" id="btn-mic"   disabled aria-pressed="false">◎ mic</button>
@@ -261,18 +262,11 @@
     </div>
   </div>
 
-  <!-- ── PANEL ROW: WAVEFORM + UMAP ── -->
-  <div class="panel-row">
-    <div class="panel panel-waveform" id="panel-waveform">
-      <span class="panel-label">acoustic waveform</span>
-      <div class="sync-dot" id="sync-waveform"></div>
-      <canvas id="waveform-canvas"></canvas>
-    </div>
-    <div class="panel panel-umap" id="panel-umap">
-      <span class="panel-label">spectral topology · 3d</span>
-      <div class="sync-dot" id="sync-umap"></div>
-      <canvas id="umap-canvas"></canvas>
-    </div>
+  <!-- ── PANEL: WAVEFORM (full width) ── -->
+  <div class="panel panel-waveform" id="panel-waveform">
+    <span class="panel-label">acoustic waveform</span>
+    <div class="sync-dot" id="sync-waveform"></div>
+    <canvas id="waveform-canvas"></canvas>
   </div>
 
   <!-- ── PANEL 3: SCIENTIFIC ILLUSTRATION ── -->
@@ -416,6 +410,13 @@
     </svg>
   </div>
 
+  <!-- ── PANEL: SPECTRAL TOPOLOGY 3D ── -->
+  <div class="panel panel-umap" id="panel-umap">
+    <span class="panel-label">spectral topology · 3d</span>
+    <div class="sync-dot" id="sync-umap"></div>
+    <canvas id="umap-canvas"></canvas>
+  </div>
+
   <!-- ── PANEL: SAMPLE PACK ── -->
   <div class="panel panel-patches" id="panel-patches">
     <span class="panel-label">shellfegio sample pack · 12 patches · wav</span>
@@ -425,8 +426,6 @@
       <span class="patch-format-note">44.1kHz · wav · ableton · serato · traktor · rekordbox</span>
     </div>
   </div>
-
-</main>
 
 <!-- Audio Init Overlay -->
 <div id="audio-overlay">
