@@ -131,7 +131,7 @@
     .panel-illustration { aspect-ratio:1/1; }
     .shrimp-label {
       position:absolute; bottom:10px; left:12px; z-index:10;
-      font-family:Georgia,serif; font-style:italic;
+      font-family:'Courier New',monospace; font-style:italic;
       font-size:11px; color:#000; pointer-events:none;
     }
 
@@ -637,26 +637,41 @@
   }
 
   /* ── MAIN LOOP ── */
+  function clearWaveform() {
+    if (!waveCtx2d) return;
+    waveCtx2d.fillStyle = '#000';
+    waveCtx2d.fillRect(0, 0, waveW, waveH);
+  }
+
+  function clearUMAP() {
+    if (!renderer) return;
+    particleCount = 0;
+    ptCloud.geometry.setDrawRange(0, 0);
+    renderer.render(scene, camera);
+  }
+
   function tick() {
     requestAnimationFrame(tick);
 
+    let hasRealAudio = false;
     if (isAudioReady && analyser) {
       analyser.getByteTimeDomainData(timeDomainBuf);
       analyser.getByteFrequencyData(freqBuf);
-      // If signal is essentially silent, keep demo data flowing
       let rms = 0;
       for (let i = 0; i < timeDomainBuf.length; i++) {
         const s = (timeDomainBuf[i] - 128) / 128;
         rms += s * s;
       }
-      rms = Math.sqrt(rms / timeDomainBuf.length);
-      if (rms < 0.01) generateDemoData();
-    } else {
-      generateDemoData();
+      hasRealAudio = Math.sqrt(rms / timeDomainBuf.length) >= 0.01;
     }
 
-    drawWaveform();
-    updateUMAP();
+    if (hasRealAudio) {
+      drawWaveform();
+      updateUMAP();
+    } else {
+      clearWaveform();
+      clearUMAP();
+    }
   }
 
   /* ── INIT ── */
