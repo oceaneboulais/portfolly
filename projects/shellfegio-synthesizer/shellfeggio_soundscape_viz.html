@@ -91,8 +91,9 @@
 
     .panel-label {
       position: absolute; top:8px; left:13px;
+      font-family: 'Courier New', monospace;
       font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
-      color: rgba(0,229,204,0.3); z-index: 10; pointer-events: none;
+      color: rgba(0,229,204,0.75); z-index: 10; pointer-events: none;
     }
     .sync-dot {
       position: absolute; top:9px; right:12px;
@@ -319,7 +320,7 @@
   let videoSource = null, micSource = null, micStream = null;
   let timeDomainBuf = null, freqBuf = null;
   let isAudioReady = false, activeSrc = 'video';
-  let demoPhase = 0;
+  let demoPhase = 0, isVideoPlaying = false;
 
   /* ── AUDIO OVERLAY ── */
   const overlay      = document.getElementById('audio-overlay');
@@ -434,6 +435,7 @@
     if (video.readyState >= 2) standIn.classList.add('hidden');
   });
   video.addEventListener('play', function () {
+    isVideoPlaying = true;
     syncVideo.classList.add('live');
     if (activeSrc === 'video') {
       syncWaveform.classList.add('live');
@@ -442,12 +444,14 @@
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   });
   video.addEventListener('pause', function () {
+    isVideoPlaying = false;
     syncVideo.classList.remove('live');
     if (activeSrc === 'video') {
       syncWaveform.classList.remove('live');
       syncUmap.classList.remove('live');
     }
   });
+  video.addEventListener('ended', function () { isVideoPlaying = false; });
 
   /* ── SYNTHETIC DEMO DATA ── */
   function ensureBuffers() {
@@ -653,19 +657,25 @@
   function tick() {
     requestAnimationFrame(tick);
 
-    let hasRealAudio = false;
+    let shouldDraw = false;
     if (isAudioReady && analyser) {
       analyser.getByteTimeDomainData(timeDomainBuf);
       analyser.getByteFrequencyData(freqBuf);
-      let rms = 0;
-      for (let i = 0; i < timeDomainBuf.length; i++) {
-        const s = (timeDomainBuf[i] - 128) / 128;
-        rms += s * s;
+      if (activeSrc === 'mic') {
+        // Mic mode: draw only when signal is above noise floor
+        let rms = 0;
+        for (let i = 0; i < timeDomainBuf.length; i++) {
+          const s = (timeDomainBuf[i] - 128) / 128;
+          rms += s * s;
+        }
+        shouldDraw = Math.sqrt(rms / timeDomainBuf.length) >= 0.01;
+      } else {
+        // Video mode: draw only while video is actually playing
+        shouldDraw = isVideoPlaying;
       }
-      hasRealAudio = Math.sqrt(rms / timeDomainBuf.length) >= 0.01;
     }
 
-    if (hasRealAudio) {
+    if (shouldDraw) {
       drawWaveform();
       updateUMAP();
     } else {
