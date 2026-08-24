@@ -129,14 +129,11 @@
 
     /* ── ILLUSTRATION PANEL ── */
     .panel-illustration { aspect-ratio:1/1; }
-    .yt-credit {
-      position:absolute; bottom:0; left:0; right:0; z-index:10;
-      padding:6px 12px;
-      background:linear-gradient(transparent, rgba(0,0,0,0.75));
-      font-size:8px; letter-spacing:0.13em; color:rgba(0,229,204,0.55);
-      text-transform:uppercase; pointer-events:none;
+    .shrimp-label {
+      position:absolute; bottom:10px; left:12px; z-index:10;
+      font-family:Georgia,serif; font-style:italic;
+      font-size:11px; color:#000; pointer-events:none;
     }
-    .yt-credit a { color:inherit; text-decoration:underline; pointer-events:all; }
 
     /* ── AUDIO OVERLAY ── */
     #audio-overlay {
@@ -278,14 +275,11 @@
 
     <!-- PANEL: SCIENTIFIC ILLUSTRATION -->
     <div class="panel panel-illustration" id="panel-illustration">
-      <span class="panel-label">juvenile snapping shrimp · Alpheus heterochaelis</span>
-      <video autoplay muted loop playsinline
+      <video id="shrimp-video" autoplay muted loop playsinline
              style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
         <source src="sounds/snapping_shrimp_jacob.mp4" type="video/mp4">
       </video>
-      <div class="yt-credit">
-        <em>Alpheus heterochaelis</em> juvenile · snapping shrimp · credit: Jacob
-      </div>
+      <span class="shrimp-label">Alpheus heterochaelis</span>
     </div>
 
     <!-- PANEL: SPECTRAL TOPOLOGY 3D -->
@@ -331,7 +325,7 @@
   const overlay      = document.getElementById('audio-overlay');
   const initBtn      = document.getElementById('audio-init-btn');
   const video        = document.getElementById('main-video');
-  const shrimpVideo  = document.querySelector('#panel-illustration video');
+  const shrimpVideo  = document.getElementById('shrimp-video');
   const btnVideo     = document.getElementById('btn-video');
   const btnMic       = document.getElementById('btn-mic');
   const micToast     = document.getElementById('mic-toast');
@@ -341,7 +335,10 @@
     overlay.style.display = 'none';
     // Start both videos together on the same user gesture
     video.play().catch(function () {});
-    if (shrimpVideo) shrimpVideo.play().catch(function () {});
+    if (shrimpVideo) {
+      shrimpVideo.playbackRate = 1.5;
+      shrimpVideo.play().catch(function () {});
+    }
   });
 
   function initAudio() {
