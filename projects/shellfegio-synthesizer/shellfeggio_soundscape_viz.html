@@ -482,13 +482,6 @@
     }
   });
   video.addEventListener('ended', function () { isVideoPlaying = false; syncAudio.pause(); syncAudio.currentTime = 0; });
-  // Keep audio locked to video position to prevent drift
-  video.addEventListener('timeupdate', function () {
-    if (!isVideoPlaying) return;
-    if (Math.abs(syncAudio.currentTime - video.currentTime) > 0.3) {
-      syncAudio.currentTime = video.currentTime;
-    }
-  });
 
   /* ── SYNTHETIC DEMO DATA ── */
   function ensureBuffers() {
@@ -1023,11 +1016,6 @@
     ctx.clearRect(0, 0, W, H);
 
     var idle = Date.now() - lastMove > 700;
-
-    // sprinkle ambient drifters near cursor when idle
-    if (idle && mx > 0 && particles.length < 14 && Math.random() < 0.04) {
-      spawn(mx + (Math.random() - 0.5) * 55, my + (Math.random() - 0.5) * 55, false);
-    }
 
     for (var i = particles.length - 1; i >= 0; i--) {
       var p = particles[i];
