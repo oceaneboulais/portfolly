@@ -128,7 +128,7 @@
     }
 
     /* ── ILLUSTRATION PANEL ── */
-    .panel-illustration { aspect-ratio:16/9; }
+    .panel-illustration { aspect-ratio:1/1; }
     .yt-credit {
       position:absolute; bottom:0; left:0; right:0; z-index:10;
       padding:6px 12px;
@@ -273,26 +273,31 @@
     <canvas id="waveform-canvas"></canvas>
   </div>
 
-  <!-- ── PANEL 3: SCIENTIFIC ILLUSTRATION ── -->
-  <div class="panel panel-illustration" id="panel-illustration">
-    <span class="panel-label">juvenile snapping shrimp · Alpheus heterochaelis</span>
-    <iframe
-      src="https://www.youtube.com/embed/2rwmEvSOJMI?start=5&amp;loop=1&amp;playlist=2rwmEvSOJMI&amp;rel=0&amp;autoplay=1&amp;mute=1"
-      title="Juvenile snapping shrimp (Alpheus heterochaelis) snapping claw behaviour"
-      allow="autoplay; encrypted-media; picture-in-picture"
-      allowfullscreen
-      style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
-    <div class="yt-credit">
-      <em>Alpheus heterochaelis</em> juvenile · snapping shrimp ·
-      <a href="https://youtu.be/2rwmEvSOJMI" target="_blank" rel="noopener noreferrer">youtu.be/2rwmEvSOJMI</a>
-    </div>
-  </div>
+  <!-- ── ROW: SNAPPING SHRIMP VIDEO + SPECTRAL TOPOLOGY 3D ── -->
+  <div class="panel-row">
 
-  <!-- ── PANEL: SPECTRAL TOPOLOGY 3D ── -->
-  <div class="panel panel-umap" id="panel-umap">
-    <span class="panel-label">spectral topology · 3d</span>
-    <div class="sync-dot" id="sync-umap"></div>
-    <canvas id="umap-canvas"></canvas>
+    <!-- PANEL: SCIENTIFIC ILLUSTRATION -->
+    <div class="panel panel-illustration" id="panel-illustration">
+      <span class="panel-label">juvenile snapping shrimp · Alpheus heterochaelis</span>
+      <iframe
+        src="https://www.youtube.com/embed/2rwmEvSOJMI?start=5&amp;loop=1&amp;playlist=2rwmEvSOJMI&amp;rel=0&amp;autoplay=1&amp;mute=1"
+        title="Juvenile snapping shrimp (Alpheus heterochaelis) snapping claw behaviour"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+      <div class="yt-credit">
+        <em>Alpheus heterochaelis</em> juvenile · snapping shrimp ·
+        <a href="https://youtu.be/2rwmEvSOJMI" target="_blank" rel="noopener noreferrer">youtu.be/2rwmEvSOJMI</a>
+      </div>
+    </div>
+
+    <!-- PANEL: SPECTRAL TOPOLOGY 3D -->
+    <div class="panel panel-umap" id="panel-umap">
+      <span class="panel-label">spectral topology · 3d</span>
+      <div class="sync-dot" id="sync-umap"></div>
+      <canvas id="umap-canvas"></canvas>
+    </div>
+
   </div>
 
   <!-- ── PANEL: SAMPLE PACK ── -->
