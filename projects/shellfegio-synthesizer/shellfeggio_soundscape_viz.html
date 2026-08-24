@@ -125,8 +125,8 @@
 
     /* ── MIDDLE ROW ── */
     .panel-row { display:grid; grid-template-columns:1fr 2fr; gap:var(--gap); align-items:stretch; }
-    .panel-waveform { aspect-ratio:16/5; }
-    .panel-umap { aspect-ratio: unset; }
+    .panel-waveform { aspect-ratio: unset; }
+    .panel-umap { aspect-ratio:16/6; }
     #waveform-canvas, #umap-canvas {
       position:absolute; inset:0; width:100%; height:100%; display:block;
     }
@@ -279,14 +279,14 @@
     </div>
   </div>
 
-  <!-- ── PANEL: WAVEFORM (full width) ── -->
-  <div class="panel panel-waveform" id="panel-waveform">
-    <span class="panel-label">acoustic waveform</span>
-    <div class="sync-dot" id="sync-waveform"></div>
-    <canvas id="waveform-canvas"></canvas>
+  <!-- ── PANEL: SPECTRAL TOPOLOGY 3D (full width) ── -->
+  <div class="panel panel-umap" id="panel-umap">
+    <span class="panel-label">spectral topology · 3d</span>
+    <div class="sync-dot" id="sync-umap"></div>
+    <canvas id="umap-canvas"></canvas>
   </div>
 
-  <!-- ── ROW: SNAPPING SHRIMP VIDEO + SPECTRAL TOPOLOGY 3D ── -->
+  <!-- ── ROW: SNAPPING SHRIMP VIDEO + ACOUSTIC WAVEFORM ── -->
   <div class="panel-row">
 
     <!-- PANEL: SCIENTIFIC ILLUSTRATION -->
@@ -298,11 +298,11 @@
       <span class="shrimp-label">Alpheus heterochaelis</span>
     </div>
 
-    <!-- PANEL: SPECTRAL TOPOLOGY 3D -->
-    <div class="panel panel-umap" id="panel-umap">
-      <span class="panel-label">spectral topology · 3d</span>
-      <div class="sync-dot" id="sync-umap"></div>
-      <canvas id="umap-canvas"></canvas>
+    <!-- PANEL: WAVEFORM -->
+    <div class="panel panel-waveform" id="panel-waveform">
+      <span class="panel-label">acoustic waveform</span>
+      <div class="sync-dot" id="sync-waveform"></div>
+      <canvas id="waveform-canvas"></canvas>
     </div>
 
   </div>
@@ -619,7 +619,7 @@
     geo.setDrawRange(0, 0);
 
     const mat = new THREE.PointsMaterial({
-      size: 0.028, vertexColors: true,
+      size: 0.05, vertexColors: true,
       blending: THREE.AdditiveBlending, transparent: true,
       depthWrite: false, sizeAttenuation: true
     });
@@ -659,10 +659,10 @@
       posAttr.array[particleCount * 3 + 1] = rawY + Math.sin(autoRot * 0.35) * 0.08 + (Math.random() - 0.5) * jit;
       posAttr.array[particleCount * 3 + 2] = rawX * sinT + rawZ * cosT + (Math.random() - 0.5) * jit;
 
-      // Bioluminescent colour: blue bass, teal mid, pink treble
-      colAttr.array[particleCount * 3    ] = Math.min(1, hiMid * 0.55 + air * 0.28);
-      colAttr.array[particleCount * 3 + 1] = Math.min(1, midMid * 0.9 + lowMid * 0.4);
-      colAttr.array[particleCount * 3 + 2] = Math.min(1, bass * 0.65 + subBass * 0.45 + 0.28);
+      // Bioluminescent colour: blue bass, teal mid, pink treble — floor raised for visibility
+      colAttr.array[particleCount * 3    ] = Math.min(1, 0.12 + hiMid * 0.6 + air * 0.32);
+      colAttr.array[particleCount * 3 + 1] = Math.min(1, 0.12 + midMid * 0.95 + lowMid * 0.45);
+      colAttr.array[particleCount * 3 + 2] = Math.min(1, 0.18 + bass * 0.7 + subBass * 0.5);
 
       particleCount++;
       ptCloud.geometry.setDrawRange(0, particleCount);
