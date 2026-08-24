@@ -263,6 +263,11 @@
 </header>
 <div id="mic-toast"></div>
 
+<!-- synced background audio — routed through Web Audio API for visualization -->
+<audio id="sync-audio" loop preload="auto">
+  <source src="sounds/synced_sound.m4a" type="audio/mp4">
+</audio>
+
 <main class="soundscape-grid">
 
   <!-- ── PANEL 1: VIDEO ── -->
@@ -339,7 +344,7 @@
 
   /* ── STATE ── */
   let audioCtx = null, analyser = null, analyserGain = null;
-  let videoSource = null, micSource = null, micStream = null;
+  let audioSource = null, micSource = null, micStream = null;
   let timeDomainBuf = null, freqBuf = null;
   let isAudioReady = false, activeSrc = 'video';
   let demoPhase = 0, isVideoPlaying = false;
@@ -348,6 +353,7 @@
   const overlay      = document.getElementById('audio-overlay');
   const initBtn      = document.getElementById('audio-init-btn');
   const video        = document.getElementById('main-video');
+  const syncAudio    = document.getElementById('sync-audio');
   const shrimpVideo  = document.getElementById('shrimp-video');
   const btnVideo     = document.getElementById('btn-video');
   const btnMic       = document.getElementById('btn-mic');
@@ -371,9 +377,9 @@
     analyser.fftSize = 2048;
     analyser.smoothingTimeConstant = 0.82;
 
-    // video → analyser → gain → speakers
-    videoSource = audioCtx.createMediaElementSource(video);
-    videoSource.connect(analyser);
+    // synced_sound.m4a → analyser → gain → speakers
+    audioSource = audioCtx.createMediaElementSource(syncAudio);
+    audioSource.connect(analyser);
     analyser.connect(analyserGain);
     analyserGain.connect(audioCtx.destination);
 
@@ -400,9 +406,9 @@
     try {
       micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       micSource = audioCtx.createMediaStreamSource(micStream);
-      // video bypasses analyser (still audible), mic feeds analyser
-      videoSource.disconnect(analyser);
-      videoSource.connect(audioCtx.destination);
+      // reef sound bypasses analyser (still audible); mic feeds analyser
+      audioSource.disconnect(analyser);
+      audioSource.connect(audioCtx.destination);
       analyserGain.gain.value = 0; // silence analyser output — prevents speaker feedback
       micSource.connect(analyser);
       activeSrc = 'mic';
@@ -415,8 +421,8 @@
   function switchToVideo() {
     if (micSource)  { micSource.disconnect(analyser); micSource = null; }
     if (micStream)  { micStream.getTracks().forEach(function (t) { t.stop(); }); micStream = null; }
-    videoSource.disconnect(audioCtx.destination);
-    videoSource.connect(analyser);
+    audioSource.disconnect(audioCtx.destination);
+    audioSource.connect(analyser);
     analyserGain.gain.value = 1;
     activeSrc = 'video';
     updateSourceUI();
@@ -458,6 +464,7 @@
   });
   video.addEventListener('play', function () {
     isVideoPlaying = true;
+    syncAudio.play().catch(function () {});
     syncVideo.classList.add('live');
     if (activeSrc === 'video') {
       syncWaveform.classList.add('live');
@@ -467,13 +474,21 @@
   });
   video.addEventListener('pause', function () {
     isVideoPlaying = false;
+    syncAudio.pause();
     syncVideo.classList.remove('live');
     if (activeSrc === 'video') {
       syncWaveform.classList.remove('live');
       syncUmap.classList.remove('live');
     }
   });
-  video.addEventListener('ended', function () { isVideoPlaying = false; });
+  video.addEventListener('ended', function () { isVideoPlaying = false; syncAudio.pause(); syncAudio.currentTime = 0; });
+  // Keep audio locked to video position to prevent drift
+  video.addEventListener('timeupdate', function () {
+    if (!isVideoPlaying) return;
+    if (Math.abs(syncAudio.currentTime - video.currentTime) > 0.3) {
+      syncAudio.currentTime = video.currentTime;
+    }
+  });
 
   /* ── SYNTHETIC DEMO DATA ── */
   function ensureBuffers() {
