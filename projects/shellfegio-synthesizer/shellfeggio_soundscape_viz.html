@@ -181,14 +181,28 @@
     #mic-toast.show { opacity:1; }
 
     /* ── PATCH BAY ── */
-    .panel-patches { padding:18px 14px 18px; }
-    .patches-grid {
-      display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin-top:12px;
+    .panel-patches { padding:0; overflow:hidden; }
+    .patches-toggle {
+      width:100%; padding:10px 14px 10px 13px;
+      display:flex; justify-content:space-between; align-items:center;
+      background:transparent; border:none;
+      font-family:'Courier New',monospace; font-size:8px;
+      letter-spacing:0.22em; text-transform:uppercase;
+      color:rgba(0,229,204,0.75); cursor:pointer; text-align:left;
     }
-    @media (max-width:520px) { .patches-grid { grid-template-columns:repeat(2,1fr); } }
+    .patches-toggle:hover { color:var(--teal); }
+    .toggle-chevron { font-size:10px; transition:transform 0.25s; }
+    .patches-toggle[aria-expanded='true'] .toggle-chevron { transform:rotate(90deg); }
+    .patches-body { display:none; padding:0 14px 18px; }
+    .patches-body.open { display:block; }
+    .patches-grid {
+      display:grid; grid-template-columns:repeat(6,1fr); gap:3px; margin-top:4px;
+    }
+    @media (max-width:520px) { .patches-grid { grid-template-columns:repeat(4,1fr); } }
     .patch-card {
-      padding:11px 10px 10px; border:1px solid rgba(0,229,204,0.1);
-      background:rgba(0,229,204,0.01); display:flex; flex-direction:column; gap:4px;
+      padding:8px 6px; border:1px solid rgba(0,229,204,0.1);
+      background:rgba(0,229,204,0.01); display:flex; flex-direction:column;
+      align-items:center; gap:4px;
       transition:border-color 0.2s, box-shadow 0.2s;
     }
     .patch-card:hover {
@@ -198,10 +212,8 @@
       border-color:var(--teal);
       box-shadow:0 0 14px rgba(0,229,204,0.22), inset 0 0 10px rgba(0,229,204,0.04);
     }
-    .patch-num  { font-size:8px; letter-spacing:0.08em; color:rgba(0,229,204,0.18); }
-    .patch-name { font-size:11px; letter-spacing:0.05em; color:rgba(0,229,204,0.82); text-transform:lowercase; line-height:1.2; }
-    .patch-tag  { font-size:7.5px; letter-spacing:0.12em; color:rgba(0,229,204,0.28); text-transform:uppercase; }
-    .patch-controls { display:flex; gap:4px; margin-top:8px; }
+    .patch-num  { font-size:8px; letter-spacing:0.08em; color:rgba(0,229,204,0.35); }
+    .patch-controls { display:flex; gap:3px; }
     .patch-play, .patch-dl {
       font-size:9px; padding:3px 8px; border:1px solid rgba(0,229,204,0.2);
       background:transparent; color:rgba(0,229,204,0.55); cursor:pointer;
@@ -294,11 +306,16 @@
 
   <!-- ── PANEL: SAMPLE PACK ── -->
   <div class="panel panel-patches" id="panel-patches">
-    <span class="panel-label">shellfegio sample pack · 12 patches · wav</span>
-    <div class="patches-grid" id="patches-grid"></div>
-    <div class="patch-dl-row">
-      <button id="dl-all-btn">⬇ download all 12 · wav pack</button>
-      <span class="patch-format-note">44.1kHz · wav · ableton · serato · traktor · rekordbox</span>
+    <button class="patches-toggle" id="patches-toggle" aria-expanded="false">
+      <span>shellfegio sample pack · 12 patches · wav</span>
+      <span class="toggle-chevron">▸</span>
+    </button>
+    <div class="patches-body" id="patches-body">
+      <div class="patches-grid" id="patches-grid"></div>
+      <div class="patch-dl-row">
+        <button id="dl-all-btn">⬇ download all 12 · wav pack</button>
+        <span class="patch-format-note">44.1kHz · wav · ableton · serato · traktor · rekordbox</span>
+      </div>
     </div>
   </div>
 
@@ -307,6 +324,7 @@
   <button id="audio-init-btn">
     <span class="init-icon">◉</span>
     <span>initialize soundscape</span>
+    <span style="font-size:8px;letter-spacing:0.18em;opacity:0.45;">click anywhere in the box to begin</span>
   </button>
 </div>
 
@@ -767,23 +785,20 @@
     card.className = 'patch-card';
     card.id = 'patch-' + p.num;
 
-    var num  = document.createElement('div'); num.className  = 'patch-num';  num.textContent = p.num;
-    var name = document.createElement('div'); name.className = 'patch-name'; name.textContent = p.name;
-    var tag  = document.createElement('div'); tag.className  = 'patch-tag';  tag.textContent  = p.tag;
+    var num  = document.createElement('div'); num.className = 'patch-num'; num.textContent = p.num;
 
     var ctrls = document.createElement('div'); ctrls.className = 'patch-controls';
 
     var playBtn = document.createElement('button');
     playBtn.className   = 'patch-play';
     playBtn.textContent = '\u25b6';
-    playBtn.setAttribute('aria-label', 'Preview ' + p.name);
+    playBtn.setAttribute('aria-label', 'Preview ' + p.num);
     playBtn.addEventListener('click', function () { playPatch(p.src, card, playBtn); });
 
-    // Individual download: fetch → blob URL so the clean dl filename is used
     var dlBtn = document.createElement('a');
     dlBtn.className = 'patch-dl';
     dlBtn.textContent = '\u2b07';
-    dlBtn.setAttribute('aria-label', 'Download ' + p.name);
+    dlBtn.setAttribute('aria-label', 'Download ' + p.num);
     dlBtn.addEventListener('click', function (e) {
       e.preventDefault();
       downloadSingle(p.src, p.dl, dlBtn);
@@ -792,10 +807,16 @@
     ctrls.appendChild(playBtn);
     ctrls.appendChild(dlBtn);
     card.appendChild(num);
-    card.appendChild(name);
-    card.appendChild(tag);
     card.appendChild(ctrls);
     grid.appendChild(card);
+  });
+
+  /* ── PATCH PANEL TOGGLE ── */
+  var patchesToggle = document.getElementById('patches-toggle');
+  var patchesBody   = document.getElementById('patches-body');
+  patchesToggle.addEventListener('click', function () {
+    var open = patchesBody.classList.toggle('open');
+    patchesToggle.setAttribute('aria-expanded', String(open));
   });
 
   /* ── PREVIEW PLAYER ── */
