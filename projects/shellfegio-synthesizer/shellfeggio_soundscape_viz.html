@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Shellfegio Soundscape Viz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #00e5cc;
+      --blue: #0099ff;
+      --glow-t: rgba(0,229,204,0.32);
+      --glow-tf: rgba(0,229,204,0.07);
+      --gap: 3px;
+    }
+
+    html, body {
+      background: #000;
+      min-height: 100vh;
+      font-family: 'Courier New', monospace;
+      color: var(--teal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      width: 100%;
+      max-width: 640px;
+      padding: 20px 16px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .back-link {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: rgba(0,229,204,0.38);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .back-link:hover { color: var(--teal); }
+    .page-title {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── GRID ── */
+    .soundscape-grid {
+      width: 100%;
+      max-width: 640px;
+      padding: 0 16px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+    }
+
+    /* ── PANEL BASE ── */
+    .panel {
+      position: relative;
+      background: #000;
+      border: 1px solid rgba(0,229,204,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      animation: panel-breathe 5s ease-in-out infinite;
+    }
+    @keyframes panel-breathe {
+      0%,100% {
+        border-color: rgba(0,229,204,0.16);
+        box-shadow: 0 0 8px rgba(0,229,204,0.09), inset 0 0 8px rgba(0,229,204,0.03);
+      }
+      50% {
+        border-color: rgba(0,229,204,0.5);
+        box-shadow: 0 0 22px rgba(0,229,204,0.26), 0 0 44px rgba(0,229,204,0.07),
+                    inset 0 0 22px rgba(0,229,204,0.05);
+      }
+    }
+    /* corner marks */
+    .panel::before, .panel::after {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      z-index: 5; pointer-events: none;
+    }
+    .panel::before { top:4px; left:4px; border-top:1px solid rgba(0,229,204,0.45); border-left:1px solid rgba(0,229,204,0.45); }
+    .panel::after  { bottom:4px; right:4px; border-bottom:1px solid rgba(0,229,204,0.45); border-right:1px solid rgba(0,229,204,0.45); }
+
+    .panel-label {
+      position: absolute; top:8px; left:13px;
+      font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(0,229,204,0.3); z-index: 10; pointer-events: none;
+    }
+    .sync-dot {
+      position: absolute; top:9px; right:12px;
+      width:4px; height:4px; border-radius:50%;
+      background: rgba(0,229,204,0.18); z-index:10; transition: background 0.4s;
+    }
+    .sync-dot.live {
+      background: var(--teal);
+      box-shadow: 0 0 5px var(--teal), 0 0 10px rgba(0,229,204,0.5);
+      animation: dot-live 1.3s ease-in-out infinite;
+    }
+    @keyframes dot-live { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* ── VIDEO PANEL ── */
+    .panel-video { aspect-ratio: 16/7; }
+    #main-video { width:100%; height:100%; object-fit:cover; display:block; }
+    .video-stand-in {
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:10px;
+      color:rgba(0,229,204,0.18); pointer-events:none; z-index:2;
+    }
+    .vs-icon { font-size:26px; opacity:0.25; }
+    .vs-text { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; }
+    .vs-sub  { font-size:8px; opacity:0.4; letter-spacing:0.1em; }
+    .video-stand-in.hidden { display:none; }
+
+    /* ── MIDDLE ROW ── */
+    .panel-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); }
+    .panel-waveform, .panel-umap { aspect-ratio:1/1; }
+    #waveform-canvas, #umap-canvas {
+      position:absolute; inset:0; width:100%; height:100%; display:block;
+    }
+
+    /* ── ILLUSTRATION PANEL ── */
+    .panel-illustration {
+      aspect-ratio:16/8; display:flex;
+      align-items:center; justify-content:center;
+    }
+    .illustration-svg { width:100%; height:100%; }
+
+    /* ── AUDIO OVERLAY ── */
+    #audio-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.9);
+      display:flex; align-items:center; justify-content:center;
+      z-index:200; backdrop-filter:blur(6px);
+    }
+    #audio-init-btn {
+      display:flex; flex-direction:column; align-items:center; gap:14px;
+      background:transparent; border:1px solid rgba(0,229,204,0.4);
+      color:var(--teal); font-family:'Courier New',monospace;
+      font-size:11px; letter-spacing:0.24em; text-transform:uppercase;
+      padding:30px 52px; cursor:pointer; transition:all 0.3s;
+      box-shadow:0 0 30px rgba(0,229,204,0.12);
+    }
+    #audio-init-btn:hover {
+      background:rgba(0,229,204,0.06); border-color:rgba(0,229,204,0.85);
+      box-shadow:0 0 52px rgba(0,229,204,0.28);
+    }
+    .init-icon { font-size:22px; animation:init-pulse 2.5s ease-in-out infinite; }
+    @keyframes init-pulse { 0%,100%{opacity:0.45;transform:scale(1)} 50%{opacity:1;transform:scale(1.1)} }
+
+    /* ── SOURCE TOGGLE ── */
+    .source-toggle { display:flex; gap:4px; align-items:center; }
+    .src-btn {
+      font-family:'Courier New',monospace; font-size:9px;
+      letter-spacing:0.18em; text-transform:uppercase;
+      padding:4px 10px; border:1px solid rgba(0,229,204,0.22);
+      border-radius:2px; background:transparent;
+      color:rgba(0,229,204,0.3); cursor:pointer; transition:all 0.25s;
+    }
+    .src-btn:hover:not(:disabled) { color:var(--teal); border-color:rgba(0,229,204,0.6); }
+    .src-btn.active { color:var(--teal); border-color:var(--teal); box-shadow:0 0 8px rgba(0,229,204,0.22); }
+    .src-btn.mic-on  { color:#ff44aa; border-color:#ff44aa; box-shadow:0 0 8px rgba(255,68,170,0.28); }
+    .src-btn:disabled { opacity:0.22; cursor:not-allowed; }
+    /* toast for mic permission errors */
+    #mic-toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.92); border:1px solid rgba(255,68,170,0.5);
+      color:rgba(255,68,170,0.9); font-size:9px; letter-spacing:0.14em;
+      text-transform:uppercase; padding:10px 22px; border-radius:2px;
+      z-index:300; opacity:0; pointer-events:none; transition:opacity 0.3s;
+    }
+    #mic-toast.show { opacity:1; }
+
+    /* ── PATCH BAY ── */
+    .panel-patches { padding:18px 14px 18px; }
+    .patches-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin-top:12px;
+    }
+    @media (max-width:520px) { .patches-grid { grid-template-columns:repeat(2,1fr); } }
+    .patch-card {
+      padding:11px 10px 10px; border:1px solid rgba(0,229,204,0.1);
+      background:rgba(0,229,204,0.01); display:flex; flex-direction:column; gap:4px;
+      transition:border-color 0.2s, box-shadow 0.2s;
+    }
+    .patch-card:hover {
+      border-color:rgba(0,229,204,0.3); box-shadow:0 0 8px rgba(0,229,204,0.09);
+    }
+    .patch-card.playing {
+      border-color:var(--teal);
+      box-shadow:0 0 14px rgba(0,229,204,0.22), inset 0 0 10px rgba(0,229,204,0.04);
+    }
+    .patch-num  { font-size:8px; letter-spacing:0.08em; color:rgba(0,229,204,0.18); }
+    .patch-name { font-size:11px; letter-spacing:0.05em; color:rgba(0,229,204,0.82); text-transform:lowercase; line-height:1.2; }
+    .patch-tag  { font-size:7.5px; letter-spacing:0.12em; color:rgba(0,229,204,0.28); text-transform:uppercase; }
+    .patch-controls { display:flex; gap:4px; margin-top:8px; }
+    .patch-play, .patch-dl {
+      font-size:9px; padding:3px 8px; border:1px solid rgba(0,229,204,0.2);
+      background:transparent; color:rgba(0,229,204,0.55); cursor:pointer;
+      text-decoration:none; border-radius:1px; transition:all 0.18s;
+      line-height:1; display:inline-flex; align-items:center;
+      font-family:'Courier New',monospace;
+    }
+    .patch-play:hover, .patch-dl:hover {
+      color:var(--teal); border-color:rgba(0,229,204,0.65);
+      box-shadow:0 0 5px rgba(0,229,204,0.18);
+    }
+    .patch-play.active { color:var(--teal); border-color:var(--teal); }
+    .patch-dl-row {
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      margin-top:14px; padding-top:14px; border-top:1px solid rgba(0,229,204,0.07);
+    }
+    #dl-all-btn {
+      font-family:'Courier New',monospace; font-size:10px; letter-spacing:0.2em;
+      text-transform:uppercase; padding:10px 28px;
+      border:1px solid rgba(0,229,204,0.32); background:transparent;
+      color:var(--teal); cursor:pointer; transition:all 0.3s;
+      box-shadow:0 0 10px rgba(0,229,204,0.07);
+    }
+    #dl-all-btn:hover {
+      background:rgba(0,229,204,0.05); border-color:var(--teal);
+      box-shadow:0 0 22px rgba(0,229,204,0.2);
+    }
+    #dl-all-btn:disabled { opacity:0.35; cursor:wait; }
+    .patch-format-note {
+      font-size:7.5px; letter-spacing:0.14em; color:rgba(0,229,204,0.22);
+      text-transform:uppercase; text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="shellfeggio_synth_index.html" class="back-link">← shellfegio synth</a>
+  <div class="source-toggle" id="source-toggle" role="group" aria-label="Audio input source">
+    <button class="src-btn active" id="btn-video" disabled aria-pressed="true">video</button>
+    <button class="src-btn" id="btn-mic"   disabled aria-pressed="false">◎ mic</button>
+  </div>
+</header>
+<div id="mic-toast"></div>
+
+<main class="soundscape-grid">
+
+  <!-- ── PANEL 1: VIDEO ── -->
+  <div class="panel panel-video" id="panel-video">
+    <span class="panel-label">shellfegio over the waves</span>
+    <div class="sync-dot" id="sync-video"></div>
+    <video id="main-video" playsinline controls>
+      <source src="sounds/mission_bay_trimmed.m4a" type="audio/mp4">
+      <source src="imgs/rotated_shellfeggio.mp4" type="video/mp4">
+      <source src="imgs/rotated_shellfeggio.webm" type="video/webm">
+    </video>
+    <div class="video-stand-in" id="video-stand-in">
+      <div class="vs-icon">◈</div>
+      <span class="vs-text">mission bay soundscape · test</span>
+      <span class="vs-sub">sounds/mission_bay_trimmed.m4a</span>
+    </div>
+  </div>
+
+  <!-- ── PANEL ROW: WAVEFORM + UMAP ── -->
+  <div class="panel-row">
+    <div class="panel panel-waveform" id="panel-waveform">
+      <span class="panel-label">acoustic waveform</span>
+      <div class="sync-dot" id="sync-waveform"></div>
+      <canvas id="waveform-canvas"></canvas>
+    </div>
+    <div class="panel panel-umap" id="panel-umap">
+      <span class="panel-label">spectral topology · 3d</span>
+      <div class="sync-dot" id="sync-umap"></div>
+      <canvas id="umap-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: SCIENTIFIC ILLUSTRATION ── -->
+  <div class="panel panel-illustration" id="panel-illustration">
+    <span class="panel-label">Chromis viridis · Alpheus heterochaelis</span>
+    <svg class="illustration-svg" viewBox="0 0 640 190" xmlns="http://www.w3.org/2000/svg"
+         aria-label="Scientific illustration of damselfish and snapping shrimp">
+
+      <!-- DAMSELFISH (Chromis viridis) — centered ~(195,90) -->
+      <g transform="translate(195,90)" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Body -->
+        <path d="M -86,0 C -84,-20 -64,-42 -22,-48 C 18,-54 60,-42 80,-24
+                 C 90,-14 92,-7 92,0 C 92,7 90,14 80,24
+                 C 60,42 18,54 -22,48 C -64,42 -84,20 -86,0 Z"
+              stroke="#00e5cc" stroke-width="1.7" fill="rgba(0,229,204,0.03)"/>
+        <!-- Caudal peduncle -->
+        <path d="M 92,0 C 98,-5 103,-9 106,-14 L 136,-38
+                 M 92,0 C 98,5 103,9 106,14 L 136,38"
+              stroke="#00e5cc" stroke-width="1.7" fill="none"/>
+        <!-- Caudal fin lobes -->
+        <path d="M 106,-14 C 117,-22 126,-32 136,-38 C 133,-28 128,-18 120,-12 C 114,-8 110,-6 106,-14 Z"
+              stroke="#00e5cc" stroke-width="1.3" fill="rgba(0,229,204,0.04)"/>
+        <path d="M 106,14 C 117,22 126,32 136,38 C 133,28 128,18 120,12 C 114,8 110,6 106,14 Z"
+              stroke="#00e5cc" stroke-width="1.3" fill="rgba(0,229,204,0.04)"/>
+        <!-- Dorsal fin -->
+        <path d="M -16,-48 C -6,-74 22,-80 54,-70 C 72,-64 82,-52 84,-42"
+              stroke="#00e5cc" stroke-width="1.4" fill="rgba(0,229,204,0.04)" opacity="0.9"/>
+        <!-- Dorsal fin rays -->
+        <line x1="-13" y1="-49" x2="-10" y2="-70" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="6"   y1="-52" x2="10"  y2="-76" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="26"  y1="-54" x2="32"  y2="-78" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="46"  y1="-52" x2="52"  y2="-72" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="64"  y1="-46" x2="68"  y2="-62" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <!-- Anal fin -->
+        <path d="M 16,48 C 30,68 52,70 76,60 C 84,54 86,44 86,36"
+              stroke="#00e5cc" stroke-width="1.4" fill="rgba(0,229,204,0.04)" opacity="0.9"/>
+        <line x1="20" y1="49" x2="24" y2="66" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="42" y1="52" x2="48" y2="68" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <line x1="62" y1="49" x2="66" y2="62" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
+        <!-- Pectoral fin -->
+        <path d="M -32,-22 C -48,-8 -50,16 -34,30"
+              stroke="#00e5cc" stroke-width="1.3" fill="none" opacity="0.75"/>
+        <line x1="-40" y1="-10" x2="-46" y2="-4" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
+        <line x1="-44" y1="4"   x2="-49" y2="10" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
+        <line x1="-42" y1="17"  x2="-46" y2="22" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
+        <!-- Pelvic fin -->
+        <path d="M -6,46 L 4,62 L 18,59" stroke="#00e5cc" stroke-width="1.2" fill="none" opacity="0.68"/>
+        <!-- Eye -->
+        <circle cx="-56" cy="-14" r="9.5" stroke="#00e5cc" stroke-width="1.4" fill="none"/>
+        <circle cx="-56" cy="-14" r="4.5" fill="#00e5cc" opacity="0.32"/>
+        <!-- Snout -->
+        <path d="M -86,0 L -95,-5 M -86,0 L -95,5" stroke="#00e5cc" stroke-width="1.1" opacity="0.55"/>
+        <!-- Lateral line -->
+        <path d="M -62,-10 C -28,-18 24,-16 78,-8"
+              stroke="#00e5cc" stroke-width="0.7" stroke-dasharray="2.5,4.5" opacity="0.28"/>
+        <!-- Scale arcs -->
+        <path d="M -18,-22 C -6,-30 10,-28 20,-22" stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
+        <path d="M 14,-30 C 28,-38 42,-36 52,-30"  stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
+        <path d="M -28,6  C -14,-2  2,0  12,6"     stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
+        <path d="M 18,6   C 32,-2  46,0  56,6"     stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
+        <path d="M -18,26 C -6,18  10,20 20,26"    stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
+      </g>
+      <!-- Species label -->
+      <text x="195" y="174" font-size="7" fill="rgba(0,229,204,0.32)"
+            text-anchor="middle" letter-spacing="2.5" font-family="Courier New,monospace">CHROMIS VIRIDIS</text>
+
+      <!-- ACOUSTIC RADIATION (sound from shrimp traveling toward fish) -->
+      <g stroke="rgba(100,160,220,0.14)" fill="none">
+        <path d="M 332,94 C 337,88 337,100 332,100" stroke-width="1.2"/>
+        <path d="M 326,87 C 334,80 334,108 326,101" stroke-width="0.9"/>
+        <path d="M 320,80 C 330,72 330,116 320,108" stroke-width="0.7"/>
+      </g>
+
+      <!-- SNAPPING SHRIMP (Alpheus heterochaelis) — centered ~(462,100), flipped via scale(-0.72,0.72) -->
+      <g transform="translate(462,100) scale(-0.72,0.72)" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Carapace -->
+        <path d="M -74,0 C -74,-22 -54,-32 -18,-32 C 16,-32 44,-20 58,-10
+                 C 64,-4 66,0 64,0 C 66,4 64,8 58,10
+                 C 44,20 16,32 -18,32 C -54,32 -74,22 -74,0 Z"
+              stroke="#0099ff" stroke-width="1.6" fill="rgba(0,153,255,0.04)"/>
+        <!-- Cervical groove -->
+        <path d="M -32,-32 C -30,-10 -30,10 -32,32"
+              stroke="#0099ff" stroke-width="0.8" stroke-dasharray="3,4" opacity="0.38"/>
+        <!-- Rostrum -->
+        <path d="M -74,-4 L -110,-9 M -74,0 L -112,-2 M -74,4 L -105,2"
+              stroke="#0099ff" stroke-width="1" opacity="0.78"/>
+        <!-- Abdomen seg 1 -->
+        <path d="M 64,-20 L 94,-17 L 94,17 L 64,20" stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.04)" rx="3"/>
+        <!-- Abdomen seg 2 -->
+        <path d="M 94,-15 L 120,-12 L 120,12 L 94,15" stroke="#0099ff" stroke-width="1.2" fill="rgba(0,153,255,0.03)"/>
+        <!-- Abdomen seg 3 -->
+        <path d="M 120,-11 L 142,-9 L 142,9 L 120,11" stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.03)"/>
+        <!-- Abdomen seg 4 -->
+        <path d="M 142,-8 L 162,-6 L 162,6 L 142,8" stroke="#0099ff" stroke-width="1" fill="rgba(0,153,255,0.02)"/>
+        <!-- Tail fan / uropods -->
+        <path d="M 162,0 C 170,-6 178,-20 182,-26 C 175,-17 168,-8 162,0 Z"
+              stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.05)"/>
+        <path d="M 162,0 C 170,-3 180,-11 185,-14 C 178,-7 170,-2 162,0 Z"
+              stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.04)" opacity="0.85"/>
+        <line x1="162" y1="0" x2="187" y2="0" stroke="#0099ff" stroke-width="1.3" opacity="0.9"/>
+        <path d="M 162,0 C 170,3 180,11 185,14 C 178,7 170,2 162,0 Z"
+              stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.04)" opacity="0.85"/>
+        <path d="M 162,0 C 170,6 178,20 182,26 C 175,17 168,8 162,0 Z"
+              stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.05)"/>
+        <!-- MAJOR CHELIPED (snapping claw) -->
+        <path d="M -24,32 L -32,56 L -52,68 C -68,74 -74,62 -67,52 L -49,44 L -32,36 Z"
+              stroke="#0099ff" stroke-width="1.8" fill="rgba(0,153,255,0.08)"/>
+        <!-- Snap gap -->
+        <path d="M -67,52 C -59,46 -52,48 -48,53" stroke="#0099ff" stroke-width="1.2" opacity="0.9"/>
+        <!-- Minor cheliped -->
+        <path d="M -30,-32 L -44,-52 L -55,-58 C -59,-54 -57,-48 -50,-44 L -38,-36"
+              stroke="#0099ff" stroke-width="1.4" fill="none" opacity="0.78"/>
+        <path d="M -55,-58 L -48,-51" stroke="#0099ff" stroke-width="1.2" opacity="0.7"/>
+        <!-- Walking legs -->
+        <line x1="-6"  y1="32" x2="4"  y2="58" stroke="#0099ff" stroke-width="0.9" opacity="0.52"/>
+        <line x1="16"  y1="32" x2="26" y2="60" stroke="#0099ff" stroke-width="0.9" opacity="0.52"/>
+        <line x1="38"  y1="30" x2="46" y2="55" stroke="#0099ff" stroke-width="0.9" opacity="0.48"/>
+        <line x1="56"  y1="26" x2="64" y2="49" stroke="#0099ff" stroke-width="0.9" opacity="0.48"/>
+        <!-- Pleopods -->
+        <line x1="79"  y1="17" x2="75" y2="33" stroke="#0099ff" stroke-width="0.7" opacity="0.38"/>
+        <line x1="107" y1="13" x2="104" y2="28" stroke="#0099ff" stroke-width="0.7" opacity="0.38"/>
+        <line x1="131" y1="10" x2="128" y2="24" stroke="#0099ff" stroke-width="0.7" opacity="0.35"/>
+        <!-- Antennae -->
+        <line x1="-90" y1="-11" x2="-192" y2="-47" stroke="#0099ff" stroke-width="0.9" opacity="0.58"/>
+        <line x1="-90" y1="-6"  x2="-184" y2="-25" stroke="#0099ff" stroke-width="0.9" opacity="0.58"/>
+        <!-- Antennules -->
+        <line x1="-86" y1="7"  x2="-128" y2="22" stroke="#0099ff" stroke-width="0.65" opacity="0.48"/>
+        <line x1="-86" y1="11" x2="-122" y2="30" stroke="#0099ff" stroke-width="0.65" opacity="0.45"/>
+        <!-- Eye stalks -->
+        <line x1="-82" y1="-12" x2="-89" y2="-28" stroke="#0099ff" stroke-width="1.2"/>
+        <circle cx="-89" cy="-28" r="5.5" stroke="#0099ff" stroke-width="1.2" fill="none"/>
+        <circle cx="-89" cy="-28" r="2.5" fill="#0099ff" opacity="0.38"/>
+        <line x1="-72" y1="-13" x2="-79" y2="-29" stroke="#0099ff" stroke-width="1.2"/>
+        <circle cx="-79" cy="-29" r="5.5" stroke="#0099ff" stroke-width="1.2" fill="none"/>
+        <circle cx="-79" cy="-29" r="2.5" fill="#0099ff" opacity="0.38"/>
+      </g>
+      <!-- Species label (outside transform so it reads correctly) -->
+      <text x="462" y="174" font-size="7" fill="rgba(0,153,255,0.32)"
+            text-anchor="middle" letter-spacing="2.5" font-family="Courier New,monospace">ALPHEUS HETEROCHAELIS</text>
+
+    </svg>
+  </div>
+
+  <!-- ── PANEL: SAMPLE PACK ── -->
+  <div class="panel panel-patches" id="panel-patches">
+    <span class="panel-label">shellfegio sample pack · 12 patches · wav</span>
+    <div class="patches-grid" id="patches-grid"></div>
+    <div class="patch-dl-row">
+      <button id="dl-all-btn">⬇ download all 12 · wav pack</button>
+      <span class="patch-format-note">44.1kHz · wav · ableton · serato · traktor · rekordbox</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- Audio Init Overlay -->
+<div id="audio-overlay">
+  <button id="audio-init-btn">
+    <span class="init-icon">◉</span>
+    <span>initialize soundscape</span>
+  </button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── STATE ── */
+  let audioCtx = null, analyser = null, analyserGain = null;
+  let videoSource = null, micSource = null, micStream = null;
+  let timeDomainBuf = null, freqBuf = null;
+  let isAudioReady = false, activeSrc = 'video';
+  let demoPhase = 0;
+
+  /* ── AUDIO OVERLAY ── */
+  const overlay  = document.getElementById('audio-overlay');
+  const initBtn  = document.getElementById('audio-init-btn');
+  const video    = document.getElementById('main-video');
+  const btnVideo = document.getElementById('btn-video');
+  const btnMic   = document.getElementById('btn-mic');
+  const micToast = document.getElementById('mic-toast');
+
+  initBtn.addEventListener('click', function () {
+    initAudio();
+    overlay.style.display = 'none';
+  });
+
+  function initAudio() {
+    audioCtx    = new (window.AudioContext || window.webkitAudioContext)();
+    analyser    = audioCtx.createAnalyser();
+    analyserGain = audioCtx.createGain();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.82;
+
+    // video → analyser → gain → speakers
+    videoSource = audioCtx.createMediaElementSource(video);
+    videoSource.connect(analyser);
+    analyser.connect(analyserGain);
+    analyserGain.connect(audioCtx.destination);
+
+    timeDomainBuf = new Uint8Array(analyser.fftSize);
+    freqBuf       = new Uint8Array(analyser.frequencyBinCount);
+    isAudioReady  = true;
+
+    btnVideo.disabled = false;
+    btnMic.disabled   = false;
+  }
+
+  /* ── SOURCE SWITCHING ── */
+  btnVideo.addEventListener('click', function () {
+    if (!isAudioReady || activeSrc === 'video') return;
+    switchToVideo();
+  });
+
+  btnMic.addEventListener('click', function () {
+    if (!isAudioReady || activeSrc === 'mic') return;
+    switchToMic();
+  });
+
+  async function switchToMic() {
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      micSource = audioCtx.createMediaStreamSource(micStream);
+      // video bypasses analyser (still audible), mic feeds analyser
+      videoSource.disconnect(analyser);
+      videoSource.connect(audioCtx.destination);
+      analyserGain.gain.value = 0; // silence analyser output — prevents speaker feedback
+      micSource.connect(analyser);
+      activeSrc = 'mic';
+      updateSourceUI();
+    } catch (err) {
+      showToast('mic access denied — check browser permissions');
+    }
+  }
+
+  function switchToVideo() {
+    if (micSource)  { micSource.disconnect(analyser); micSource = null; }
+    if (micStream)  { micStream.getTracks().forEach(function (t) { t.stop(); }); micStream = null; }
+    videoSource.disconnect(audioCtx.destination);
+    videoSource.connect(analyser);
+    analyserGain.gain.value = 1;
+    activeSrc = 'video';
+    updateSourceUI();
+  }
+
+  function updateSourceUI() {
+    const isMic = activeSrc === 'mic';
+    btnVideo.classList.toggle('active',  !isMic);
+    btnVideo.setAttribute('aria-pressed', String(!isMic));
+    btnMic.classList.toggle('active',    isMic);
+    btnMic.classList.toggle('mic-on',    isMic);
+    btnMic.setAttribute('aria-pressed',  String(isMic));
+    // Sync dots tint pink in mic mode, teal in video mode
+    [syncWaveform, syncUmap].forEach(function (d) {
+      if (isMic) {
+        d.style.background = '#ff44aa';
+        d.style.boxShadow  = '0 0 5px #ff44aa, 0 0 10px rgba(255,68,170,0.45)';
+      } else {
+        d.style.background = '';
+        d.style.boxShadow  = '';
+      }
+    });
+  }
+
+  function showToast(msg) {
+    micToast.textContent = msg;
+    micToast.classList.add('show');
+    setTimeout(function () { micToast.classList.remove('show'); }, 4000);
+  }
+
+  /* ── VIDEO EVENTS ── */
+  const syncVideo    = document.getElementById('sync-video');
+  const syncWaveform = document.getElementById('sync-waveform');
+  const syncUmap     = document.getElementById('sync-umap');
+  const standIn      = document.getElementById('video-stand-in');
+
+  video.addEventListener('loadeddata', function () {
+    if (video.readyState >= 2) standIn.classList.add('hidden');
+  });
+  video.addEventListener('play', function () {
+    syncVideo.classList.add('live');
+    if (activeSrc === 'video') {
+      syncWaveform.classList.add('live');
+      syncUmap.classList.add('live');
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  });
+  video.addEventListener('pause', function () {
+    syncVideo.classList.remove('live');
+    if (activeSrc === 'video') {
+      syncWaveform.classList.remove('live');
+      syncUmap.classList.remove('live');
+    }
+  });
+
+  /* ── SYNTHETIC DEMO DATA ── */
+  function ensureBuffers() {
+    if (!timeDomainBuf) timeDomainBuf = new Uint8Array(2048);
+    if (!freqBuf)       freqBuf       = new Uint8Array(1024);
+  }
+
+  function generateDemoData() {
+    ensureBuffers();
+    demoPhase += 0.017;
+    const tlen = timeDomainBuf.length;
+    for (let i = 0; i < tlen; i++) {
+      const p = (i / tlen) * Math.PI * 2;
+      const w = 0.28 * Math.sin(p * 4  + demoPhase * 0.9)
+              + 0.16 * Math.sin(p * 9  + demoPhase * 2.1)
+              + 0.10 * Math.sin(p * 19 + demoPhase * 1.3)
+              + 0.06 * Math.sin(p * 41 + demoPhase * 0.4)
+              + 0.03 * (Math.random() - 0.5);
+      timeDomainBuf[i] = Math.max(0, Math.min(255, Math.round(128 + w * 128)));
+    }
+    const flen = freqBuf.length;
+    for (let i = 0; i < flen; i++) {
+      const f   = i / flen;
+      const env = Math.exp(-f * 4.5) * 175;
+      const ma  = Math.sin(demoPhase * 0.6 + f * 10) * 32;
+      const mb  = Math.sin(demoPhase * 1.4 + f * 23) * 18;
+      freqBuf[i] = Math.max(0, Math.min(255, Math.round(env + ma + mb + Math.random() * 11)));
+    }
+  }
+
+  /* ── WAVEFORM CANVAS ── */
+  const waveCanvas = document.getElementById('waveform-canvas');
+  let   waveCtx2d;
+  let   waveW = 1, waveH = 1;
+
+  function initWaveform() {
+    const rect = document.getElementById('panel-waveform').getBoundingClientRect();
+    const dpr  = window.devicePixelRatio || 1;
+    waveW = rect.width;
+    waveH = rect.height;
+    waveCanvas.width  = rect.width  * dpr;
+    waveCanvas.height = rect.height * dpr;
+    waveCanvas.style.width  = rect.width  + 'px';
+    waveCanvas.style.height = rect.height + 'px';
+    waveCtx2d = waveCanvas.getContext('2d');
+    waveCtx2d.scale(dpr, dpr);
+  }
+
+  function drawWaveform() {
+    if (!waveCtx2d || !timeDomainBuf) return;
+    const W = waveW, H = waveH;
+    const ctx = waveCtx2d;
+    const data = timeDomainBuf;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    // Centre guide
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(0,229,204,0.07)';
+    ctx.lineWidth = 0.5;
+    ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2);
+    ctx.stroke();
+
+    const step    = Math.max(1, Math.floor(data.length / W));
+    const sliceW  = W / (data.length / step);
+
+    // Glow pass
+    ctx.beginPath();
+    ctx.shadowBlur  = 18;
+    ctx.shadowColor = '#00e5cc';
+    ctx.strokeStyle = 'rgba(0,229,204,0.22)';
+    ctx.lineWidth   = 5;
+    let x = 0;
+    for (let i = 0; i < data.length; i += step) {
+      const y = (data[i] / 128.0) * H / 2;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      x += sliceW;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Sharp pass
+    ctx.beginPath();
+    ctx.shadowBlur  = 5;
+    ctx.shadowColor = '#00ffe8';
+    ctx.strokeStyle = '#00e5cc';
+    ctx.lineWidth   = 1.5;
+    x = 0;
+    for (let i = 0; i < data.length; i += step) {
+      const y = (data[i] / 128.0) * H / 2;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      x += sliceW;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  /* ── THREE.JS UMAP PARTICLES ── */
+  const umapCanvas = document.getElementById('umap-canvas');
+  let   renderer, scene, camera, ptCloud, posAttr, colAttr;
+  const MAX_PARTICLES = 14000;
+  let   particleCount = 0;
+  let   autoRot       = 0;
+  let   frameN        = 0;
+
+  function initUMAP() {
+    if (typeof THREE === 'undefined') return;
+    const rect = document.getElementById('panel-umap').getBoundingClientRect();
+    const dpr  = Math.min(window.devicePixelRatio || 1, 2);
+
+    renderer = new THREE.WebGLRenderer({ canvas: umapCanvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(rect.width, rect.height);
+    renderer.setClearColor(0x000000, 1);
+
+    scene  = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(55, 1, 0.01, 100);
+    camera.position.set(0, 0, 3.0);
+
+    const positions = new Float32Array(MAX_PARTICLES * 3);
+    const colors    = new Float32Array(MAX_PARTICLES * 3);
+    const geo       = new THREE.BufferGeometry();
+    posAttr = new THREE.BufferAttribute(positions, 3); posAttr.setUsage(THREE.DynamicDrawUsage);
+    colAttr = new THREE.BufferAttribute(colors,    3); colAttr.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('position', posAttr);
+    geo.setAttribute('color',    colAttr);
+    geo.setDrawRange(0, 0);
+
+    const mat = new THREE.PointsMaterial({
+      size: 0.028, vertexColors: true,
+      blending: THREE.AdditiveBlending, transparent: true,
+      depthWrite: false, sizeAttenuation: true
+    });
+    ptCloud = new THREE.Points(geo, mat);
+    scene.add(ptCloud);
+  }
+
+  function freqBand(data, lo, hi) {
+    const s = Math.floor(lo), e = Math.floor(hi);
+    let sum = 0;
+    for (let i = s; i < e; i++) sum += data[i];
+    return sum / Math.max(1, e - s);
+  }
+
+  function updateUMAP() {
+    if (!renderer || !freqBuf) return;
+    frameN++;
+
+    if (frameN % 2 === 0 && particleCount < MAX_PARTICLES) {
+      const bins    = freqBuf.length;
+      const subBass = freqBand(freqBuf, 0,          bins * 0.05) / 255;
+      const bass    = freqBand(freqBuf, bins * 0.05, bins * 0.15) / 255;
+      const lowMid  = freqBand(freqBuf, bins * 0.15, bins * 0.30) / 255;
+      const midMid  = freqBand(freqBuf, bins * 0.30, bins * 0.55) / 255;
+      const hiMid   = freqBand(freqBuf, bins * 0.55, bins * 0.75) / 255;
+      const air     = freqBand(freqBuf, bins * 0.75, bins        ) / 255;
+
+      // Spectral axes mapped to XYZ, slowly rotating (simulates UMAP manifold)
+      const t    = autoRot * 0.7;
+      const rawX = (lowMid - midMid) * 1.3;
+      const rawY = (bass   - hiMid ) * 1.1;
+      const rawZ = (subBass - air  ) * 0.9;
+      const cosT = Math.cos(t), sinT = Math.sin(t);
+      const jit  = 0.038;
+
+      posAttr.array[particleCount * 3    ] = rawX * cosT - rawZ * sinT + (Math.random() - 0.5) * jit;
+      posAttr.array[particleCount * 3 + 1] = rawY + Math.sin(autoRot * 0.35) * 0.08 + (Math.random() - 0.5) * jit;
+      posAttr.array[particleCount * 3 + 2] = rawX * sinT + rawZ * cosT + (Math.random() - 0.5) * jit;
+
+      // Bioluminescent colour: blue bass, teal mid, pink treble
+      colAttr.array[particleCount * 3    ] = Math.min(1, hiMid * 0.55 + air * 0.28);
+      colAttr.array[particleCount * 3 + 1] = Math.min(1, midMid * 0.9 + lowMid * 0.4);
+      colAttr.array[particleCount * 3 + 2] = Math.min(1, bass * 0.65 + subBass * 0.45 + 0.28);
+
+      particleCount++;
+      ptCloud.geometry.setDrawRange(0, particleCount);
+      posAttr.needsUpdate = true;
+      colAttr.needsUpdate = true;
+    }
+
+    autoRot += 0.004;
+    ptCloud.rotation.y = autoRot;
+    ptCloud.rotation.x = Math.sin(autoRot * 0.28) * 0.18;
+    renderer.render(scene, camera);
+  }
+
+  /* ── MAIN LOOP ── */
+  function tick() {
+    requestAnimationFrame(tick);
+
+    if (isAudioReady && analyser) {
+      analyser.getByteTimeDomainData(timeDomainBuf);
+      analyser.getByteFrequencyData(freqBuf);
+      // If signal is essentially silent, keep demo data flowing
+      let rms = 0;
+      for (let i = 0; i < timeDomainBuf.length; i++) {
+        const s = (timeDomainBuf[i] - 128) / 128;
+        rms += s * s;
+      }
+      rms = Math.sqrt(rms / timeDomainBuf.length);
+      if (rms < 0.01) generateDemoData();
+    } else {
+      generateDemoData();
+    }
+
+    drawWaveform();
+    updateUMAP();
+  }
+
+  /* ── INIT ── */
+  window.addEventListener('load', function () {
+    initWaveform();
+    initUMAP();
+    tick();
+  });
+
+  window.addEventListener('resize', function () {
+    initWaveform();
+    if (renderer) {
+      const rect = document.getElementById('panel-umap').getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height);
+    }
+  });
+
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── PATCH MANIFEST (12 samples, clean DJ names) ── */
+  var PATCHES = [
+    { num:'01', name:'big whoop',    tag:'whale · 2025',      dl:'shellfegio_01_big_whoop.wav',
+      src:'sounds/big_WHOOP/whale_woo.wav' },
+    { num:'02', name:'duck call',    tag:'reef fish · 2025',  dl:'shellfegio_02_duck_call.wav',
+      src:'sounds/Duck_call/soundsampAnalogData-10MAR2025-1038_VS-209sensor-rot.wav_20250310T103936_1.0x.wav' },
+    { num:'03', name:'falling tone', tag:'sweep · 2025',       dl:'shellfegio_03_falling_tone.wav',
+      src:'sounds/falling_tone/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T092710_1.0x.wav' },
+    { num:'04', name:'flutey',       tag:'fish · 2025',        dl:'shellfegio_04_flutey.wav',
+      src:'sounds/flutey/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093041_1.0x.wav' },
+    { num:'05', name:'good purrs',   tag:'reef · 2023',        dl:'shellfegio_05_good_purrs.wav',
+      src:'sounds/Good_Purrs/soundsampDA23A1T20230819T000000.gsi_20230819T181145_1.0x.wav' },
+    { num:'06', name:'low tone',     tag:'sub · 2025',         dl:'shellfegio_06_low_tone.wav',
+      src:'sounds/low_tone/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T092759_1.0x.wav' },
+    { num:'07', name:'ooo \u0026 woop', tag:'reef · 2025',    dl:'shellfegio_07_ooo_and_woop.wav',
+      src:'sounds/ooo%26woop/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093016_1.0x.wav' },
+    { num:'08', name:'pop pop',      tag:'shrimp · 2023',      dl:'shellfegio_08_pop_pop.wav',
+      src:'sounds/Pop_Pop/soundsampDA23A0T20230717T000000.gsi_20230717T000133_1.0x.wav' },
+    { num:'09', name:'pulse train',  tag:'fish · 2023',        dl:'shellfegio_09_pulse_train.wav',
+      src:'sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav' },
+    { num:'10', name:'purrr',        tag:'reef · 2023',        dl:'shellfegio_10_purrr.wav',
+      src:'sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav' },
+    { num:'11', name:'shrill',       tag:'humpback · 2025',    dl:'shellfegio_11_shrill.wav',
+      src:'sounds/Shrill/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093050_1.0x.wav' },
+    { num:'12', name:'shrimp fish',  tag:'shrimp · 2024',      dl:'shellfegio_12_shrimp_fish.wav',
+      src:'sounds/Shrimp_fish/soundsampAnalogData-06JUN2024-1456_VS-209sensor.wav_20240606T145828_1.0x.wav' },
+  ];
+
+  var README =
+    'SHELLFEGIO SAMPLE PACK v1.0\n' +
+    '============================\n' +
+    'Bioacoustic field recordings from coral reef soundscapes\n' +
+    'Recorded by Oceane Boulais  ·  VS-209 hydrophone sensor\n' +
+    'CC-BY 4.0  ·  Attribution: "Sounds by Shellfegio / Oceane Boulais"\n\n' +
+    '12 samples  ·  WAV  ·  Ableton · Serato · Traktor · rekordbox · djay Pro\n\n' +
+    'PATCHES\n-------\n' +
+    '01  big_whoop        whale vocalization\n' +
+    '02  duck_call        reef fish call\n' +
+    '03  falling_tone     descending frequency sweep\n' +
+    '04  flutey           flute-like fish sound\n' +
+    '05  good_purrs       purring bioacoustic\n' +
+    '06  low_tone         low-frequency reef signal\n' +
+    '07  ooo_and_woop     complex reef call\n' +
+    '08  pop_pop          snapping shrimp\n' +
+    '09  pulse_train      rhythmic pulse sequence\n' +
+    '10  purrr            sustained purring\n' +
+    '11  shrill           high-frequency reef signal\n' +
+    '12  shrimp_fish      snapping shrimp + fish\n\n' +
+    'USAGE\n-----\n' +
+    'Load samples into your DAW or DJ software as one-shots or layers.\n' +
+    'Raw bioacoustic field recordings — no BPM or key.\n';
+
+  /* ── RENDER PATCH CARDS ── */
+  var grid = document.getElementById('patches-grid');
+  PATCHES.forEach(function (p) {
+    var card = document.createElement('div');
+    card.className = 'patch-card';
+    card.id = 'patch-' + p.num;
+
+    var num  = document.createElement('div'); num.className  = 'patch-num';  num.textContent = p.num;
+    var name = document.createElement('div'); name.className = 'patch-name'; name.textContent = p.name;
+    var tag  = document.createElement('div'); tag.className  = 'patch-tag';  tag.textContent  = p.tag;
+
+    var ctrls = document.createElement('div'); ctrls.className = 'patch-controls';
+
+    var playBtn = document.createElement('button');
+    playBtn.className   = 'patch-play';
+    playBtn.textContent = '\u25b6';
+    playBtn.setAttribute('aria-label', 'Preview ' + p.name);
+    playBtn.addEventListener('click', function () { playPatch(p.src, card, playBtn); });
+
+    // Individual download: fetch → blob URL so the clean dl filename is used
+    var dlBtn = document.createElement('a');
+    dlBtn.className = 'patch-dl';
+    dlBtn.textContent = '\u2b07';
+    dlBtn.setAttribute('aria-label', 'Download ' + p.name);
+    dlBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      downloadSingle(p.src, p.dl, dlBtn);
+    });
+
+    ctrls.appendChild(playBtn);
+    ctrls.appendChild(dlBtn);
+    card.appendChild(num);
+    card.appendChild(name);
+    card.appendChild(tag);
+    card.appendChild(ctrls);
+    grid.appendChild(card);
+  });
+
+  /* ── PREVIEW PLAYER ── */
+  var previewCtx  = null;
+  var previewNode = null;
+  var previewActive = null; // { src, card, btn }
+
+  function getPreviewCtx() {
+    if (!previewCtx) previewCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return previewCtx;
+  }
+
+  function stopPreview() {
+    if (previewNode) { try { previewNode.stop(); } catch (e) {} previewNode = null; }
+    if (previewActive) {
+      previewActive.card.classList.remove('playing');
+      previewActive.btn.textContent  = '\u25b6';
+      previewActive.btn.classList.remove('active');
+      previewActive = null;
+    }
+  }
+
+  async function playPatch(src, card, btn) {
+    var prevSrc = previewActive ? previewActive.src : null;
+    stopPreview();
+    if (prevSrc === src) return; // toggle off
+
+    var ctx = getPreviewCtx();
+    if (ctx.state === 'suspended') await ctx.resume();
+    btn.textContent = '\u2026';
+    try {
+      var resp     = await fetch(src);
+      var arrayBuf = await resp.arrayBuffer();
+      var audioBuf = await ctx.decodeAudioData(arrayBuf);
+      previewNode  = ctx.createBufferSource();
+      previewNode.buffer = audioBuf;
+      previewNode.connect(ctx.destination);
+      previewNode.start();
+      previewNode.onended = stopPreview;
+      card.classList.add('playing');
+      btn.textContent = '\u25a0';
+      btn.classList.add('active');
+      previewActive = { src: src, card: card, btn: btn };
+    } catch (err) {
+      btn.textContent = '\u25b6';
+    }
+  }
+
+  /* ── INDIVIDUAL DOWNLOAD ── */
+  async function downloadSingle(src, filename, linkEl) {
+    var orig = linkEl.textContent;
+    linkEl.textContent = '\u2026';
+    try {
+      var resp = await fetch(src);
+      var blob = await resp.blob();
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.warn('Download failed:', err);
+    } finally {
+      linkEl.textContent = orig;
+    }
+  }
+
+  /* ── DOWNLOAD ALL AS ZIP ── */
+  document.getElementById('dl-all-btn').addEventListener('click', async function () {
+    if (typeof JSZip === 'undefined') {
+      alert('JSZip not loaded — please try again in a moment.');
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = '\u27f3 building pack\u2026';
+    try {
+      var zip    = new JSZip();
+      var folder = zip.folder('shellfegio_sample_pack');
+      folder.file('README.txt', README);
+
+      await Promise.all(PATCHES.map(async function (p) {
+        var resp = await fetch(p.src);
+        var buf  = await resp.arrayBuffer();
+        folder.file(p.dl, buf);
+      }));
+
+      var blob = await zip.generateAsync({ type:'blob', compression:'STORE' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href = url; a.download = 'shellfegio_sample_pack.zip'; a.click();
+      URL.revokeObjectURL(url);
+
+      btn.textContent = '\u2713 downloaded';
+      setTimeout(function () {
+        btn.disabled    = false;
+        btn.textContent = '\u2b07 download all 12 \u00b7 wav pack';
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      btn.disabled    = false;
+      btn.textContent = '\u2b07 download all 12 \u00b7 wav pack';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
