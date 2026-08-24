@@ -128,11 +128,15 @@
     }
 
     /* ── ILLUSTRATION PANEL ── */
-    .panel-illustration {
-      aspect-ratio:16/8; display:flex;
-      align-items:center; justify-content:center;
+    .panel-illustration { aspect-ratio:16/9; }
+    .yt-credit {
+      position:absolute; bottom:0; left:0; right:0; z-index:10;
+      padding:6px 12px;
+      background:linear-gradient(transparent, rgba(0,0,0,0.75));
+      font-size:8px; letter-spacing:0.13em; color:rgba(0,229,204,0.55);
+      text-transform:uppercase; pointer-events:none;
     }
-    .illustration-svg { width:100%; height:100%; }
+    .yt-credit a { color:inherit; text-decoration:underline; pointer-events:all; }
 
     /* ── AUDIO OVERLAY ── */
     #audio-overlay {
@@ -271,143 +275,17 @@
 
   <!-- ── PANEL 3: SCIENTIFIC ILLUSTRATION ── -->
   <div class="panel panel-illustration" id="panel-illustration">
-    <span class="panel-label">Chromis viridis · Alpheus heterochaelis</span>
-    <svg class="illustration-svg" viewBox="0 0 640 190" xmlns="http://www.w3.org/2000/svg"
-         aria-label="Scientific illustration of damselfish and snapping shrimp">
-
-      <!-- DAMSELFISH (Chromis viridis) — centered ~(195,90) -->
-      <g transform="translate(195,90)" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Body -->
-        <path d="M -86,0 C -84,-20 -64,-42 -22,-48 C 18,-54 60,-42 80,-24
-                 C 90,-14 92,-7 92,0 C 92,7 90,14 80,24
-                 C 60,42 18,54 -22,48 C -64,42 -84,20 -86,0 Z"
-              stroke="#00e5cc" stroke-width="1.7" fill="rgba(0,229,204,0.03)"/>
-        <!-- Caudal peduncle -->
-        <path d="M 92,0 C 98,-5 103,-9 106,-14 L 136,-38
-                 M 92,0 C 98,5 103,9 106,14 L 136,38"
-              stroke="#00e5cc" stroke-width="1.7" fill="none"/>
-        <!-- Caudal fin lobes -->
-        <path d="M 106,-14 C 117,-22 126,-32 136,-38 C 133,-28 128,-18 120,-12 C 114,-8 110,-6 106,-14 Z"
-              stroke="#00e5cc" stroke-width="1.3" fill="rgba(0,229,204,0.04)"/>
-        <path d="M 106,14 C 117,22 126,32 136,38 C 133,28 128,18 120,12 C 114,8 110,6 106,14 Z"
-              stroke="#00e5cc" stroke-width="1.3" fill="rgba(0,229,204,0.04)"/>
-        <!-- Dorsal fin -->
-        <path d="M -16,-48 C -6,-74 22,-80 54,-70 C 72,-64 82,-52 84,-42"
-              stroke="#00e5cc" stroke-width="1.4" fill="rgba(0,229,204,0.04)" opacity="0.9"/>
-        <!-- Dorsal fin rays -->
-        <line x1="-13" y1="-49" x2="-10" y2="-70" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="6"   y1="-52" x2="10"  y2="-76" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="26"  y1="-54" x2="32"  y2="-78" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="46"  y1="-52" x2="52"  y2="-72" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="64"  y1="-46" x2="68"  y2="-62" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <!-- Anal fin -->
-        <path d="M 16,48 C 30,68 52,70 76,60 C 84,54 86,44 86,36"
-              stroke="#00e5cc" stroke-width="1.4" fill="rgba(0,229,204,0.04)" opacity="0.9"/>
-        <line x1="20" y1="49" x2="24" y2="66" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="42" y1="52" x2="48" y2="68" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <line x1="62" y1="49" x2="66" y2="62" stroke="#00e5cc" stroke-width="0.7" opacity="0.44"/>
-        <!-- Pectoral fin -->
-        <path d="M -32,-22 C -48,-8 -50,16 -34,30"
-              stroke="#00e5cc" stroke-width="1.3" fill="none" opacity="0.75"/>
-        <line x1="-40" y1="-10" x2="-46" y2="-4" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
-        <line x1="-44" y1="4"   x2="-49" y2="10" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
-        <line x1="-42" y1="17"  x2="-46" y2="22" stroke="#00e5cc" stroke-width="0.6" opacity="0.38"/>
-        <!-- Pelvic fin -->
-        <path d="M -6,46 L 4,62 L 18,59" stroke="#00e5cc" stroke-width="1.2" fill="none" opacity="0.68"/>
-        <!-- Eye -->
-        <circle cx="-56" cy="-14" r="9.5" stroke="#00e5cc" stroke-width="1.4" fill="none"/>
-        <circle cx="-56" cy="-14" r="4.5" fill="#00e5cc" opacity="0.32"/>
-        <!-- Snout -->
-        <path d="M -86,0 L -95,-5 M -86,0 L -95,5" stroke="#00e5cc" stroke-width="1.1" opacity="0.55"/>
-        <!-- Lateral line -->
-        <path d="M -62,-10 C -28,-18 24,-16 78,-8"
-              stroke="#00e5cc" stroke-width="0.7" stroke-dasharray="2.5,4.5" opacity="0.28"/>
-        <!-- Scale arcs -->
-        <path d="M -18,-22 C -6,-30 10,-28 20,-22" stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
-        <path d="M 14,-30 C 28,-38 42,-36 52,-30"  stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
-        <path d="M -28,6  C -14,-2  2,0  12,6"     stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
-        <path d="M 18,6   C 32,-2  46,0  56,6"     stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
-        <path d="M -18,26 C -6,18  10,20 20,26"    stroke="#00e5cc" stroke-width="0.5" opacity="0.16"/>
-      </g>
-      <!-- Species label -->
-      <text x="195" y="174" font-size="7" fill="rgba(0,229,204,0.32)"
-            text-anchor="middle" letter-spacing="2.5" font-family="Courier New,monospace">CHROMIS VIRIDIS</text>
-
-      <!-- ACOUSTIC RADIATION (sound from shrimp traveling toward fish) -->
-      <g stroke="rgba(100,160,220,0.14)" fill="none">
-        <path d="M 332,94 C 337,88 337,100 332,100" stroke-width="1.2"/>
-        <path d="M 326,87 C 334,80 334,108 326,101" stroke-width="0.9"/>
-        <path d="M 320,80 C 330,72 330,116 320,108" stroke-width="0.7"/>
-      </g>
-
-      <!-- SNAPPING SHRIMP (Alpheus heterochaelis) — centered ~(462,100), flipped via scale(-0.72,0.72) -->
-      <g transform="translate(462,100) scale(-0.72,0.72)" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Carapace -->
-        <path d="M -74,0 C -74,-22 -54,-32 -18,-32 C 16,-32 44,-20 58,-10
-                 C 64,-4 66,0 64,0 C 66,4 64,8 58,10
-                 C 44,20 16,32 -18,32 C -54,32 -74,22 -74,0 Z"
-              stroke="#0099ff" stroke-width="1.6" fill="rgba(0,153,255,0.04)"/>
-        <!-- Cervical groove -->
-        <path d="M -32,-32 C -30,-10 -30,10 -32,32"
-              stroke="#0099ff" stroke-width="0.8" stroke-dasharray="3,4" opacity="0.38"/>
-        <!-- Rostrum -->
-        <path d="M -74,-4 L -110,-9 M -74,0 L -112,-2 M -74,4 L -105,2"
-              stroke="#0099ff" stroke-width="1" opacity="0.78"/>
-        <!-- Abdomen seg 1 -->
-        <path d="M 64,-20 L 94,-17 L 94,17 L 64,20" stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.04)" rx="3"/>
-        <!-- Abdomen seg 2 -->
-        <path d="M 94,-15 L 120,-12 L 120,12 L 94,15" stroke="#0099ff" stroke-width="1.2" fill="rgba(0,153,255,0.03)"/>
-        <!-- Abdomen seg 3 -->
-        <path d="M 120,-11 L 142,-9 L 142,9 L 120,11" stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.03)"/>
-        <!-- Abdomen seg 4 -->
-        <path d="M 142,-8 L 162,-6 L 162,6 L 142,8" stroke="#0099ff" stroke-width="1" fill="rgba(0,153,255,0.02)"/>
-        <!-- Tail fan / uropods -->
-        <path d="M 162,0 C 170,-6 178,-20 182,-26 C 175,-17 168,-8 162,0 Z"
-              stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.05)"/>
-        <path d="M 162,0 C 170,-3 180,-11 185,-14 C 178,-7 170,-2 162,0 Z"
-              stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.04)" opacity="0.85"/>
-        <line x1="162" y1="0" x2="187" y2="0" stroke="#0099ff" stroke-width="1.3" opacity="0.9"/>
-        <path d="M 162,0 C 170,3 180,11 185,14 C 178,7 170,2 162,0 Z"
-              stroke="#0099ff" stroke-width="1.1" fill="rgba(0,153,255,0.04)" opacity="0.85"/>
-        <path d="M 162,0 C 170,6 178,20 182,26 C 175,17 168,8 162,0 Z"
-              stroke="#0099ff" stroke-width="1.3" fill="rgba(0,153,255,0.05)"/>
-        <!-- MAJOR CHELIPED (snapping claw) -->
-        <path d="M -24,32 L -32,56 L -52,68 C -68,74 -74,62 -67,52 L -49,44 L -32,36 Z"
-              stroke="#0099ff" stroke-width="1.8" fill="rgba(0,153,255,0.08)"/>
-        <!-- Snap gap -->
-        <path d="M -67,52 C -59,46 -52,48 -48,53" stroke="#0099ff" stroke-width="1.2" opacity="0.9"/>
-        <!-- Minor cheliped -->
-        <path d="M -30,-32 L -44,-52 L -55,-58 C -59,-54 -57,-48 -50,-44 L -38,-36"
-              stroke="#0099ff" stroke-width="1.4" fill="none" opacity="0.78"/>
-        <path d="M -55,-58 L -48,-51" stroke="#0099ff" stroke-width="1.2" opacity="0.7"/>
-        <!-- Walking legs -->
-        <line x1="-6"  y1="32" x2="4"  y2="58" stroke="#0099ff" stroke-width="0.9" opacity="0.52"/>
-        <line x1="16"  y1="32" x2="26" y2="60" stroke="#0099ff" stroke-width="0.9" opacity="0.52"/>
-        <line x1="38"  y1="30" x2="46" y2="55" stroke="#0099ff" stroke-width="0.9" opacity="0.48"/>
-        <line x1="56"  y1="26" x2="64" y2="49" stroke="#0099ff" stroke-width="0.9" opacity="0.48"/>
-        <!-- Pleopods -->
-        <line x1="79"  y1="17" x2="75" y2="33" stroke="#0099ff" stroke-width="0.7" opacity="0.38"/>
-        <line x1="107" y1="13" x2="104" y2="28" stroke="#0099ff" stroke-width="0.7" opacity="0.38"/>
-        <line x1="131" y1="10" x2="128" y2="24" stroke="#0099ff" stroke-width="0.7" opacity="0.35"/>
-        <!-- Antennae -->
-        <line x1="-90" y1="-11" x2="-192" y2="-47" stroke="#0099ff" stroke-width="0.9" opacity="0.58"/>
-        <line x1="-90" y1="-6"  x2="-184" y2="-25" stroke="#0099ff" stroke-width="0.9" opacity="0.58"/>
-        <!-- Antennules -->
-        <line x1="-86" y1="7"  x2="-128" y2="22" stroke="#0099ff" stroke-width="0.65" opacity="0.48"/>
-        <line x1="-86" y1="11" x2="-122" y2="30" stroke="#0099ff" stroke-width="0.65" opacity="0.45"/>
-        <!-- Eye stalks -->
-        <line x1="-82" y1="-12" x2="-89" y2="-28" stroke="#0099ff" stroke-width="1.2"/>
-        <circle cx="-89" cy="-28" r="5.5" stroke="#0099ff" stroke-width="1.2" fill="none"/>
-        <circle cx="-89" cy="-28" r="2.5" fill="#0099ff" opacity="0.38"/>
-        <line x1="-72" y1="-13" x2="-79" y2="-29" stroke="#0099ff" stroke-width="1.2"/>
-        <circle cx="-79" cy="-29" r="5.5" stroke="#0099ff" stroke-width="1.2" fill="none"/>
-        <circle cx="-79" cy="-29" r="2.5" fill="#0099ff" opacity="0.38"/>
-      </g>
-      <!-- Species label (outside transform so it reads correctly) -->
-      <text x="462" y="174" font-size="7" fill="rgba(0,153,255,0.32)"
-            text-anchor="middle" letter-spacing="2.5" font-family="Courier New,monospace">ALPHEUS HETEROCHAELIS</text>
-
-    </svg>
+    <span class="panel-label">juvenile snapping shrimp · Alpheus heterochaelis</span>
+    <iframe
+      src="https://www.youtube.com/embed/2rwmEvSOJMI?start=5&amp;loop=1&amp;playlist=2rwmEvSOJMI&amp;rel=0&amp;autoplay=1&amp;mute=1"
+      title="Juvenile snapping shrimp (Alpheus heterochaelis) snapping claw behaviour"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+    <div class="yt-credit">
+      <em>Alpheus heterochaelis</em> juvenile · snapping shrimp ·
+      <a href="https://youtu.be/2rwmEvSOJMI" target="_blank" rel="noopener noreferrer">youtu.be/2rwmEvSOJMI</a>
+    </div>
   </div>
 
   <!-- ── PANEL: SPECTRAL TOPOLOGY 3D ── -->
