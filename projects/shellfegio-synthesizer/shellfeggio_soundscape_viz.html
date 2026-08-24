@@ -328,16 +328,20 @@
   let demoPhase = 0;
 
   /* ── AUDIO OVERLAY ── */
-  const overlay  = document.getElementById('audio-overlay');
-  const initBtn  = document.getElementById('audio-init-btn');
-  const video    = document.getElementById('main-video');
-  const btnVideo = document.getElementById('btn-video');
-  const btnMic   = document.getElementById('btn-mic');
-  const micToast = document.getElementById('mic-toast');
+  const overlay      = document.getElementById('audio-overlay');
+  const initBtn      = document.getElementById('audio-init-btn');
+  const video        = document.getElementById('main-video');
+  const shrimpVideo  = document.querySelector('#panel-illustration video');
+  const btnVideo     = document.getElementById('btn-video');
+  const btnMic       = document.getElementById('btn-mic');
+  const micToast     = document.getElementById('mic-toast');
 
   initBtn.addEventListener('click', function () {
     initAudio();
     overlay.style.display = 'none';
+    // Start both videos together on the same user gesture
+    video.play().catch(function () {});
+    if (shrimpVideo) shrimpVideo.play().catch(function () {});
   });
 
   function initAudio() {
