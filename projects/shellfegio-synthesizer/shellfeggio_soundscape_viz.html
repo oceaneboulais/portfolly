@@ -389,7 +389,7 @@
 
   function startAudio() {
     if (!audioBuffer || !audioCtx) return;
-    stopAudio();
+    if (bufferNode) return; // already playing — don't restart on video loop events
     bufferNode = audioCtx.createBufferSource();
     bufferNode.buffer = audioBuffer;
     bufferNode.loop = true;
