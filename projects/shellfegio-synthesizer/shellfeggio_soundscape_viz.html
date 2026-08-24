@@ -375,8 +375,11 @@
     btnVideo.disabled = false;
     btnMic.disabled   = false;
 
-    // Decode once into a buffer for sample-accurate, glitch-free looping
-    fetch('sounds/synced_sound.m4a')
+    // Decode once into a buffer for sample-accurate, glitch-free looping.
+    // WAV (PCM) is used instead of AAC/m4a because AAC's encoder-delay/padding
+    // (iTunSMPB priming samples) isn't reliably stripped by decodeAudioData,
+    // which produced an audible click/jitter at every loop boundary.
+    fetch('sounds/synced_sound.wav')
       .then(function (r) { return r.arrayBuffer(); })
       .then(function (ab) { return audioCtx.decodeAudioData(ab); })
       .then(function (buf) {
