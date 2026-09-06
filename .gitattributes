@@ -1,5 +1,6 @@
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
-# GitHub Pages cannot serve LFS objects — these two must live in regular git
+# GitHub Pages cannot serve LFS objects — these must live in regular git
 projects/shellfegio-synthesizer/imgs/shellfeggio_waves.mp4 filter= diff= merge= -text
 projects/shellfegio-synthesizer/sounds/snapping_shrimp_jacob.mp4 filter= diff= merge= -text
+projects/shellfegio-synthesizer/final_video.mp4 filter= diff= merge= -text
