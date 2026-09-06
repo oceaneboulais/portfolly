@@ -492,10 +492,12 @@
     }
   }
 
-  /* ── WAVEFORM CANVAS ── */
+  /* ── WAVEFORM CANVAS (scrolling time-series, à la macOS Voice Memos) ── */
   const waveCanvas = document.getElementById('waveform-canvas');
   let   waveCtx2d;
   let   waveW = 1, waveH = 1;
+  const WAVE_BAR_W = 2, WAVE_GAP = 1;
+  let   waveHistory = new Float32Array(1); // ring of per-tick peak levels, oldest→newest
 
   function initWaveform() {
     const rect = document.getElementById('panel-waveform').getBoundingClientRect();
@@ -508,13 +510,23 @@
     waveCanvas.style.height = rect.height + 'px';
     waveCtx2d = waveCanvas.getContext('2d');
     waveCtx2d.scale(dpr, dpr);
+
+    const cols = Math.max(1, Math.round(waveW / (WAVE_BAR_W + WAVE_GAP)));
+    waveHistory = new Float32Array(cols);
+  }
+
+  // Scroll the strip left by one column and record the newest level on the right,
+  // mirroring a live recording meter (new signal enters at the leading edge).
+  function pushWaveSample(level) {
+    waveHistory.copyWithin(0, 1);
+    waveHistory[waveHistory.length - 1] = level;
   }
 
   function drawWaveform() {
-    if (!waveCtx2d || !timeDomainBuf) return;
+    if (!waveCtx2d) return;
     const W = waveW, H = waveH;
     const ctx = waveCtx2d;
-    const data = timeDomainBuf;
+    const midY = H / 2;
 
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#000';
@@ -524,40 +536,23 @@
     ctx.beginPath();
     ctx.strokeStyle = 'rgba(0,229,204,0.07)';
     ctx.lineWidth = 0.5;
-    ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2);
+    ctx.moveTo(0, midY); ctx.lineTo(W, midY);
     ctx.stroke();
 
-    const step    = Math.max(1, Math.floor(data.length / W));
-    const sliceW  = W / (data.length / step);
-
-    // Glow pass
-    ctx.beginPath();
-    ctx.shadowBlur  = 18;
+    const n    = waveHistory.length;
+    const colW = W / n;
+    ctx.shadowBlur  = 7;
     ctx.shadowColor = '#00e5cc';
-    ctx.strokeStyle = 'rgba(0,229,204,0.22)';
-    ctx.lineWidth   = 5;
-    let x = 0;
-    for (let i = 0; i < data.length; i += step) {
-      const y = (data[i] / 128.0) * H / 2;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      x += sliceW;
+    for (let i = 0; i < n; i++) {
+      const level = waveHistory[i];
+      const barH  = Math.max(1.5, level * (H / 2 - 3));
+      const x     = i * colW;
+      // newest columns (right edge) read brighter, like an active recording head
+      const recency = i / n;
+      const alpha    = 0.28 + level * 0.55 + recency * 0.17;
+      ctx.fillStyle = 'rgba(0,229,204,' + Math.min(1, alpha).toFixed(2) + ')';
+      ctx.fillRect(x, midY - barH, Math.max(1, WAVE_BAR_W), barH * 2);
     }
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    // Sharp pass
-    ctx.beginPath();
-    ctx.shadowBlur  = 5;
-    ctx.shadowColor = '#00ffe8';
-    ctx.strokeStyle = '#00e5cc';
-    ctx.lineWidth   = 1.5;
-    x = 0;
-    for (let i = 0; i < data.length; i += step) {
-      const y = (data[i] / 128.0) * H / 2;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      x += sliceW;
-    }
-    ctx.stroke();
     ctx.shadowBlur = 0;
   }
 
@@ -608,11 +603,15 @@
     return sum / Math.max(1, e - s);
   }
 
-  function updateUMAP() {
+  // Only grows the manifold when `hasSound` is true (real acoustic energy this
+  // frame) — the structure accumulates purely from what's actually heard, in
+  // real time, rather than on a timer. It keeps spinning/rendering regardless,
+  // spinning faster while sound is present so the motion reads as "triggered".
+  function updateUMAP(hasSound, amp) {
     if (!renderer || !freqBuf) return;
     frameN++;
 
-    if (frameN % 2 === 0 && particleCount < MAX_PARTICLES) {
+    if (hasSound && frameN % 2 === 0 && particleCount < MAX_PARTICLES) {
       const bins    = freqBuf.length;
       const subBass = freqBand(freqBuf, 0,          bins * 0.05) / 255;
       const bass    = freqBand(freqBuf, bins * 0.05, bins * 0.15) / 255;
@@ -644,17 +643,25 @@
       colAttr.needsUpdate = true;
     }
 
-    autoRot += 0.004;
+    // Spin speed itself responds to real-time sound — near-still in silence.
+    autoRot += 0.0015 + (hasSound ? amp * 0.05 : 0);
     ptCloud.rotation.y = autoRot;
     ptCloud.rotation.x = Math.sin(autoRot * 0.28) * 0.18;
     renderer.render(scene, camera);
   }
 
   /* ── MAIN LOOP ── */
-  function clearWaveform() {
-    if (!waveCtx2d) return;
-    waveCtx2d.fillStyle = '#000';
-    waveCtx2d.fillRect(0, 0, waveW, waveH);
+  const SOUND_RMS_THRESHOLD = 0.035; // noise-floor gate for "real" sound
+
+  function sampleLevels(buf) {
+    let peak = 0, sumSq = 0;
+    for (let i = 0; i < buf.length; i++) {
+      const s  = (buf[i] - 128) / 128;
+      const as = Math.abs(s);
+      if (as > peak) peak = as;
+      sumSq += s * s;
+    }
+    return { peak: peak, rms: Math.sqrt(sumSq / buf.length) };
   }
 
   function clearUMAP() {
@@ -667,31 +674,26 @@
   function tick() {
     requestAnimationFrame(tick);
 
-    let shouldDraw = false;
-    if (isAudioReady && analyser) {
-      analyser.getByteTimeDomainData(timeDomainBuf);
-      analyser.getByteFrequencyData(freqBuf);
-      if (activeSrc === 'mic') {
-        // Mic mode: draw only when signal is above noise floor
-        let rms = 0;
-        for (let i = 0; i < timeDomainBuf.length; i++) {
-          const s = (timeDomainBuf[i] - 128) / 128;
-          rms += s * s;
-        }
-        shouldDraw = Math.sqrt(rms / timeDomainBuf.length) >= 0.01;
-      } else {
-        // Video mode: draw only while video is actually playing
-        shouldDraw = isVideoPlaying;
-      }
+    // "Live" = the audio pipeline is actually running (video playing or mic on).
+    // Distinct from having audible sound this instant — silence should still
+    // scroll the waveform timeline, like a recording meter sitting at rest.
+    const isLive = isAudioReady && !!analyser && (activeSrc === 'mic' || isVideoPlaying);
+
+    if (!isLive) {
+      pushWaveSample(0);
+      drawWaveform();
+      clearUMAP();
+      return;
     }
 
-    if (shouldDraw) {
-      drawWaveform();
-      updateUMAP();
-    } else {
-      clearWaveform();
-      clearUMAP();
-    }
+    analyser.getByteTimeDomainData(timeDomainBuf);
+    analyser.getByteFrequencyData(freqBuf);
+    const levels   = sampleLevels(timeDomainBuf);
+    const hasSound = levels.rms >= SOUND_RMS_THRESHOLD;
+
+    pushWaveSample(levels.peak);
+    drawWaveform();
+    updateUMAP(hasSound, levels.rms);
   }
 
   /* ── INIT ── */
