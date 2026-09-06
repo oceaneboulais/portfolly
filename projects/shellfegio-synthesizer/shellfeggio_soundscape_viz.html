@@ -338,7 +338,7 @@
 
   /* ── STATE ── */
   let audioCtx = null, analyser = null, analyserGain = null;
-  let bufferNode = null, audioBuffer = null, bufferOffset = 0, bufferStartAt = 0;
+  let mediaSource = null;
   let micSource = null, micStream = null;
   let timeDomainBuf = null, freqBuf = null;
   let isAudioReady = false, activeSrc = 'video';
@@ -375,37 +375,10 @@
     btnVideo.disabled = false;
     btnMic.disabled   = false;
 
-    // Decode once into a buffer for sample-accurate, glitch-free looping.
-    // WAV (PCM) is used instead of AAC/m4a because AAC's encoder-delay/padding
-    // (iTunSMPB priming samples) isn't reliably stripped by decodeAudioData,
-    // which produced an audible click/jitter at every loop boundary.
-    fetch('sounds/synced_sound.wav')
-      .then(function (r) { return r.arrayBuffer(); })
-      .then(function (ab) { return audioCtx.decodeAudioData(ab); })
-      .then(function (buf) {
-        audioBuffer = buf;
-        if (isVideoPlaying) startAudio();
-      })
-      .catch(function () {});
-  }
-
-  function startAudio() {
-    if (!audioBuffer || !audioCtx) return;
-    if (bufferNode) return; // already playing — don't restart on video loop events
-    bufferNode = audioCtx.createBufferSource();
-    bufferNode.buffer = audioBuffer;
-    bufferNode.loop = true;
-    bufferNode.connect(activeSrc === 'mic' ? audioCtx.destination : analyser);
-    bufferStartAt = audioCtx.currentTime;
-    bufferNode.start(0, bufferOffset % audioBuffer.duration);
-  }
-
-  function stopAudio() {
-    if (!bufferNode) return;
-    bufferOffset = ((audioCtx.currentTime - bufferStartAt) + bufferOffset) % audioBuffer.duration;
-    try { bufferNode.stop(); } catch (e) {}
-    bufferNode.disconnect();
-    bufferNode = null;
+    // Use the video's own embedded audio track (baked in from final_video.mp4)
+    // as the source, routed through the analyser so it drives the viz too.
+    mediaSource = audioCtx.createMediaElementSource(video);
+    mediaSource.connect(analyser);
   }
 
   /* ── SOURCE SWITCHING ── */
@@ -423,8 +396,8 @@
     try {
       micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       micSource = audioCtx.createMediaStreamSource(micStream);
-      // reef sound stays audible but bypasses analyser; mic feeds analyser
-      if (bufferNode) { bufferNode.disconnect(); bufferNode.connect(audioCtx.destination); }
+      // video audio stays audible but bypasses analyser; mic feeds analyser
+      if (mediaSource) { mediaSource.disconnect(); mediaSource.connect(audioCtx.destination); }
       analyserGain.gain.value = 0;
       micSource.connect(analyser);
       activeSrc = 'mic';
@@ -437,7 +410,7 @@
   function switchToVideo() {
     if (micSource)  { micSource.disconnect(analyser); micSource = null; }
     if (micStream)  { micStream.getTracks().forEach(function (t) { t.stop(); }); micStream = null; }
-    if (bufferNode) { try { bufferNode.disconnect(audioCtx.destination); } catch(e) {} bufferNode.connect(analyser); }
+    if (mediaSource) { try { mediaSource.disconnect(audioCtx.destination); } catch(e) {} mediaSource.connect(analyser); }
     analyserGain.gain.value = 1;
     activeSrc = 'video';
     updateSourceUI();
@@ -479,18 +452,16 @@
   });
   video.addEventListener('play', function () {
     isVideoPlaying = true;
-    startAudio();
     syncVideo.classList.add('live');
     if (activeSrc === 'video') { syncWaveform.classList.add('live'); syncUmap.classList.add('live'); }
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   });
   video.addEventListener('pause', function () {
     isVideoPlaying = false;
-    stopAudio();
     syncVideo.classList.remove('live');
     if (activeSrc === 'video') { syncWaveform.classList.remove('live'); syncUmap.classList.remove('live'); }
   });
-  video.addEventListener('ended', function () { isVideoPlaying = false; stopAudio(); bufferOffset = 0; });
+  video.addEventListener('ended', function () { isVideoPlaying = false; });
 
   /* ── SYNTHETIC DEMO DATA ── */
   function ensureBuffers() {
@@ -942,89 +913,6 @@
     }
   });
 
-})();
-</script>
-
-<script>
-/* ── BIOLUMINESCENT CURSOR PARTICLES ── */
-(function () {
-  'use strict';
-
-  var canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
-  document.body.appendChild(canvas);
-  var ctx = canvas.getContext('2d');
-
-  var W, H;
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  resize();
-  window.addEventListener('resize', resize);
-
-  var mx = -999, my = -999, lastMove = 0;
-  var COLORS = ['#00e5cc','#00ccff','#0099ff','#00fff0','#55ffee','#ff55bb'];
-  var GLYPHS = ['𓆝','𓆟','𓆞','𓇼','⋆','̊'];
-  var particles = [];
-  var MAX = 220;
-
-  function spawn(x, y, burst) {
-    if (particles.length >= MAX) return;
-    var s = burst ? (Math.random() * 14 + 10) : (Math.random() * 8 + 6);
-    particles.push({
-      x: x, y: y,
-      vx: (Math.random() - 0.5) * (burst ? 2.8 : 1.0),
-      vy: (Math.random() - 0.5) * (burst ? 2.8 : 1.0) - (burst ? 0.6 : 0.15),
-      s: s,
-      glyph: GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      op: burst ? (Math.random() * 0.45 + 0.55) : (Math.random() * 0.25 + 0.2),
-      decay: burst ? (Math.random() * 0.013 + 0.007) : (Math.random() * 0.005 + 0.002),
-      min: 0.055 + Math.random() * 0.045,
-      rot: (Math.random() - 0.5) * 0.5,
-      rs: (Math.random() - 0.5) * 0.01,
-    });
-  }
-
-  document.addEventListener('mousemove', function (e) {
-    mx = e.clientX; my = e.clientY; lastMove = Date.now();
-    var n = Math.floor(Math.random() * 3) + 2;
-    for (var i = 0; i < n; i++) spawn(mx, my, true);
-  });
-
-  function draw(p) {
-    ctx.save();
-    ctx.globalAlpha = p.op;
-    ctx.shadowBlur = p.s * 0.8;
-    ctx.shadowColor = p.color;
-    ctx.fillStyle = p.color;
-    ctx.font = p.s + 'px "Segoe UI Symbol", "Noto Sans Symbols2", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rot);
-    ctx.fillText(p.glyph, 0, 0);
-    ctx.restore();
-  }
-
-  function tick() {
-    requestAnimationFrame(tick);
-    ctx.clearRect(0, 0, W, H);
-
-    var idle = Date.now() - lastMove > 700;
-
-    for (var i = particles.length - 1; i >= 0; i--) {
-      var p = particles[i];
-      p.x += p.vx; p.y += p.vy;
-      p.vy += 0.018; p.vx *= 0.978; p.vy *= 0.978;
-      p.rot += p.rs;
-      if (p.op > p.min) { p.op -= p.decay; if (p.op < p.min) p.op = p.min; }
-      // cull only when off-screen and fully faded to min
-      if (p.op <= p.min && (p.x < -60 || p.x > W + 60 || p.y < -60 || p.y > H + 60)) {
-        particles.splice(i, 1); continue;
-      }
-      draw(p);
-    }
-  }
-  tick();
 })();
 </script>
 </body>
