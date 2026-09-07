@@ -693,7 +693,19 @@
   }
 
   /* ── MAIN LOOP ── */
-  const SOUND_RMS_THRESHOLD = 0.035; // noise-floor gate for "real" sound
+  // The source recordings are quiet ambient audio (measured noise floor around
+  // -59dB, loudest snap windows only reaching about -28dB) — raw linear
+  // amplitude leaves everything near zero, so levels are rescaled from dB into
+  // a 0..1 "unit" range that actually responds across that real dynamic range
+  // (standard VU-meter style).
+  const LEVEL_FLOOR_DB = -58; // at/below the measured noise floor → unit 0
+  const LEVEL_CEIL_DB  = -26; // this recording's loudest snaps top out here → unit 1
+  const SOUND_UNIT_THRESHOLD = 0.35; // gate: only genuine snaps/activity, not ambient hiss
+
+  function ampToUnit(amp) {
+    const db = 20 * Math.log10(Math.max(amp, 1e-5));
+    return Math.max(0, Math.min(1, (db - LEVEL_FLOOR_DB) / (LEVEL_CEIL_DB - LEVEL_FLOOR_DB)));
+  }
 
   function sampleLevels(buf) {
     let peak = 0, sumSq = 0;
@@ -703,7 +715,7 @@
       if (as > peak) peak = as;
       sumSq += s * s;
     }
-    return { peak: peak, rms: Math.sqrt(sumSq / buf.length) };
+    return { peak: ampToUnit(peak), rms: ampToUnit(Math.sqrt(sumSq / buf.length)) };
   }
 
   function clearUMAP() {
@@ -731,7 +743,7 @@
     analyser.getByteTimeDomainData(timeDomainBuf);
     analyser.getByteFrequencyData(freqBuf);
     const levels   = sampleLevels(timeDomainBuf);
-    const hasSound = levels.rms >= SOUND_RMS_THRESHOLD;
+    const hasSound = levels.rms >= SOUND_UNIT_THRESHOLD;
 
     pushWaveSample(levels.peak);
     drawWaveform();
