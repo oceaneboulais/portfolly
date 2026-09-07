@@ -291,7 +291,7 @@
 
     <!-- PANEL: SCIENTIFIC ILLUSTRATION -->
     <div class="panel panel-illustration" id="panel-illustration">
-      <video id="shrimp-video" autoplay muted loop playsinline
+      <video id="shrimp-video" autoplay muted loop playsinline preload="auto"
              style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
         <source src="sounds/snapping_shrimp_jacob.mp4" type="video/mp4">
       </video>
@@ -357,8 +357,32 @@
     initAudio();
     overlay.style.display = 'none';
     video.play().catch(function () {});
-    if (shrimpVideo) { shrimpVideo.playbackRate = 1.5; shrimpVideo.play().catch(function () {}); }
+    if (shrimpVideo) { shrimpVideo.playbackRate = 1.5; keepShrimpPlaying(); }
   });
+
+  // Mobile browsers frequently pause/stall background loop videos (buffering,
+  // tab throttling, autoplay-policy hiccups) without any visible error — keep
+  // retrying instead of leaving it frozen on a single static frame.
+  let shrimpShouldPlay = false;
+  function keepShrimpPlaying() {
+    shrimpShouldPlay = true;
+    attemptShrimpPlay();
+  }
+  function attemptShrimpPlay() {
+    if (!shrimpVideo || !shrimpShouldPlay) return;
+    shrimpVideo.play().catch(function () {
+      setTimeout(attemptShrimpPlay, 400);
+    });
+  }
+  if (shrimpVideo) {
+    shrimpVideo.addEventListener('pause', function () {
+      if (shrimpShouldPlay) setTimeout(attemptShrimpPlay, 150);
+    });
+    shrimpVideo.addEventListener('canplay', attemptShrimpPlay);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) attemptShrimpPlay();
+    });
+  }
 
   function initAudio() {
     audioCtx     = new (window.AudioContext || window.webkitAudioContext)();
