@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Committee &amp; Schmidt AI Mentorship &middot; Océane Boulais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #06080f;
+    --surface:    #0c1422;
+    --border:     #162336;
+    --accent:     #99cccc;
+    --accent-dim: rgba(153,204,204,0.18);
+    --gold:       #f0c060;
+    --gold-dim:   rgba(240,192,96,0.22);
+    --text:       #c8d8e4;
+    --muted:      #4e6070;
+    --done:       #3aadaa;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 100% 35% at 50% -5%, rgba(153,204,204,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 55% at 8% 95%, rgba(15,40,80,0.45) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 92% 80%, rgba(20,50,100,0.25) 0%, transparent 55%);
+  }
+
+  .deck-viewport { position: relative; width: 100vw; height: 100vh; overflow: hidden; z-index: 1; }
+  .deck-track { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(.4,0,.2,1); }
+
+  .slide {
+    min-width: 100vw; height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 7vh 11vw;
+    box-sizing: border-box;
+  }
+  .slide-cover { align-items: center; text-align: center; }
+
+  .slide-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 22px;
+  }
+  .slide-title {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 600; letter-spacing: -0.02em;
+    color: #e4eef8; line-height: 1.2; margin-bottom: 22px; max-width: 860px;
+  }
+  .slide-cover .slide-title { max-width: 900px; font-size: clamp(28px, 4.6vw, 50px); }
+  .slide-sub {
+    font-size: clamp(13px, 1.3vw, 16px);
+    color: var(--muted); font-style: italic; max-width: 760px; margin-bottom: 8px; line-height: 1.5;
+  }
+  .slide-rule {
+    width: 52px; height: 2px; background: var(--accent); border-radius: 1px;
+    margin-bottom: 26px; flex-shrink: 0;
+  }
+  .slide-cover .slide-rule { margin: 0 auto 26px; }
+  .slide-meta {
+    font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted);
+    display: flex; gap: 26px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .slide-cover .slide-meta { justify-content: center; }
+
+  .agenda-list { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; max-width: 620px; }
+  .agenda-item {
+    display: flex; align-items: baseline; gap: 14px;
+    font-size: 15px; color: var(--text); text-align: left;
+  }
+  .agenda-num {
+    font-family: 'Space Mono', monospace; font-size: 12px; color: var(--gold);
+    min-width: 20px;
+  }
+
+  .chapter-list { display: flex; flex-direction: column; gap: 24px; }
+  .chapter-item { display: flex; gap: 20px; align-items: flex-start; }
+  .chapter-num {
+    font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); white-space: nowrap; padding-top: 3px; min-width: 92px;
+  }
+  .chapter-num .status-done { color: var(--done); }
+  .chapter-num .status-wip  { color: var(--gold); }
+  .chapter-body { font-size: 14.5px; color: var(--text); line-height: 1.6; max-width: 700px; }
+  .chapter-body strong { color: #c8dde8; font-weight: 600; }
+  .chapter-body .fig {
+    display: inline-block; font-family: 'Space Mono', monospace; font-size: 12px;
+    color: var(--gold); background: var(--gold-dim); border-radius: 4px; padding: 1px 7px; margin: 2px 4px 0 0;
+  }
+
+  .stat-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 18px; min-width: 150px;
+  }
+  .stat-card .stat-num { font-family: 'Space Mono', monospace; font-size: 20px; color: var(--gold); }
+  .stat-card .stat-lbl { font-size: 10.5px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  .ask-box {
+    margin-top: 26px; border: 1px solid var(--gold-dim); background: rgba(240,192,96,0.06);
+    border-radius: 10px; padding: 18px 22px; max-width: 700px;
+  }
+  .ask-label {
+    font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+  }
+  .ask-text { font-size: 15px; color: #e4eef8; line-height: 1.55; }
+
+  .thanks-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .thanks-item { font-size: 14px; color: var(--text); display: flex; gap: 10px; }
+  .thanks-item .chk { color: var(--done); }
+
+  /* ── nav ── */
+  .deck-nav-bar {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2;
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
+    padding: 8px 14px;
+  }
+  .deck-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer;
+    border-radius: 50%; width: 26px; height: 26px; font-family: 'Space Mono', monospace; font-size: 13px;
+    transition: border-color .15s, color .15s;
+  }
+  .deck-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .deck-btn:disabled { opacity: 0.25; cursor: default; }
+  .deck-counter { font-family: 'Space Mono', monospace; font-size: 10.5px; color: var(--muted); min-width: 34px; text-align: center; }
+  .deck-dots { display: flex; gap: 7px; }
+  .deck-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--border); border: none; cursor: pointer;
+    transition: background .2s, transform .2s; padding: 0;
+  }
+  .deck-dot.active { background: var(--accent); transform: scale(1.4); }
+
+  @media (max-width: 700px) {
+    .slide { padding: 6vh 7vw; }
+    .chapter-item { flex-direction: column; gap: 6px; }
+    .chapter-num { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <div class="deck-track" id="deck-track">
+
+    <!-- Slide 1: Cover / Agenda -->
+    <div class="slide slide-cover">
+      <div class="slide-eyebrow">Committee Meeting &middot; Scripps Institution of Oceanography, UC San Diego</div>
+      <div class="slide-title">Océane Boulais &amp; Ryan Kastner</div>
+      <div class="slide-sub">Three things I'd like to cover today</div>
+      <div class="slide-rule"></div>
+      <div class="agenda-list">
+        <div class="agenda-item"><span class="agenda-num">01</span>Where my PhD stands &mdash; Chapters 1&ndash;3</div>
+        <div class="agenda-item"><span class="agenda-num">02</span>Inviting you to join my PhD committee</div>
+        <div class="agenda-item"><span class="agenda-num">03</span>Asking you to be my AI Co-Mentor on a Schmidt AI in Science postdoc proposal</div>
+      </div>
+      <div class="slide-meta">
+        <span>Océane Boulais</span>
+        <span>Ocean Bioacoustics &amp; Machine Learning</span>
+        <span>September 8, 2026</span>
+      </div>
+    </div>
+
+    <!-- Slide 2: PhD Progress -->
+    <div class="slide">
+      <div class="slide-eyebrow">01 &middot; PhD Progress</div>
+      <div class="slide-title">Chapter Status</div>
+      <div class="slide-rule"></div>
+      <div class="chapter-list">
+        <div class="chapter-item">
+          <span class="chapter-num"><span class="status-done">&#10003; Published</span><br>Chapter 1</span>
+          <div class="chapter-body">
+            <strong>Acoustic enrichment.</strong> Autonomous cameras reveal larval reef fish responses to acoustic enrichment and lunar phase.
+            <span class="fig">Nature Scientific Reports &middot; Jun 2026</span>
+          </div>
+        </div>
+        <div class="chapter-item">
+          <span class="chapter-num"><span class="status-wip">In progress</span><br>Chapter 2</span>
+          <div class="chapter-body">
+            <strong>Bowhead whale detection with convolutional autoencoders.</strong> A 32-D autoencoder latent space powers both a nearest-neighbor detector and a supervised CNN classifier, evaluated on an independent 199,825-spectrogram held-out set (4 field seasons, 2 sites).
+            <div class="stat-row">
+              <div class="stat-card"><div class="stat-num">0.33&ndash;0.61:1</div><div class="stat-lbl">FP:TP ratio via AE+kNN, down from the 2010 detector's natural ~8:1 baseline</div></div>
+              <div class="stat-card"><div class="stat-num">0.959</div><div class="stat-lbl">ROC-AUC, supervised CNN classifier on held-out evaluation set</div></div>
+            </div>
+            <span class="fig" style="margin-top:12px;">Draft to JASA by end of September</span>
+          </div>
+        </div>
+        <div class="chapter-item">
+          <span class="chapter-num"><span class="status-wip">In progress</span><br>Chapter 3</span>
+          <div class="chapter-body">
+            <strong>Call-type classification.</strong> Builds directly on Chapter 2's detector/latent space to classify the seven manually-annotated bowhead call sub-types it currently treats as a single "call" class.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Committee Invitation -->
+    <div class="slide">
+      <div class="slide-eyebrow">02 &middot; The Ask</div>
+      <div class="slide-title">Would you join my PhD committee?</div>
+      <div class="slide-rule"></div>
+      <div class="chapter-body" style="max-width:680px; font-size:15px;">
+        My thesis applies deep learning to coastal ecosystem monitoring and restoration &mdash; spanning bioacoustic detection/classification (Ch. 2&ndash;3) and audio-visual sensing for reef restoration (Ch. 1, and a proposed multimodal Ch. 4). Your work in embedded ML systems and field-deployed sensing at Engineers for Exploration maps directly onto the modeling and deployment questions in Chapters 2&ndash;4.
+      </div>
+      <div class="ask-box">
+        <div class="ask-label">The Ask</div>
+        <div class="ask-text">Serve as a member of my PhD committee, with an expected defense in December 2026.</div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Schmidt AI Postdoc -->
+    <div class="slide">
+      <div class="slide-eyebrow">03 &middot; Looking Ahead</div>
+      <div class="slide-title">Schmidt AI in Science Postdoctoral Fellowship</div>
+      <div class="slide-rule"></div>
+      <div class="chapter-body" style="max-width:700px; font-size:14.5px; margin-bottom:18px;">
+        <strong>Question:</strong> is a "healthy-sounding" reef actually recovering &mdash; or just broadcasting sound into an empty habitat? I'm proposing to fuse stereovision biomass estimation, directional particle-velocity acoustics, and edge-deployed ML into a single ground-truthing platform, deployed in Fiji with Pacific Blue Foundation and the University of the South Pacific.
+      </div>
+      <div class="chapter-list">
+        <div class="chapter-item">
+          <span class="chapter-num">SEASCAPE</span>
+          <div class="chapter-body">Portable edge-AI platform: 360&deg; six-lens stereovision + directional particle-velocity sensor (100 Hz&ndash;15 kHz) + on-device inference (Jetson/Orin AGX).</div>
+        </div>
+        <div class="chapter-item">
+          <span class="chapter-num">Field site</span>
+          <div class="chapter-body">Fiji reef restoration, via Pacific Blue Foundation &amp; University of the South Pacific &mdash; an active partnership since 2004, plus existing WHOI acoustic-enrichment collaborators.</div>
+        </div>
+        <div class="chapter-item">
+          <span class="chapter-num">Why you</span>
+          <div class="chapter-body">Domain-shift-robust acoustic classifiers, real-time embedded inference, and multi-modal sensor fusion &mdash; exactly Engineers for Exploration's territory, and beyond my current skill set.</div>
+        </div>
+      </div>
+      <div class="ask-box">
+        <div class="ask-label">The Ask</div>
+        <div class="ask-text">Serve as AI Co-Mentor alongside primary STEM mentor Dr. Greg Mitchell on this proposal.</div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Thank you -->
+    <div class="slide slide-cover">
+      <div class="slide-eyebrow">Thank You</div>
+      <div class="slide-title">Two questions for you</div>
+      <div class="slide-rule"></div>
+      <div class="thanks-list">
+        <div class="thanks-item"><span class="chk">&#10003;</span>Would you join my PhD committee?</div>
+        <div class="thanks-item"><span class="chk">&#10003;</span>Would you be my AI Co-Mentor on the Schmidt AI in Science proposal?</div>
+      </div>
+      <div class="slide-meta" style="margin-top:26px;">
+        <span>Océane Boulais</span>
+        <span>Scripps Institution of Oceanography</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="deck-nav-bar">
+  <button class="deck-btn" id="deck-prev" aria-label="Previous">&#8592;</button>
+  <span class="deck-counter"><span id="deck-cur">1</span>&thinsp;/&thinsp;<span id="deck-tot">1</span></span>
+  <div class="deck-dots" id="deck-dots"></div>
+  <button class="deck-btn" id="deck-next" aria-label="Next">&#8594;</button>
+</div>
+
+<script>
+(function () {
+  const track   = document.getElementById('deck-track');
+  const prevBtn = document.getElementById('deck-prev');
+  const nextBtn = document.getElementById('deck-next');
+  const curEl   = document.getElementById('deck-cur');
+  const totEl   = document.getElementById('deck-tot');
+  const dotsEl  = document.getElementById('deck-dots');
+  const slides  = track.querySelectorAll('.slide');
+  const total   = slides.length;
+  let cur = 0;
+
+  totEl.textContent = total;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'deck-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    cur = Math.max(0, Math.min(total - 1, n));
+    track.style.transform = 'translateX(-' + (cur * 100) + 'vw)';
+    curEl.textContent = cur + 1;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === total - 1;
+    dotsEl.querySelectorAll('.deck-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  prevBtn.addEventListener('click', () => goTo(cur - 1));
+  nextBtn.addEventListener('click', () => goTo(cur + 1));
+  goTo(0);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 44) goTo(cur + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
