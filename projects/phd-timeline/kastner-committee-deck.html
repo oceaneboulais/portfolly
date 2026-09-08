@@ -114,9 +114,18 @@
   }
   .ask-text { font-size: 15px; color: #e4eef8; line-height: 1.55; }
 
-  .thanks-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-  .thanks-item { font-size: 14px; color: var(--text); display: flex; gap: 10px; }
-  .thanks-item .chk { color: var(--done); }
+  .proj-grid { display: flex; gap: 20px; margin-top: 8px; flex-wrap: wrap; }
+  .proj-card {
+    flex: 1 1 320px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 20px; max-width: 380px;
+  }
+  .proj-tag {
+    font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .proj-name { font-size: 14.5px; font-weight: 600; color: #e4eef8; margin-bottom: 8px; line-height: 1.35; }
+  .proj-body { font-size: 12.5px; color: var(--text); line-height: 1.55; }
+  .proj-body strong { color: #c8dde8; font-weight: 600; }
 
   /* ── nav ── */
   .deck-nav-bar {
@@ -162,6 +171,7 @@
         <div class="agenda-item"><span class="agenda-num">01</span>Where my PhD stands &mdash; Chapters 1&ndash;3</div>
         <div class="agenda-item"><span class="agenda-num">02</span>Inviting you to join my PhD committee</div>
         <div class="agenda-item"><span class="agenda-num">03</span>Asking you to be my AI Co-Mentor on a Schmidt AI in Science postdoc proposal</div>
+        <div class="agenda-item"><span class="agenda-num">04</span>Any undergrads in mind for two open SIO 199 projects?</div>
       </div>
       <div class="slide-meta">
         <span>Océane Boulais</span>
@@ -245,18 +255,29 @@
       </div>
     </div>
 
-    <!-- Slide 5: Thank you -->
-    <div class="slide slide-cover">
-      <div class="slide-eyebrow">Thank You</div>
-      <div class="slide-title">Two questions for you</div>
+    <!-- Slide 5: Undergraduate SIO 199 Opportunities -->
+    <div class="slide">
+      <div class="slide-eyebrow">04 &middot; One More Thing</div>
+      <div class="slide-title">Any undergrads in mind?</div>
       <div class="slide-rule"></div>
-      <div class="thanks-list">
-        <div class="thanks-item"><span class="chk">&#10003;</span>Would you join my PhD committee?</div>
-        <div class="thanks-item"><span class="chk">&#10003;</span>Would you be my AI Co-Mentor on the Schmidt AI in Science proposal?</div>
+      <div class="chapter-body" style="max-width:700px; font-size:13.5px; margin-bottom:14px;">
+        We have two open SIO 199 independent-research projects this term &mdash; would love a referral if you know anyone who'd be a good fit.
       </div>
-      <div class="slide-meta" style="margin-top:26px;">
-        <span>Océane Boulais</span>
-        <span>Scripps Institution of Oceanography</span>
+      <div class="proj-grid">
+        <div class="proj-card">
+          <div class="proj-tag">SIO 199 &middot; Stereovision / Jetson Orin AGX</div>
+          <div class="proj-name">Marine &ldquo;Depth Anything&rdquo; 3D Vision Model</div>
+          <div class="proj-body">Adapt/fine-tune a monocular or stereo depth-estimation model for underwater SEASCAPE imagery, and benchmark it for real-time inference on a <strong>Jetson Orin AGX</strong>. Good fit for CV, embedded AI, or robotics interest &mdash; Python + PyTorch/TensorFlow preferred.</div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-tag">SIO 199 &middot; Bioacoustics / Latent-Space Clustering</div>
+          <div class="proj-name">Bowhead Whale Call Detection &amp; Relabeling</div>
+          <div class="proj-body">Use MATLAB + our <strong>master_UMAP_3D_detector.m</strong> tool to review and relabel spectrograms in a 3-D autoencoder latent space, cleaning up training/eval data across &gt;1M spectrograms. Great fit for ML/bioacoustics interest &mdash; MATLAB experience a plus, training provided.</div>
+        </div>
+      </div>
+      <div class="ask-box">
+        <div class="ask-label">The Ask</div>
+        <div class="ask-text">Both offer SIO 199 credit and possible co-authorship for substantial contributions &mdash; contact me at oboulais@ucsd.edu, or send them my way.</div>
       </div>
     </div>
 
