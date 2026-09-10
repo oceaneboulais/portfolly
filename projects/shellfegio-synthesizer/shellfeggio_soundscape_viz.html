@@ -124,7 +124,12 @@
     .video-stand-in.hidden { display:none; }
 
     /* ── MIDDLE ROW ── */
-    .panel-row { display:grid; grid-template-columns:1fr 2fr; gap:var(--gap); align-items:stretch; }
+    /* aspect-ratio lives on the row (a flex child), not on the grid items
+       inside it — Safari/WebKit fails to size a grid row whose height comes
+       from a stretched item's aspect-ratio next to a sibling with no
+       intrinsic height (our waveform canvas is absolutely positioned), and
+       collapses the whole row to ~0px. */
+    .panel-row { display:grid; grid-template-columns:1fr 2fr; gap:var(--gap); align-items:stretch; aspect-ratio:3/1; }
     .panel-waveform { aspect-ratio: unset; }
     .panel-umap { aspect-ratio:16/6; }
     #waveform-canvas, #umap-canvas {
@@ -132,7 +137,6 @@
     }
 
     /* ── ILLUSTRATION PANEL ── */
-    .panel-illustration { aspect-ratio:1/1; }
     .shrimp-label {
       position:absolute; bottom:10px; left:12px; z-index:10;
       font-family:'Courier New',monospace; font-style:italic;
