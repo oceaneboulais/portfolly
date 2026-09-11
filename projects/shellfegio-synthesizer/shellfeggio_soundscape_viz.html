@@ -163,6 +163,8 @@
     }
     .init-icon { font-size:22px; animation:init-pulse 2.5s ease-in-out infinite; }
     @keyframes init-pulse { 0%,100%{opacity:0.45;transform:scale(1)} 50%{opacity:1;transform:scale(1.1)} }
+    .init-label { font-size:16px; font-weight:bold; }
+    .init-sub   { font-size:14px; font-weight:bold; letter-spacing:0.18em; opacity:0.7; }
 
     /* ── SOURCE TOGGLE ── */
     .source-toggle { display:flex; gap:4px; align-items:center; }
@@ -348,8 +350,8 @@
 <div id="audio-overlay">
   <button id="audio-init-btn">
     <span class="init-icon">◉</span>
-    <span>initialize soundscape</span>
-    <span style="font-size:8px;letter-spacing:0.18em;opacity:0.45;">click anywhere in the box to begin</span>
+    <span class="init-label">initialize soundscape</span>
+    <span class="init-sub">click anywhere in the box to begin</span>
   </button>
 </div>
 
