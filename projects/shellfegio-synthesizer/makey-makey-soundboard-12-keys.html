@@ -90,6 +90,9 @@
         <button class="button danger" id="stopAllBtn" type="button">Stop all</button>
       </div>
       <p class="lede">Load files in this order: Left, Right, Up, Down, Space, Click, W, A, S, D, F, G.</p>
+      <label class="small" style="display:block;margin-top:14px;">Master volume
+        <input class="input" id="masterVolume" type="range" min="0" max="100" step="1" value="100">
+      </label>
     </section>
 
     <section class="panel status">
@@ -147,7 +150,7 @@
       { src: 'sounds/flutey/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093041_1.0x.wav',        label: 'Humpback Whale – Flutey' },
     ];
 
-    const state = { audioContext: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map(), _voicesAtBlur: null };
+    const state = { audioContext: null, masterGain: null, unlocked: false, slots: [], activeKeys: new Set(), voices: new Map(), _voicesAtBlur: null };
     const els = {
       slots: document.getElementById('slots'),
       folderInput: document.getElementById('folderInput'),
@@ -157,7 +160,8 @@
       loadedCount: document.getElementById('loadedCount'),
       heldKeys: document.getElementById('heldKeys'),
       inputMode: document.getElementById('inputMode'),
-      clickPad: document.getElementById('clickPad')
+      clickPad: document.getElementById('clickPad'),
+      masterVolume: document.getElementById('masterVolume')
     };
 
     function makeSlot(key, index) {
@@ -168,6 +172,9 @@
       if (!state.audioContext) {
         const AC = window.AudioContext || window.webkitAudioContext;
         state.audioContext = new AC();
+        state.masterGain = state.audioContext.createGain();
+        state.masterGain.gain.value = Number(els.masterVolume.value) / 100;
+        state.masterGain.connect(state.audioContext.destination);
       }
       return state.audioContext;
     }
@@ -495,7 +502,7 @@
       source.playbackRate.value = slot.playbackRate;
       gain.gain.setValueAtTime(0, ctx.currentTime);
       gain.gain.linearRampToValueAtTime(slot.volume, ctx.currentTime + 0.015);
-      source.connect(gain).connect(ctx.destination);
+      source.connect(gain).connect(state.masterGain);
       source.start();
       state.voices.set(slot.key, { source, gain, slot });
       slot.element.classList.add('active');
@@ -616,6 +623,9 @@
         }
       });
       document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(); });
+      els.masterVolume.addEventListener('input', () => {
+        if (state.masterGain) state.masterGain.gain.setTargetAtTime(Number(els.masterVolume.value) / 100, ensureAudioContext().currentTime, 0.02);
+      });
       els.folderInput.addEventListener('change', async event => { if (event.target.files?.length) await loadFiles(event.target.files); });
       els.unlockBtn.addEventListener('click', async () => {
         try { await unlockAudio(); }
