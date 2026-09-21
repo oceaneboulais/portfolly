@@ -141,7 +141,7 @@
       { src: 'sounds/Boat_engine/soundsampDA23A0T20230706T000000.gsi_20230706T060610_1.0x.wav',                     label: 'Boat Engine' },
       { src: 'sounds/low_tone/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T092759_1.0x.wav',     label: 'Humpback Whale – Low Tone' },
       { src: 'sounds/Pulse_Pulse_boat/soundsampDA23A0T20230717T000000.gsi_20230717T080005_1.0x.wav',                label: 'Reef Fish – Pulse Pulse Boat' },
-      { src: 'sounds/Pulse_train3/soundsampDA23A0T20230717T000000.gsi_20230717T000117_1.0x.wav',                    label: 'Reef Fish – Pulse Train' },
+      { src: 'sounds/Boat_engine_2/soundsampDA23A0T20230706T000000.gsi_20230706T011250_1.0x.wav',                    label: 'Boat Engine 2' },
       { src: 'sounds/Purrr/soundsampDA23A0T20230717T000000.gsi_20230717T050302_1.0x.wav',                           label: 'Reef Fish – Purrr' },
       { src: 'sounds/Shrimp_fish/soundsampAnalogData-06JUN2024-1456_VS-209sensor.wav_20240606T145828_1.0x.wav',     label: 'Reef Fish – Shrimp Fish' },
       { src: 'sounds/big_WHOOP/soundsampAnalogData-20MAR2025-0927_VS-209sensor-rot.wav_20250320T093148_1.0x.wav',   label: 'Humpback Whale – Big Whoop' },
@@ -574,10 +574,15 @@
         handleRelease(key);
       });
 
-      const pressClick = () => { handlePress('click'); };
-      const releaseClick = () => { handleRelease('click'); };
-      ['pointerdown','mousedown','touchstart'].forEach(type => els.clickPad.addEventListener(type, pressClick));
-      ['pointerup','pointercancel','mouseup','mouseleave','touchend','touchcancel','blur'].forEach(type => els.clickPad.addEventListener(type, releaseClick));
+      // touchstart/touchend must call preventDefault, otherwise the browser fires
+      // synthetic "ghost" mousedown/mouseup events ~300ms later that re-trigger
+      // handlePress/handleRelease a second time, causing the sound to blip back on
+      // right after release. Pointer events alone cover mouse + touch + pen.
+      els.clickPad.addEventListener('touchstart', ev => { ev.preventDefault(); handlePress('click'); }, { passive: false });
+      els.clickPad.addEventListener('touchend', ev => { ev.preventDefault(); handleRelease('click'); }, { passive: false });
+      els.clickPad.addEventListener('touchcancel', ev => { ev.preventDefault(); handleRelease('click'); }, { passive: false });
+      els.clickPad.addEventListener('pointerdown', ev => { if (ev.pointerType !== 'touch') handlePress('click'); });
+      ['pointerup','pointercancel','mouseleave','blur'].forEach(type => els.clickPad.addEventListener(type, () => handleRelease('click')));
       els.clickPad.addEventListener('keydown', event => {
         if (event.repeat) return;
         if (event.key === 'Enter' || event.key === ' ') {
