@@ -356,7 +356,11 @@
   </button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../../vendor/three.js/three.r128.min.js"></script>
+<script>
+  // Fallback to CDN only if the local, self-hosted copy failed to load (e.g. blocked by a restrictive proxy)
+  if (typeof THREE === 'undefined') document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+</script>
 <script>
 (function () {
   'use strict';
@@ -775,8 +779,11 @@
 })();
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../../vendor/jszip/jszip.3.10.1.min.js"></script>
+<script>
+  // Fallback to CDN only if the local, self-hosted copy failed to load (e.g. blocked by a restrictive proxy)
+  if (typeof JSZip === 'undefined') document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
+</script>
 <script>
 (function () {
   'use strict';
