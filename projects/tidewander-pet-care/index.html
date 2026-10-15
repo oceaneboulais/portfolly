@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6QDK42L1G9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6QDK42L1G9');
+  </script>
+  <meta charset="utf-8">
+  <title>Tidewander Pet Care</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --accent: #99cccc;
+      --bg:     #ffffff;
+      --fg:     #111111;
+      --muted:  #888888;
+      --div:    #e8e8e8;
+      --card:   #f7fbfb;
+      --font:   'Courier New', Courier, monospace;
+    }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #555; }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 56px 28px 96px;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 56px;
+      letter-spacing: 0.04em;
+    }
+    .back:hover { color: var(--fg); }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 5px;
+    }
+    .page-sub {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 0 0 32px;
+    }
+    .intro {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.9;
+      margin: 0 0 40px;
+    }
+
+    .rule { height: 1px; background: var(--div); margin: 44px 0; }
+
+    .section-num {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 3px;
+      letter-spacing: -0.01em;
+    }
+    .section-meta {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      margin: 0 0 18px;
+    }
+    .section-desc {
+      font-size: 12.5px;
+      color: #555;
+      line-height: 1.9;
+      margin: 0 0 24px;
+      max-width: 620px;
+    }
+
+    .rate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .rate-card {
+      border: 1px solid var(--div);
+      border-radius: 10px;
+      background: var(--card);
+      padding: 16px 18px;
+    }
+    .rate-card .label {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .rate-card .amount {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--fg);
+    }
+    .rate-card .unit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+    .rate-card .note {
+      font-size: 11.5px;
+      color: #555;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .market-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      border-left: 2px solid var(--accent);
+      padding-left: 12px;
+      margin: 0 0 24px;
+      line-height: 1.8;
+    }
+
+    ul.exp-list {
+      margin: 0 0 24px;
+      padding-left: 18px;
+      font-size: 12.5px;
+      color: #555;
+      line-height: 1.9;
+    }
+    ul.exp-list li { margin-bottom: 8px; }
+    ul.exp-list strong { color: var(--fg); }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+    .tag {
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--div);
+      border-radius: 999px;
+      padding: 5px 12px;
+    }
+
+    .cta-card {
+      border: 1px solid var(--div);
+      border-radius: 10px;
+      background: var(--card);
+      padding: 20px 22px;
+      text-align: left;
+    }
+    .cta-card .section-title { margin-bottom: 8px; }
+    .cta-card a.btn {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      background: var(--accent);
+      padding: 10px 18px;
+      border-radius: 999px;
+    }
+    .cta-card a.btn:hover { background: #7bb; color: #fff; }
+
+    .footer-note {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 56px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── dog carousel ─────────────────────── */
+    .carousel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .carousel-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+    .carousel-arrow {
+      width: 30px; height: 30px;
+      border: 1px solid var(--div);
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--fg);
+      flex: 0 0 auto;
+    }
+    .carousel-arrow:hover { background: var(--card); }
+    .dog-photo-frame {
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      flex: 0 0 auto;
+      background: var(--card) center/cover no-repeat;
+      padding: 0;
+      cursor: pointer;
+    }
+    .dog-photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .dog-caption { text-align: center; max-width: 440px; }
+    .dog-name-line { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .dog-meta-line { font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+    .dog-quote { font-size: 12.5px; color: #555; font-style: italic; line-height: 1.8; }
+    .dog-quote .attrib { display: block; font-style: normal; font-size: 10.5px; color: var(--muted); margin-top: 6px; }
+    .carousel-dots { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .carousel-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--div);
+      background: var(--card) center/cover no-repeat;
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+    }
+    .carousel-dot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .carousel-dot.active { border: 2px solid var(--accent); }
+
+    /* ── booking form ─────────────────────── */
+    .form-embed {
+      width: 100%;
+      min-height: 760px;
+      border: 1px solid var(--div);
+      border-radius: 10px;
+      background: var(--card);
+    }
+    .form-fallback-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="../../index.html">&larr; back</a>
+
+    <h1 class="page-title">Tidewander Pet Care</h1>
+    <p class="page-sub">Independent &middot; Mobile &middot; San Diego Coastline</p>
+    <p class="intro">
+      I'm a coastal scientist who works out of a van — chasing fieldwork up and down the San Diego
+      coastline, and bringing the same patience, close observation, and care I use watching marine
+      animals to watching over yours. Fully independent, fully mobile, and genuinely happiest with a
+      dog (or two) in tow between field sites.
+    </p>
+
+    <div class="rule"></div>
+
+    <div class="section-num">services &amp; rates</div>
+    <h2 class="section-title">Drop-in visits &amp; overnight in-home care</h2>
+    <p class="section-meta">rates current as of 2026</p>
+    <p class="section-desc">
+      Two ways to work together — a quick drop-in for feeding, potty breaks, medication, and
+      playtime, or overnight in-house care where I stay at your place so your pets keep their
+      routine, their bed, and their yard.
+    </p>
+
+    <div class="rate-grid">
+      <div class="rate-card">
+        <div class="label">Drop-in visit</div>
+        <div class="amount">$35<span class="unit">/ hour</span></div>
+        <div class="note">Feeding, walks, medication, litter/cage care, and companionship while you're out.</div>
+      </div>
+      <div class="rate-card">
+        <div class="label">In-house overnight care</div>
+        <div class="amount">$75<span class="unit">/ night</span></div>
+        <div class="note">I stay overnight at your home so pets keep their routine, bed, and yard while you travel.</div>
+      </div>
+    </div>
+
+    <p class="market-note">
+      These rates sit comfortably within typical market ranges for pet sitters — drop-in visits
+      nationally tend to run roughly $20–$45/hour and overnight in-home care roughly $45–$100/night,
+      with coastal California markets like San Diego trending toward the higher end of those bands.
+      I checked current listings from several independent and platform-based (Rover/Care.com-style)
+      sitters in the area before setting these — $35/hour and $75/night land right in the middle of
+      the local range, reflecting specialized experience rather than a premium markup.
+    </p>
+
+    <div class="rule"></div>
+
+    <div class="section-num">experience</div>
+    <h2 class="section-title">Hands-on, not just well-meaning</h2>
+    <p class="section-desc">
+      Before this was a service, it was just life with fosters. That experience is where most of
+      what I know about reading a dog's body language, patience, and routine actually comes from.
+    </p>
+    <ul class="exp-list">
+      <li><strong>Fostered 5 dogs</strong> — hands-on day-to-day care, from intake to adoption.</li>
+      <li><strong>2 reactive-dog fosters</strong> taught me how to read triggers, manage distance and
+        thresholds, use calm/structured handling, and avoid escalating a stressful situation —
+        skills I bring to every reactive or anxious dog in my care.</li>
+      <li><strong>Special needs dogs</strong> — comfortable with mobility aids, medication schedules,
+        and adapted routines.</li>
+      <li><strong>Senior dogs</strong> — gentle pacing, joint-friendly walks, and attentiveness to
+        the small changes that matter with older pets.</li>
+    </ul>
+
+    <div class="tag-row">
+      <span class="tag">reactive dogs</span>
+      <span class="tag">special needs</span>
+      <span class="tag">senior dogs</span>
+      <span class="tag">medication admin</span>
+      <span class="tag">fully independent</span>
+      <span class="tag">van-based &amp; mobile</span>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="section-num">references</div>
+    <h2 class="section-title">Dogs I've sat for</h2>
+    <p class="section-desc">
+      Click the circle, the arrows, or any thumbnail below to meet a few of the dogs I've cared
+      for and hear from their owners directly.
+    </p>
+
+    <div class="carousel" id="dogCarousel">
+      <div class="carousel-stage">
+        <button class="carousel-arrow" id="dogPrev" type="button" aria-label="Previous dog">&larr;</button>
+        <button class="dog-photo-frame" id="dogMainFrame" type="button" aria-label="Show next dog">
+          <img id="dogMainImg" src="" alt="">
+        </button>
+        <button class="carousel-arrow" id="dogNext" type="button" aria-label="Next dog">&rarr;</button>
+      </div>
+      <div class="dog-caption">
+        <div class="dog-name-line" id="dogName"></div>
+        <div class="dog-meta-line" id="dogMeta"></div>
+        <div class="dog-quote" id="dogQuote"></div>
+      </div>
+      <div class="carousel-dots" id="dogDots"></div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="section-num">how it works</div>
+    <h2 class="section-title">Roaming the coast, available along the way</h2>
+    <p class="section-desc">
+      I split my time between coastal science fieldwork and pet care, moving along the San Diego
+      coastline out of my van. That means flexible availability for drop-ins and overnights, and a
+      genuinely calm, unhurried presence for pets — the same qualities that make for a good field
+      scientist make for a good sitter.
+    </p>
+
+    <div class="cta-card">
+      <div class="section-title">Interested in booking?</div>
+      <p class="section-desc" style="margin-bottom:0;">
+        Reach out with your pet's needs, your dates, and your location along the coast, and I'll
+        follow up with availability.
+      </p>
+      <a class="btn" href="mailto:hello@example.com?subject=Tidewander%20Pet%20Care%20inquiry">Email to inquire</a>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="section-num">booking</div>
+    <h2 class="section-title">Request a booking</h2>
+    <p class="section-desc">
+      Fill out the intake form below with your pet's needs, your dates, and your location along
+      the coast — I'll follow up to confirm availability.
+    </p>
+    <!--
+      Replace GOOGLE_FORM_EMBED_URL with your Google Form's embed link:
+      open the form, click Send -> the "<>" embed tab -> copy the src="..." URL.
+      Replace GOOGLE_FORM_URL with the plain "Send" link for the fallback button.
+    -->
+    <iframe class="form-embed" src="GOOGLE_FORM_EMBED_URL" title="Tidewander Pet Care booking intake form" loading="lazy">Loading…</iframe>
+    <p class="form-fallback-note">
+      Form not loading? <a href="GOOGLE_FORM_URL" target="_blank" rel="noopener">Open the booking form in a new tab</a>.
+    </p>
+
+    <p class="footer-note">Tidewander Pet Care &middot; independent &middot; mobile &middot; San Diego coastline</p>
+  </div>
+
+  <script>
+    // PLACEHOLDER dog data — replace with real names/ages/locations/quotes once photos are dropped
+    // into imgs/dogs/. Image paths below assume filenames dog-1.jpg … dog-5.jpg.
+    var DOGS = [
+      { img: 'imgs/dogs/dog-1.jpg', name: 'PLACEHOLDER NAME', age: 'PLACEHOLDER AGE', location: 'PLACEHOLDER LOCATION', quote: 'PLACEHOLDER QUOTE FROM OWNER.', owner: '— PLACEHOLDER OWNER NAME' },
+      { img: 'imgs/dogs/dog-2.jpg', name: 'PLACEHOLDER NAME', age: 'PLACEHOLDER AGE', location: 'PLACEHOLDER LOCATION', quote: 'PLACEHOLDER QUOTE FROM OWNER.', owner: '— PLACEHOLDER OWNER NAME' },
+      { img: 'imgs/dogs/dog-3.jpg', name: 'PLACEHOLDER NAME', age: 'PLACEHOLDER AGE', location: 'PLACEHOLDER LOCATION', quote: 'PLACEHOLDER QUOTE FROM OWNER.', owner: '— PLACEHOLDER OWNER NAME' },
+      { img: 'imgs/dogs/dog-4.jpg', name: 'PLACEHOLDER NAME', age: 'PLACEHOLDER AGE', location: 'PLACEHOLDER LOCATION', quote: 'PLACEHOLDER QUOTE FROM OWNER.', owner: '— PLACEHOLDER OWNER NAME' },
+      { img: 'imgs/dogs/dog-5.jpg', name: 'PLACEHOLDER NAME', age: 'PLACEHOLDER AGE', location: 'PLACEHOLDER LOCATION', quote: 'PLACEHOLDER QUOTE FROM OWNER.', owner: '— PLACEHOLDER OWNER NAME' }
+    ];
+
+    (function () {
+      var current = 0;
+      var mainImg = document.getElementById('dogMainImg');
+      var nameEl = document.getElementById('dogName');
+      var metaEl = document.getElementById('dogMeta');
+      var quoteEl = document.getElementById('dogQuote');
+      var dotsEl = document.getElementById('dogDots');
+
+      function render() {
+        var dog = DOGS[current];
+        mainImg.src = dog.img;
+        mainImg.alt = dog.name;
+        nameEl.textContent = dog.name;
+        metaEl.textContent = dog.age + ' \u00b7 ' + dog.location;
+        quoteEl.innerHTML = '\u201c' + dog.quote + '\u201d<span class="attrib">' + dog.owner + '</span>';
+        Array.prototype.forEach.call(dotsEl.children, function (dot, i) {
+          dot.classList.toggle('active', i === current);
+        });
+      }
+
+      function go(step) {
+        current = (current + step + DOGS.length) % DOGS.length;
+        render();
+      }
+
+      DOGS.forEach(function (dog, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', 'Show ' + dog.name);
+        var img = document.createElement('img');
+        img.src = dog.img;
+        img.alt = dog.name;
+        dot.appendChild(img);
+        dot.addEventListener('click', function () { current = i; render(); });
+        dotsEl.appendChild(dot);
+      });
+
+      document.getElementById('dogPrev').addEventListener('click', function () { go(-1); });
+      document.getElementById('dogNext').addEventListener('click', function () { go(1); });
+      document.getElementById('dogMainFrame').addEventListener('click', function () { go(1); });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

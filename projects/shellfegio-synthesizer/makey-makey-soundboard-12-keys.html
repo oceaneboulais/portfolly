@@ -600,13 +600,21 @@
       // Global mouse handlers for Makey Makey "click" input.
       // MM sends mousedown/mouseup to wherever the cursor happens to land — not
       // necessarily the clickPad — so we catch it at the document level instead.
+      // Only skip controls that already trigger their own sound/action on click
+      // (double-trigger risk). Everything else — sliders, canvases, <details>,
+      // plain page background — must still fire the click sound, since the OS
+      // cursor driven by Makey Makey's "click" output can rest anywhere on this
+      // control-dense layout; over-broad exclusions (e.g. every input/canvas/
+      // details) silently killed the physical click pad whenever the cursor
+      // happened to sit over any slot's slider/waveform/pitch toggle.
+      const CLICK_SOUND_EXCLUDE = '#unlockBtn, #stopAllBtn, #folderInput, label[for="folderInput"], input[type="file"], [data-role="test-btn"], [data-role="pitch-reset"]';
       document.addEventListener('mousedown', ev => {
-        if (ev.target.closest('button, input, label, select, a, canvas, details')) return;
+        if (ev.target.closest(CLICK_SOUND_EXCLUDE)) return;
         unlockAudioSync();
         handlePress('click');
       });
       document.addEventListener('mouseup', ev => {
-        if (ev.target.closest('button, input, label, select, a, canvas, details')) return;
+        if (ev.target.closest(CLICK_SOUND_EXCLUDE)) return;
         handleRelease('click');
       });
 
