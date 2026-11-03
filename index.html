@@ -191,37 +191,17 @@
       }
     }
     
-    .fish:nth-child(1) { 
-      top: 20%; 
-      animation-duration: 25s; 
-      animation-delay: 0s;
-    }
-    .fish:nth-child(2) { 
-      top: 25%; 
-      animation-duration: 28s; 
-      animation-delay: 2s;
-    }
-    .fish:nth-child(3) { 
-      top: 22%; 
-      animation-duration: 30s; 
-      animation-delay: 4s;
-    }
-    .fish:nth-child(4) { 
-      top: 65%; 
-      animation-duration: 26s; 
-      animation-delay: 6s;
-    }
-    .fish:nth-child(5) { 
-      top: 70%; 
-      animation-duration: 32s; 
-      animation-delay: 8s;
-    }
-    .fish:nth-child(6) { 
-      top: 67%; 
-      animation-duration: 29s; 
-      animation-delay: 10s;
-    }
-    
+    .fish:nth-child(1) { top: 20%; font-size: 14px; animation-duration: 50s; animation-delay: 0s; }
+    .fish:nth-child(2) { top: 25%; font-size: 9px; animation-duration: 56s; animation-delay: 4s; }
+    .fish:nth-child(3) { top: 22%; font-size: 11px; animation-duration: 60s; animation-delay: 8s; }
+    .fish:nth-child(4) { top: 65%; font-size: 17px; animation-duration: 52s; animation-delay: 12s; }
+    .fish:nth-child(5) { top: 70%; font-size: 8px; animation-duration: 64s; animation-delay: 16s; }
+    .fish:nth-child(6) { top: 67%; font-size: 12px; animation-duration: 58s; animation-delay: 20s; }
+    .fish:nth-child(7) { top: 33%; font-size: 10px; animation-duration: 62s; animation-delay: 24s; }
+    .fish:nth-child(8) { top: 45%; font-size: 16px; animation-duration: 66s; animation-delay: 28s; }
+    .fish:nth-child(9) { top: 55%; font-size: 8px; animation-duration: 54s; animation-delay: 32s; }
+    .fish:nth-child(10) { top: 78%; font-size: 13px; animation-duration: 60s; animation-delay: 36s; }
+
     @keyframes swim {
       0% {
         left: -100px;
@@ -261,10 +241,14 @@
     }
     @media (max-width: 576px) { .fish-rtl { font-size: 12px; } }
 
-    .fish-rtl:nth-child(1) { top: 74%; animation-duration: 29s; animation-delay: 3s;  }
-    .fish-rtl:nth-child(2) { top: 80%; animation-duration: 24s; animation-delay: 11s; }
-    .fish-rtl:nth-child(3) { top: 77%; animation-duration: 33s; animation-delay: 7s;  }
-    .fish-rtl:nth-child(4) { top: 85%; animation-duration: 27s; animation-delay: 17s; }
+    .fish-rtl:nth-child(1) { top: 74%; font-size: 13px; animation-duration: 58s; animation-delay: 6s; }
+    .fish-rtl:nth-child(2) { top: 80%; font-size: 8px; animation-duration: 48s; animation-delay: 22s; }
+    .fish-rtl:nth-child(3) { top: 77%; font-size: 17px; animation-duration: 66s; animation-delay: 14s; }
+    .fish-rtl:nth-child(4) { top: 85%; font-size: 10px; animation-duration: 54s; animation-delay: 34s; }
+    .fish-rtl:nth-child(5) { top: 38%; font-size: 9px; animation-duration: 60s; animation-delay: 10s; }
+    .fish-rtl:nth-child(6) { top: 50%; font-size: 15px; animation-duration: 64s; animation-delay: 26s; }
+    .fish-rtl:nth-child(7) { top: 60%; font-size: 8px; animation-duration: 52s; animation-delay: 18s; }
+    .fish-rtl:nth-child(8) { top: 90%; font-size: 12px; animation-duration: 56s; animation-delay: 30s; }
 
     @keyframes swim-rtl {
       0%   { left: calc(100% + 100px); opacity: 0; transform: translateY(0px); }
@@ -294,7 +278,7 @@
     .kelp-side {
       right: 12px;
       line-height: calc((100vh - var(--navbar-h)) / 76);
-      color: rgba(153, 204, 204, 0.42);
+      color: rgba(62, 130, 84, 0.55);
       text-align: right;
       transform-origin: bottom right;
       animation: kelp-sway 4.5s ease-in-out infinite;
@@ -303,7 +287,7 @@
     .kelp-side-short {
       right: 58px;
       line-height: calc((100vh - var(--navbar-h)) / 44);
-      color: rgba(153, 204, 204, 0.26);
+      color: rgba(62, 130, 84, 0.34);
       text-align: right;
       transform-origin: bottom right;
       animation: kelp-sway 3.7s ease-in-out infinite;
@@ -313,7 +297,7 @@
     .kelp-side-left {
       left: 12px;
       line-height: calc((100vh - var(--navbar-h)) / 76);
-      color: rgba(153, 204, 204, 0.38);
+      color: rgba(62, 130, 84, 0.5);
       text-align: left;
       transform-origin: bottom left;
       animation: kelp-sway-left 5.1s ease-in-out infinite;
@@ -330,12 +314,75 @@
     @media (min-width: 1380px) {
       .kelp-side, .kelp-side-short, .kelp-side-left { display: block; }
     }
+    /* Side ASCII coral — anchored to the outer walls, growing inward */
+    .coral-side {
+      position: fixed;
+      bottom: 0;
+      font-family: monospace;
+      font-size: 11px;
+      line-height: 1.05;
+      color: rgba(62, 130, 84, 0.5);
+      white-space: pre;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      display: none;
+    }
+    .coral-side-left  { left: 0;  text-align: left; }
+    .coral-side-right { right: 0; text-align: right; }
+    @media (min-width: 1380px) { .coral-side { display: block; } }
   </style>
 </head>
 
 <body>
+  <!-- Side ASCII coral framing the page from the outer walls inward -->
+  <div class="coral-side coral-side-left" aria-hidden="true">        \   |   /          
+   \ |   \  |  /   | /     
+    \|    \ | /    |/      
+ \   \     \|/    /        
+  \  |\     |    /|   /    
+   \ | \  \ | /  / |  /    
+ o  \|  \  \|/  /  | /  o  
+ |\  |   \  |  /   |/  /|  
+ | \ |    \ | /    |  / |  
+ |  \|     \|/     | /  |  
+(o)  |      |      |/  (o) 
+ |\  |     /|\     |   /|  
+ | \ |    / | \    |  / |  
+ |  \|   /  |  \   | /  |  
+ |   |  /   |   \  |/   |  
+ |   | /   (o)   \ |    |  
+(o)  |/     |      \|   (o)
+ |   |      |       |    | 
+ |   |     /|\      |    | 
+/|\ /|\   / | \    /|\  /|\</div>
+  <div class="coral-side coral-side-right" aria-hidden="true">          \   |   /        
+     \ |   \  |  /   | /   
+      \|    \ | /    |/    
+        \    \|/     /   / 
+    \   |\    |     /|  /  
+    \  | \  \ | /  / | /   
+  o  \ |  \  \|/  /  |/  o 
+  |\  \|   \  |  /   |  /| 
+  | \  |    \ | /    | / | 
+  |  \ |     \|/     |/  | 
+ (o)  \|      |      |  (o)
+  |\   |     /|\     |  /| 
+  | \  |    / | \    | / | 
+  |  \ |   /  |  \   |/  | 
+  |   \|  /   |   \  |   | 
+  |    | /   (o)   \ |   | 
+(o)   |/      |     \|  (o)
+ |    |       |      |   | 
+ |    |      /|\     |   | 
+/|\  /|\    / | \   /|\ /|\</div>
+
   <!-- Fish school: left-to-right -->
   <div class="fish-school">
+    <div class="fish">><(((°></div>
+    <div class="fish">><(((°></div>
+    <div class="fish">><(((°></div>
+    <div class="fish">><(((°></div>
     <div class="fish">><(((°></div>
     <div class="fish">><(((°></div>
     <div class="fish">><(((°></div>
@@ -346,6 +393,10 @@
 
   <!-- Fish school: right-to-left (bottom of page) -->
   <div class="fish-school" aria-hidden="true">
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
+    <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
     <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
     <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
     <div class="fish-rtl">&lt;°(((&#x3E;&lt;</div>
@@ -882,7 +933,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </button>
           <div class="intro-content" id="introContent">
             <p>
-              As a Ph.D. candidate in the <a href="https://athode.scrippsprofiles.ucsd.edu/" target="_blank" rel="noopener">Thode</a> Environmental Acoustics Lab within the Marine Physical Laboratory at the University of California San Diego, my research currently focuses on coastal ecosystem monitoring, coral reef restoration, marine bioacoustic analysis leveraging unsupervised machine learning and deep learning. A tinkerer at heart, I find interdisciplinary approaches most effective at tackling complex environmental challenges. In a prior season, I was in the <a href="https://www.media.mit.edu/groups/responsive-environments/overview/" target="_blank" rel="noopener">Responsive Environments group at the MIT Media Lab</a> and before that, a Research Engineer at NOAA's Southeast Fisheries Science Center using computer vision and baited habitat cameras to quantify commercial fishery change in the Gulf of Mexico.
+              As a Ph.D. candidate in the Thode <a href="https://oceaneboulais.github.io/TEAL-site/TEAL_website/index.html" target="_blank" rel="noopener">Environmental Acoustics Lab</a> within the Marine Physical Laboratory at the University of California San Diego, my research currently focuses on coastal ecosystem monitoring, coral reef restoration, marine bioacoustic analysis leveraging unsupervised machine learning and deep learning. A tinkerer at heart, I find interdisciplinary approaches most effective at tackling complex environmental challenges. In a prior season, I was in the <a href="https://www.media.mit.edu/groups/responsive-environments/overview/" target="_blank" rel="noopener">Responsive Environments group at the MIT Media Lab</a> and before that, a Research Engineer at NOAA's Southeast Fisheries Science Center using computer vision and baited habitat cameras to quantify commercial fishery change in the Gulf of Mexico.
 
             <p>
               <!-- In a prior season, I was in the Responsive Environments group at the MIT Media Lab and before that, a Research Engineer at NOAA's Southeast Fisheries Science Center using deep learning to understand the impact of commercial fisheries on humans and the Gulf of Mexico ecosystem. -->
