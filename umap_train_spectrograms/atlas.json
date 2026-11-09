@@ -1,0 +1,20 @@
+{
+ "quality": 40,
+ "n_slots": 11770,
+ "n_tiles": 184,
+ "per_tile": 64,
+ "cols": 8,
+ "rows": 8,
+ "cell_w": 104,
+ "cell_h": 128,
+ "img_h": 121,
+ "img_w": 104,
+ "total_bytes": 27827844,
+ "stats": {
+  "train_rows": 100000,
+  "candidate_rows": 11772,
+  "verified_rows": 11772,
+  "failed_verification": 0,
+  "duplicate_src_stems": 0
+ }
+}

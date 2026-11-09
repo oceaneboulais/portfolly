@@ -5,3 +5,6 @@ Art:Blockchain/
 
 # Audio files
 projects/acoustic-enrichment/sound/newmoontrim.wav
+
+# Local test fixtures for the UMAP click view (regenerate with the bowhead builder + test hooks)
+_tmp_*.json
